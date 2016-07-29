@@ -4,6 +4,8 @@ Route::get('/', function () {
     return redirect()->route('admin.index');
 });
 
+Route::get('test', 'Admin\IndexController@test');
+
 // 后台路由组
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 

@@ -34,12 +34,9 @@ class CategoryController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'unique:categories'],
-            'alias' => ['required', 'unique:categories'],
         ], [
             'name.required' => '名称不能为空',
             'name.unique' => '名称已经存在',
-            'alias.required' => '别名不能为空',
-            'alias.unique' => '别名已经存在',
         ]);
 
         if ($validator->fails()) {

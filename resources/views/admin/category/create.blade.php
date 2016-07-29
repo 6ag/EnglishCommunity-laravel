@@ -5,7 +5,7 @@
         <section class="content-header">
             <h1>
                 创建分类
-                <small>新建壁纸分类</small>
+                <small>新建分类</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> 仪表盘</a></li>
@@ -29,12 +29,7 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label>分类名称</label>
-                            <input type="text" class="form-control" placeholder="分类名称 例如: 天策" name="name">
-                        </div>
-
-                        <div class="form-group">
-                            <label>分类别名</label>
-                            <input type="text" class="form-control" placeholder="分类别名 例如: tc" name="alias">
+                            <input type="text" class="form-control" placeholder="分类名称 例如: 大学英语" name="name">
                         </div>
 
                         <div class="form-group">
