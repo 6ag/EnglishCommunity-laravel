@@ -16,7 +16,7 @@ class CreateVideosTable extends Migration
             $table->increments('id');
             $table->string('title'); // 标题
             $table->integer('video_info_id'); // 视频信息id
-            $table->string('video_sign'); // 视频标识
+            $table->string('video_url'); // 视频地址 例如: http://v.youku.com/v_show/id_XMTUwNjQ0NDQ4MA==.html
             $table->timestamps();
         });
     }
