@@ -38,11 +38,11 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                 </a>
-                <ul class="treeview-menu" style="display: {{ (Request::is('admin/category/create') || Request::is('admin/category') || Request::is('admin/wallpaper/create') || Request::is('admin/wallpaper')) ? 'block' : 'none' }};">
+                <ul class="treeview-menu" style="display: {{ (Request::is('admin/category/create') || Request::is('admin/category') || Request::is('admin/video/create') || Request::is('admin/video')) ? 'block' : 'none' }};">
                     <li class="{{ Request::is('admin/category/create') ? 'active' : '' }}"><a href="{{ url('admin/category/create') }}"><i class="fa fa-edit"></i> 添加分类</a></li>
                     <li class="{{ Request::is('admin/category') ? 'active' : '' }}"><a href="{{ url('admin/category') }}"><i class="fa fa-folder"></i> 管理分类</a></li>
-                    <li class="{{ Request::is('admin/wallpaper/create') ? 'active' : '' }}"><a href="{{ url('admin/wallpaper/create') }}"><i class="fa fa-cloud-upload"></i> 添加壁纸</a></li>
-                    <li class="{{ Request::is('admin/wallpaper') ? 'active' : '' }}"><a href="{{ url('admin/wallpaper') }}"><i class="fa fa-list-alt"></i> 管理壁纸</a></li>
+                    <li class="{{ Request::is('admin/video/create') ? 'active' : '' }}"><a href="{{ url('admin/video/create') }}"><i class="fa fa-cloud-upload"></i> 添加视频</a></li>
+                    <li class="{{ Request::is('admin/video') ? 'active' : '' }}"><a href="{{ url('admin/video') }}"><i class="fa fa-list-alt"></i> 管理视频</a></li>
                 </ul>
             </li>
 

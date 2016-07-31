@@ -65,7 +65,7 @@ class VideoController extends BaseController
         if (count($urls) < 1) {
             return [];
         }
-
+        
         // 匹配到的所有URL
         $allUrl = $urls[1];
 

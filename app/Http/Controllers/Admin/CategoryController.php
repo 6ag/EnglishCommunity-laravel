@@ -20,7 +20,7 @@ class CategoryController extends BaseController
     // get admin/category/{category} 显示单个分类信息
     public function show()
     {
-
+        
     }
 
     // get admin/category/create 添加分类 create、store是连续的操作,create获取创建前需要的数据,store存储数据

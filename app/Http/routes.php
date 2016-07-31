@@ -4,7 +4,7 @@ Route::get('/', function () {
     return redirect()->route('admin.index');
 });
 
-Route::get('test', 'Admin\IndexController@test');
+Route::get('test', 'Api\VideoController@test');
 
 // 后台路由组
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
@@ -36,6 +36,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
         // 分类
         Route::resource('category', 'CategoryController');
+
+        // 视频
+        Route::resource('video', 'VideoController');
+        Route::post('upload', 'VideoController@uploadImage')->name('admin.upload');
 
         // 配置
         Route::resource('option', 'OptionController');
