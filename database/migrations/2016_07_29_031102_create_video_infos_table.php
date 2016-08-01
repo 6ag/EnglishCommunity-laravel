@@ -14,13 +14,13 @@ class CreateVideoInfosTable extends Migration
     {
         Schema::create('video_infos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title'); // 标题
-            $table->string('intro')->nullable(); // 简介
-            $table->string('photo')->nullable(); // 标题图片
-            $table->integer('view')->default(0); // 浏览量
-            $table->tinyInteger('category_id'); // 分类id
-            $table->string('teacher')->nullable(); // 讲师
-            $table->string('type')->nullable(); // 视频类型: youku tudou iqiyi
+            $table->string('title')->comment('标题');
+            $table->string('intro')->nullable()->comment('简介');
+            $table->string('photo')->nullable()->comment('标题图片');
+            $table->integer('view')->default(0)->comment('浏览量');
+            $table->tinyInteger('category_id')->comment('分类id');
+            $table->string('teacher')->nullable()->comment('讲师');
+            $table->string('type')->nullable()->comment('视频类型: youku tudou iqiyi');
             $table->timestamps();
         });
     }

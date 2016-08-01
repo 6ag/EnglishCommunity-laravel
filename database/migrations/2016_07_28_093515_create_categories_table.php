@@ -14,10 +14,10 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name'); // 分类名称
-            $table->integer('view')->default(0); // 浏览量
-            $table->tinyInteger('order')->default(0); // 排序
-            $table->string('pid')->default(0); // 分类父id
+            $table->string('name')->comment('分类名称');
+            $table->integer('view')->default(0)->comment('浏览量');
+            $table->tinyInteger('order')->default(0)->comment('排序');
+            $table->string('pid')->default(0)->comment('分类父id');
             $table->timestamps();
         });
     }

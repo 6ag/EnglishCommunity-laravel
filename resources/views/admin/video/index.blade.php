@@ -14,7 +14,7 @@
         </section>
 
         <section class="content">
-        
+
             <div class="box">
                 <div class="box-header">
                     @include('layouts.Common.tips')
@@ -23,9 +23,36 @@
                 <div class="box-body">
                     <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap">
                         <div class="row">
-                            @foreach($videoInfos as $key => $videoInfo)
+                            <div class="col-md-12">
+                                <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th class="col-md-1" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">ID</th>
+                                        <th class="col-md-4" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">标题</th>
+                                        <th class="col-md-1" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">来源</th>
+                                        <th class="col-md-2" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">最后更新时间</th>
+                                        <th class="col-md-2" tabindex="0" aria-controls="example2" rowspan="1" colspan="1">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-                            @endforeach
+                                    @foreach($videoInfos as $videoInfo)
+                                        <tr role="row">
+                                            <td>{{ $videoInfo->id }}</td>
+                                            <td>{{ $videoInfo->title }}</td>
+                                            <td>{{ $videoInfo->type }}</td>
+                                            <td>{{ date('Y-m-d H:i:s', $videoInfo->updated_at->timestamp) }}</td>
+                                            <td>
+                                                <a href="">推送</a> |
+                                                <a href="{{ url('admin/video/' . $videoInfo->id . '/edit') }}">编辑</a> |
+                                                <a href="javascript:;" onclick="deleteVideoInfo({{ $videoInfo->id }})">删除</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                    </tbody>
+                                </table>
+                            </div>
 
                         </div>
                         <div class="row">
@@ -48,4 +75,24 @@
     </div>
 @endsection
 
+<script>
+
+    function deleteVideoInfo(id) {
+        //询问框
+        layer.confirm('您确定要删除这个教程集吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post("{{url('admin/video')}}/" + id, {'_token' : '{{csrf_token()}}', '_method' : 'delete'}, function(data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {icon: 6});
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+                window.location.reload();
+            });
+        }, function(){
+
+        });
+    }
+</script>
 

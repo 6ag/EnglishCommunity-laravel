@@ -4,12 +4,12 @@
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
-                创建视频
-                <small>上传新的视频</small>
+                修改视频
+                <small>修改当前视频信息</small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> 仪表盘</a></li>
-                <li class="active">创建视频</li>
+                <li class="active">修改视频</li>
             </ol>
         </section>
 
@@ -20,34 +20,35 @@
                 </div>
 
                 <div class="box-body">
-                    <form role="form" action="{{ url('admin/video') }}" method="post">
+                    <form role="form" action="{{ url('admin/video/' . $videoInfo->id) }}" method="post">
+                        {{ method_field('put') }}
                         {{ csrf_field() }}
 
                         <div class="row">
                             {{-- 名称 --}}
                             <div class="form-group col-md-5">
-                                <input type="text" class="form-control" placeholder="教程名称" name="title">
+                                <input type="text" class="form-control" placeholder="教程名称" name="title" value="{{ $videoInfo->title }}">
                             </div>
 
                             {{-- 讲师 --}}
                             <div class="form-group col-md-2">
-                                <input type="text" class="form-control" placeholder="讲师" name="teacher">
+                                <input type="text" class="form-control" placeholder="讲师" name="teacher" value="{{ $videoInfo->teacher }}">
                             </div>
 
                             <!-- 分类 -->
                             <div class="form-group col-md-1">
                                 <select class="form-control" name="category_id">
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" {{ $videoInfo->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             {{-- 来源 --}}
                             <div class="form-group col-md-2">
-                                <label><input type="radio" class="radio-inline" name="type" value="youku" checked> 优酷 </label> |
-                                <label><input type="radio" class="radio-inline" name="type" value="tudou"> 土豆 </label> |
-                                <label><input type="radio" class="radio-inline" name="type" value="iqiyi"> 爱奇艺 </label>
+                                <label><input type="radio" class="radio-inline" name="type" value="youku" {{ $videoInfo->type == 'youku' ? 'checked' : '' }}> 优酷 </label> |
+                                <label><input type="radio" class="radio-inline" name="type" value="tudou" {{ $videoInfo->type == 'tudou' ? 'checked' : '' }}> 土豆 </label> |
+                                <label><input type="radio" class="radio-inline" name="type" value="iqiyi" {{ $videoInfo->type == 'iqiyi' ? 'checked' : '' }}> 爱奇艺 </label>
                             </div>
                         </div>
 
@@ -94,22 +95,22 @@
                         <div class="row">
                             {{-- 显示缩略图 --}}
                             <div class="form-group col-md-3">
-                                <input type="hidden" name="photo">
-                                <img src="" alt="" id="thumbnail" name="photo" style="height: 150px; display: none;">
+                                <input type="hidden" name="photo" value="{{ $videoInfo->photo }}">
+                                <img src="{{ url($videoInfo->photo) }}" alt="" id="thumbnail" name="photo" style="height: 150px;">
                             </div>
                         </div>
 
                         {{-- 简介 --}}
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <textarea class="form-control" rows="3" placeholder="教程简介" name="intro"></textarea>
+                                <textarea class="form-control" rows="3" placeholder="教程简介" name="intro">{{ $videoInfo->intro }}</textarea>
                             </div>
                         </div>
 
                         {{-- 视频列表 --}}
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <textarea class="form-control" rows="5" placeholder="教程地址列表格式:标题,地址/id 比如: 音标入门介绍,http://v.youku.com/v_show/id_XMTUwNjQ0NDQ4MA==.html" name="video_urls"></textarea>
+                                <textarea class="form-control" rows="10" placeholder="教程地址列表格式: 标题,地址/id" name="video_urls">{{ $video_urls }}</textarea>
                             </div>
                         </div>
 

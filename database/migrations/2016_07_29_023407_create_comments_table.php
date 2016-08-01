@@ -14,11 +14,11 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id'); // 用户id
-            $table->string('video_info_id'); // 视频信息id
-            $table->string('content'); // 评论内容
-            $table->integer('pid'); // 回复的那条评论id 如果为0,则表示回复视频
-            $table->integer('favorite'); // 赞数量
+            $table->integer('user_id')->comment('用户id');
+            $table->string('video_info_id')->comment('视频信息id');
+            $table->string('content')->comment('评论内容');
+            $table->integer('pid')->comment('回复的那条评论id 如果为0,则表示回复视频');
+            $table->integer('favorite')->comment('赞数量');
             $table->timestamps();
         });
     }

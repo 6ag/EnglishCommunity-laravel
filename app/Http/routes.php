@@ -4,7 +4,7 @@ Route::get('/', function () {
     return redirect()->route('admin.index');
 });
 
-Route::get('test', 'Api\VideoController@test');
+Route::get('test', 'Api\VideoController@getVidesList');
 
 // 后台路由组
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
@@ -53,8 +53,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('register', 'AuthenticateController@register')->name('api.auth.register');
-        Route::post('login', 'AuthenticateController@login')->name('api.auth.login');
+        Route::post('register', 'AuthenticateController@register');
+        Route::post('login', 'AuthenticateController@login');
     });
+
+    // 根据分类id查询视频信息列表
+    Route::get('category/{category}/videos', 'CategoryController@getVideInfosList');
+
+    // 根据视频信息id 获取视频信息
+    Route::get('video/{video}', 'VideoController@getVideoList');
 
 });

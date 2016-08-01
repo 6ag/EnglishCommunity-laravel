@@ -14,8 +14,8 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name'); // 组名称
-            $table->string('sign'); // 标识
+            $table->string('name')->comment('组名称');
+            $table->string('sign')->comment('标识');
             $table->timestamps();
         });
     }

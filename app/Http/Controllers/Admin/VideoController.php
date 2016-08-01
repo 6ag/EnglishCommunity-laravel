@@ -69,12 +69,13 @@ class VideoController extends BaseController
         $listArray = explode("\r\n", $listString);
 
         // 创建视频列表信息
-        foreach ($listArray as $item) {
+        foreach ($listArray as $key => $item) {
             $videos = explode(',', $item);
             $video = new Video();
             $video->title = $videos[0];
             $video->video_url = $videos[1];
-            $video->video_info_id = $request->category_id;
+            $video->video_info_id = $videoInfo->id;
+            $video->order = $key + 1;
             $video->save();
         }
 
@@ -109,8 +110,8 @@ class VideoController extends BaseController
             $obj = new ReSizeImage();
             $obj->setSourceFile($imagePath);
             $obj->setDstFile($destinationPath);
-            $obj->setWidth(187);
-            $obj->setHeight(333);
+            $obj->setWidth(300);
+            $obj->setHeight(250);
             $obj->draw();
         } catch (Exception $ex) {
             return back()->with('errors', '图片压缩失败,请放弃治疗');
@@ -125,19 +126,68 @@ class VideoController extends BaseController
     // get admin/video/{video}/edit 编辑视频 edit、update也是一组连续的操作,edit获取需要编辑的数据的信息,update更新修改后的信息
     public function edit($id)
     {
+        $videoInfo = VideoInfo::findOrFail($id);
+        $categories = Category::all();
 
+        // 合并视频地址列表
+        $videos = Video::where('video_info_id', $videoInfo->id)->get();
+        $video_urls = '';
+        foreach ($videos as $key => $video) {
+            $video_urls .= $video->title;
+            $video_urls .= ',';
+            $video_urls .= $video->video_url;
+            $key == count($videos) - 1 ?: $video_urls .= "\r\n";
+        }
+        
+        return view('admin.video.edit', compact('videoInfo', 'categories', 'video_urls'));
     }
 
     // put admin/video/{video} 更新视频
-    public function update($id)
+    public function update(Request $request, $id)
     {
+        // 更新视频集信息
+        $videoInfo = VideoInfo::findOrFail($id);
+        $videoInfo->title = $request->title;
+        $videoInfo->intro = $request->intro;
+        $videoInfo->photo = $this->savePhoto($request->photo);
+        $videoInfo->category_id = $request->category_id;
+        $videoInfo->teacher = $request->teacher;
+        $videoInfo->type = $request->type;
+        $videoInfo->save();
 
+        // 清空旧视频地址列表
+        Video::where('video_info_id', $videoInfo->id)->delete();
+
+        // 拆分视频地址列表
+        $listString = trim($request->video_urls);
+        $listArray = explode("\r\n", $listString);
+
+        // 创建新的视频列表信息
+        foreach ($listArray as $key => $item) {
+            $videos = explode(',', $item);
+            $video = new Video();
+            $video->title = $videos[0];
+            $video->video_url = $videos[1];
+            $video->video_info_id = $videoInfo->id;
+            $video->order = $key + 1;
+            $video->save();
+        }
+
+        return redirect()->route('admin.video.index');
     }
 
     // delete admin/video/{video} 删除视频
     public function destroy($id)
     {
+        // 更新视频集信息
+        $videoInfo = VideoInfo::findOrFail($id);
+        Video::where('video_info_id', $videoInfo->id)->delete();
+        $videoInfo->delete();
 
+        return [
+            'status' => 1,
+            'msg' => '删除成功'
+        ];
     }
 
     /**
