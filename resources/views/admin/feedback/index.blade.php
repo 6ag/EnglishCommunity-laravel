@@ -17,7 +17,7 @@
 
             <div class="box">
                 <div class="box-header">
-
+                    @include('layouts.Common.tips')
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">

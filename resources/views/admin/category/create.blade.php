@@ -17,12 +17,7 @@
 
             <div class="box box-warning">
                 <div class="box-header with-border">
-                    @if(is_object($errors) && count($errors) > 0)
-                        <div class="alert alert-danger alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <p>{{ $errors->first() }}</p>
-                        </div>
-                    @endif
+                    @include('layouts.Common.tips')
                 </div>
                 <div class="box-body">
                     <form role="form" action="{{ url('admin/category') }}" method="post">

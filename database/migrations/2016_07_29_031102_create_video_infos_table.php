@@ -20,7 +20,7 @@ class CreateVideoInfosTable extends Migration
             $table->integer('view')->default(0); // 浏览量
             $table->tinyInteger('category_id'); // 分类id
             $table->string('teacher')->nullable(); // 讲师
-            $table->tinyInteger('type')->default(0); // 视频类型: 0 优酷
+            $table->string('type')->nullable(); // 视频类型: youku tudou iqiyi
             $table->timestamps();
         });
     }

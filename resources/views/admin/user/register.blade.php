@@ -8,19 +8,7 @@
 
         <div class="register-box-body">
 
-            @if(is_object($errors) && count($errors) > 0)
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <p>{{ $errors->first() }}</p>
-                </div>
-            @endif
-
-            @if(is_string($errors))
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    <p>{{ $errors }}</p>
-                </div>
-            @endif
+            @include('layouts.Common.tips')
 
             <form action="#" method="post">
                 {{ csrf_field() }}
