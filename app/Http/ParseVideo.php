@@ -9,7 +9,7 @@ class ParseVideo
      * @param $url
      * @return array|void
      */
-    public static function parseYouku($url)
+    public static function parseYouku1($url)
     {
         $api = 'http://www.shokdown.com/parse.php';
         $data = [
@@ -33,7 +33,7 @@ class ParseVideo
         $result = curl_exec($curlHandle);
         curl_close($curlHandle);
 
-        return self::parseHtml($result);
+        return self::parseHtmlWithParse1($result);
     }
 
     /**
@@ -41,16 +41,16 @@ class ParseVideo
      * @param $html
      * @return array
      */
-    private static function parseHtml($html) {
+    private static function parseHtmlWithParse1($html) {
 
         // 匹配结果部分的html
-        $html.preg_match('/<br>\[<font color=red>标准<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d*?)<\/font>段视频组成<BR>(<a.*<\/a>)/', $html, $result);
+        preg_match('/<br>\[<font color=red>标准<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d*?)<\/font>段视频组成<BR>(<a.*<\/a>)/', $html, $result);
         if (!count($result)) {
             return [];
         }
 
         $result = $result[0];
-        $result.preg_match_all("/<a.*?href=\"(.*?)\".*?>/", $result, $urls);
+        preg_match_all("/<a.*?href=\"(.*?)\".*?>/", $result, $urls);
         if (count($urls) < 1) {
             return [];
         }
@@ -59,24 +59,17 @@ class ParseVideo
         $allUrl = $urls[1];
 
         // 匹配所有清晰度的数量
-        $html.preg_match('/<br>\[<font color=red>标准<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d)<\/font>段视频组成<BR>/', $html, $counts);
-        $normalCount = $counts[1];
-        $html.preg_match('/<br>\[<font color=red>高清<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d)<\/font>段视频组成<BR>/', $html, $counts);
-        $highCount = $counts[1];
-        $html.preg_match('/<br>\[<font color=red>超清<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d*?)<\/font>段视频组成<BR>/', $html, $counts);
-        $hyperCount = $counts[1];
-
-        $normalUrls = array_slice($allUrl, 0, $normalCount);
-        $highUrls = array_slice($allUrl, $normalCount, $highCount);
-        $hyperUrls = array_slice($allUrl, $normalCount + $highCount, $hyperCount);
-
-        // 没有解析到任何URL
-        if (!count($normalUrls)) {
+        preg_match('/<br>\[<font color=red>标准<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d*?)<\/font>段视频组成<BR>/', $html, $counts);
+        // 什么都没有匹配到
+        if (!count($counts)) {
             return [];
         }
+        $normalCount = $counts[1];
+        $normalUrls = array_slice($allUrl, 0, $normalCount);
 
-        // 没有解析到高清
-        if (!count($highUrls)) {
+        preg_match('/<br>\[<font color=red>高清<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d*?)<\/font>段视频组成<BR>/', $html, $counts);
+        // 没有匹配到高清
+        if (!count($counts)) {
             return [
                 'normal' => [
                     'count' => $normalCount,
@@ -84,9 +77,12 @@ class ParseVideo
                 ]
             ];
         }
+        $highCount = $counts[1];
+        $highUrls = array_slice($allUrl, $normalCount, $highCount);
 
-        // 没有解析到超清
-        if (!count($hyperUrls)) {
+        preg_match('/<br>\[<font color=red>超清<\/font>\]&nbsp;此视频由视频网分割为以下<font color=red>(\d*?)<\/font>段视频组成<BR>/', $html, $counts);
+        // 没有匹配到超清
+        if (!count($result)) {
             return [
                 'normal' => [
                     'count' => $normalCount,
@@ -98,6 +94,8 @@ class ParseVideo
                 ]
             ];
         }
+        $hyperCount = $counts[1];
+        $hyperUrls = array_slice($allUrl, $normalCount + $highCount, $hyperCount);
 
         // 全都解析到了
         return [
@@ -114,6 +112,46 @@ class ParseVideo
                 'data' => $hyperUrls,
             ]
         ];
+
+    }
+
+    /**
+     * 根据URL解析视频资源
+     * @param $url
+     */
+    public static function parseYouku2($url) {
+        $api = 'http://www.avziliao.com/vip/index.php';
+        $data = [
+            'cache-control' => 'no-cache',
+            'accept-language' => 'zh-CN,zh;q=0.8,en;q=0.6',
+            'dnt' => '1', // 要求服务器不要跟着用户记录
+            'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'content-type' => 'application/x-www-form-urlencoded',
+            'user-agent' => 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.63 Safari/537.36',
+            'upgrade-insecure-requests' => '1',
+        ];
+
+        $curlHandle = curl_init();
+        curl_setopt($curlHandle, CURLOPT_URL, $api . '?url=' . $url . '&type=youku');
+        curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandle, CURLOPT_HEADER, $data);
+        curl_setopt ($curlHandle, CURLOPT_REFERER, "http://english.6ag.cn/");
+        $result = curl_exec($curlHandle);
+        curl_close($curlHandle);
+
+        return self::parseHtmlWithParse2($result);
+    }
+
+    /**
+     * 解析为网页播放器
+     * @param $html
+     */
+    private static function parseHtmlWithParse2($html) {
+        $html = preg_replace('/api.php/', 'http://www.avziliao.com/vip/api.php', $html);
+        echo $html;
+    }
+    
+    public static function parseYouku3($url) {
 
     }
 }

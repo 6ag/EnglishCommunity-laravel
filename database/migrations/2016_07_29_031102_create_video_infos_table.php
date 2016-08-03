@@ -15,7 +15,7 @@ class CreateVideoInfosTable extends Migration
         Schema::create('video_infos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->comment('标题');
-            $table->string('intro')->nullable()->comment('简介');
+            $table->text('intro')->nullable()->comment('简介');
             $table->string('photo')->nullable()->comment('标题图片');
             $table->integer('view')->default(0)->comment('浏览量');
             $table->tinyInteger('category_id')->comment('分类id');

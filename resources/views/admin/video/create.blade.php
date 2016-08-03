@@ -109,7 +109,7 @@
                         {{-- 视频列表 --}}
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <textarea class="form-control" rows="10" placeholder="教程地址列表格式:标题,地址/id 比如: 音标入门介绍,http://v.youku.com/v_show/id_XMTUwNjQ0NDQ4MA==.html" name="video_urls"></textarea>
+                                <textarea class="form-control" rows="20" placeholder="教程地址列表格式:标题,地址/id 比如: 音标入门介绍,http://v.youku.com/v_show/id_XMTUwNjQ0NDQ4MA==.html" name="video_urls"></textarea>
                             </div>
                         </div>
 

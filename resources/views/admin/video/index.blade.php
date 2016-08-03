@@ -23,6 +23,22 @@
                 <div class="box-body">
                     <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap">
                         <div class="row">
+                            <form action="" method="get">
+                                <div class="col-md-2">
+                                    <select class="form-control" name="category_id">
+                                        <option value="0">所有分类</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" {{ (isset($currentCategory) && $currentCategory->id == $category->id) ? 'selected' : '' }}>{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-danger">筛选</button>
+                                </div>
+                            </form>
+                        </div>
+                        <br />
+                        <div class="row">
                             <div class="col-md-12">
                                 <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                                     <thead>

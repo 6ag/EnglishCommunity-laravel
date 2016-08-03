@@ -17,7 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name')->comment('分类名称');
             $table->integer('view')->default(0)->comment('浏览量');
             $table->tinyInteger('order')->default(0)->comment('排序');
-            $table->string('pid')->default(0)->comment('分类父id');
+            $table->integer('pid')->default(0)->comment('分类父id');
             $table->timestamps();
         });
     }

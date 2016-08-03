@@ -14,10 +14,19 @@ use Illuminate\Support\Facades\Validator;
 class VideoController extends BaseController
 {
     // get admin/video  全部视频列表
-    public function index()
+    public function index(Request $request)
     {
-        $videoInfos = VideoInfo::orderBy('id', 'desc')->paginate(15);
-        return view('admin/video/index', compact('videoInfos'));
+        if (empty($request->category_id) || $request->category_id == 0) {
+            $videoInfos = VideoInfo::orderBy('id', 'desc')->paginate(15);
+            $categories = Category::all();
+            return view('admin/video/index', compact('videoInfos', 'categories'));
+        } else {
+            $videoInfos = VideoInfo::where('category_id', $request->category_id)->orderBy('id', 'desc')->paginate(15);
+            $categories = Category::all();
+            $currentCategory = Category::findOrFail($request->category_id);
+            return view('admin/video/index', compact('videoInfos', 'categories', 'currentCategory'));
+        }
+
     }
 
     // get admin/video/{video} 显示单个视频信息

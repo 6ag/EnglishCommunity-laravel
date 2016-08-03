@@ -4,8 +4,6 @@ Route::get('/', function () {
     return redirect()->route('admin.index');
 });
 
-Route::get('test', 'Api\VideoController@getVidesList');
-
 // 后台路由组
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
@@ -57,10 +55,18 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
         Route::post('login', 'AuthenticateController@login');
     });
 
+    // 查询所有分类列表
+    Route::get('category', 'CategoryController@getCategoryies');
+
     // 根据分类id查询视频信息列表
     Route::get('category/{category}/videos', 'CategoryController@getVideInfosList');
 
     // 根据视频信息id 获取视频信息
     Route::get('video/{video}', 'VideoController@getVideoList');
+
+    // 解析视频
+    Route::get('parse1', 'VideoController@parseYouku1');
+    Route::get('parse2', 'VideoController@parseYouku2');
+    Route::get('parse3', 'VideoController@parseYouku3');
 
 });
