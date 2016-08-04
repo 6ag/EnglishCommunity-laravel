@@ -33,30 +33,6 @@ class CategoriesTableSeeder extends Seeder
             ], [
                 'name' => '作文',
                 'order' => 7
-            ], [
-                'name' => '大学英语',
-                'order' => 8
-            ], [
-                'name' => '英语四六级',
-                'order' => 9
-            ], [
-                'name' => '考研英语',
-                'order' => 10
-            ], [
-                'name' => '新概念英语',
-                'order' => 11
-            ], [
-                'name' => '商务英语',
-                'order' => 12
-            ], [
-                'name' => '雅思',
-                'order' => 13
-            ], [
-                'name' => '托福',
-                'order' => 14
-            ], [
-                'name' => '看电影学英语',
-                'order' => 15
             ]
         ]);
     }
