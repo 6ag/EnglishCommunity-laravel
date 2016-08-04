@@ -132,13 +132,4 @@ class VideoController extends BaseController
         }
     }
 
-    public function parseYouku2(Request $request)
-    {
-
-    }
-    
-    public function parseYouku3(Request $request)
-    {
-
-    }
 }

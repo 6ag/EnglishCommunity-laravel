@@ -7,3 +7,4 @@ Homestead.json
 .idea
 /public/uploads
 /public/temp
+/public/parse.php
