@@ -24,7 +24,12 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label>分类名称</label>
-                            <input type="text" class="form-control" placeholder="分类名称 例如: 大学英语" name="name">
+                            <input type="text" class="form-control" placeholder="分类名称 例如: 语法" name="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>分类别名</label>
+                            <input type="text" class="form-control" placeholder="分类别名 例如: yufa" name="alias">
                         </div>
 
                         <div class="form-group">

@@ -59,7 +59,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('category', 'CategoryController@getCategoryies');
 
     // 根据分类id查询视频信息列表
-    Route::get('category/{category}/videos', 'CategoryController@getVideInfosList');
+    Route::get('category/{category}/video', 'CategoryController@getVideInfosList');
 
     // 根据视频信息id 获取视频信息
     Route::get('video/{video}', 'VideoController@getVideoList');

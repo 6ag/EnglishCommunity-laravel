@@ -173,6 +173,13 @@ define({ "api": [
             "optional": true,
             "field": "count",
             "description": "<p>每页数量,默认10条</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "recomend",
+            "description": "<p>可传任意参数,返回推荐的视频</p>"
           }
         ]
       }

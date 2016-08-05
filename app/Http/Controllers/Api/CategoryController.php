@@ -18,6 +18,7 @@ class CategoryController extends BaseController
      * @apiPermission none
      * @apiParam {Number} page  页码
      * @apiParam {Number} [count]  每页数量,默认10条
+     * @apiParam {Number} [recomend]  可传任意参数,返回推荐的视频
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -65,16 +66,38 @@ class CategoryController extends BaseController
      */
     public function getVideInfosList(Request $request, $category_id)
     {
-        // 分类访问量自增 1
+        // 如果分类id是0,则查询所有分类
+        if ($category_id == 0) {
+            $videoInfos = VideoInfo::where('recommend', isset($request->recommend) ? 1 : 0)
+                ->orderBy('id', 'desc')
+                ->paginate(isset($request->count) ? $request->count : 10);
+
+            if (! count($videoInfos)) {
+                return $this->respondWithErrors('查询指定分类视频列表失败');
+            }
+
+            return $this->respondWithSuccess([
+                'total' => $videoInfos->total(),
+                'rows' => $videoInfos->perPage(),
+                'current_page' => $videoInfos->currentPage(),
+                'data' => $videoInfos->all()
+            ], '查询指定分类视频列表成功');
+        }
+
+        // 分类id不是0,查询指定分类,并分类访问量自增 1
         $category = Category::find($category_id);
         $category->increment('view');
 
-        if (empty($category)) {
+        if (! isset($category)) {
             return $this->respondWithErrors('查询指定分类视频列表失败');
         }
 
-        $videoInfos = VideoInfo::where('category_id', $category_id)->orderBy('id', 'desc')->paginate($request->count != 0 ?: 10);
-        if (!count($videoInfos)) {
+        $videoInfos = VideoInfo::where('category_id', $category_id)
+            ->where('recommend', isset($request->recommend) ? 1 : 0)
+            ->orderBy('id', 'desc')
+            ->paginate(isset($request->count) ? $request->count : 10);
+
+        if (! count($videoInfos)) {
             return $this->respondWithErrors('查询指定分类视频列表失败');
         }
 
