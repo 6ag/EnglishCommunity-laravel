@@ -50,6 +50,13 @@
                                 <label><input type="radio" class="radio-inline" name="type" value="tudou" {{ $videoInfo->type == 'tudou' ? 'checked' : '' }}> 土豆 </label> |
                                 <label><input type="radio" class="radio-inline" name="type" value="iqiyi" {{ $videoInfo->type == 'iqiyi' ? 'checked' : '' }}> 爱奇艺 </label>
                             </div>
+
+                            {{-- 推荐 --}}
+                            <div class="form-group col-md-2">
+                                <label class="checkbox inline">
+                                    <input type="checkbox" name="recommend" value="1"> 推荐
+                                </label>
+                            </div>
                         </div>
 
                         {{-- 图片 --}}

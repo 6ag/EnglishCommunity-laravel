@@ -66,7 +66,5 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     // 解析视频
     Route::get('parse1', 'VideoController@parseYouku1');
-    Route::get('parse2', 'VideoController@parseYouku2');
-    Route::get('parse3', 'VideoController@parseYouku3');
 
 });

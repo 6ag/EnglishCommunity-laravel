@@ -47,13 +47,11 @@ class VideoController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'teacher' => 'required',
             'photo' => 'required',
             'intro' => 'required',
             'video_urls' => 'required'
         ], [
             'title.required' => '标题必须填写',
-            'teacher.required' => '讲师必须填写',
             'photo.required' => '缩略图必须上传',
             'intro.required' => '简介必须填写',
             'video_urls.required' => '视频列表不能为空'
@@ -69,8 +67,9 @@ class VideoController extends BaseController
         $videoInfo->intro = $request->intro;
         $videoInfo->photo = $this->savePhoto($request->photo);
         $videoInfo->category_id = $request->category_id;
-        $videoInfo->teacher = $request->teacher;
+        empty($request->teacher) ?: $videoInfo->teacher = $request->teacher;
         $videoInfo->type = $request->type;
+        !isset($request->recommend) ?: $videoInfo->recommend = $request->recommend;
         $videoInfo->save();
 
         // 拆分视频地址列表
@@ -160,8 +159,9 @@ class VideoController extends BaseController
         $videoInfo->intro = $request->intro;
         $videoInfo->photo = $this->savePhoto($request->photo);
         $videoInfo->category_id = $request->category_id;
-        $videoInfo->teacher = $request->teacher;
+        empty($request->teacher) ?: $videoInfo->teacher = $request->teacher;
         $videoInfo->type = $request->type;
+        !isset($request->recommend) ?: $videoInfo->recommend = $request->recommend;
         $videoInfo->save();
 
         // 清空旧视频地址列表
