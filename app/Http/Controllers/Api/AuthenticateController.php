@@ -19,8 +19,13 @@ class AuthenticateController extends BaseController
     protected $smsApiUrl = 'http://sms-api.luosimao.com/v1/send.json';
     // 短信密钥
     protected $smsApiKey = '';
-    
-    // 发送短信验证码
+
+    /**
+     * 发送短信验证码
+     * @param $mobile 手机号码
+     * @param $message 发送的消息内容
+     * @return bool
+     */
     protected function sendCheckSms($mobile, $message) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->smsApiUrl);                  // 发送的目标URL
@@ -53,79 +58,57 @@ class AuthenticateController extends BaseController
     }
 
     /**
-     * @api {post} /auth/register app注册
+     * 生成随机数
+     * @param int $len 随机数长度
+     * @param string $format 格式
+     * @return string
+     */
+    private function makeRandString($len = 6, $format = 'ALL')
+    {
+        switch ($format) {
+            case 'ALL':
+                $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-@#~';
+                break;
+            case 'CHAR':
+                $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-@#~';
+                break;
+            case 'NUMBER':
+                $chars = '0123456789';
+                break;
+            default :
+                $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-@#~';
+                break;
+        }
+        mt_srand((double)microtime() * 1000000 * getmypid());
+        $password = "";
+        while (strlen($password) < $len) {
+            $password .= substr($chars, (mt_rand() % strlen($chars)), 1);
+        }
+
+        return $password;
+    }
+
+    /**
+     * @api {post} /auth/code 发送验证码
      * @apiGroup Auth
      * @apiPermission none
-     * @apiParam {String} username  账号
-     * @apiParam {String} password  密码
-     * @apiParam {String} password_confirmation 重复密码
+     * @apiParam {Number} mobile  手机号码
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *     {
      *           "status": "success",
      *           "code": 200,
-     *           "message": "注册成功",
+     *           "message": "验证码发送成功",
      *           "data": {
-     *               "username": "admin888"
+     *               "mobile": "18888888888"
      *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
      *           "code": 404,
-     *           "message": "用户名已经存在"
+     *           "message": "验证码发送失败"
      *      }
-     */
-    public function register(Request $request)
-    {
-        // 验证表单
-        $validator = Validator::make($request->all(), [
-            'username' => ['required', 'between:5,16', 'unique:users'],
-            'password' => ['required', 'between:6,16'],
-            'mobile' => ['required', 'unique:users'],
-            'code' => ['required'],
-        ], [
-            'username.required' => '用户名为必填项',
-            'username.unique' => '用户名已经存在',
-            'username.between' => '用户名长度必须是6-16',
-            'password.required' => '密码为必填项',
-            'password.between' => '密码长度必须是6-16',
-            'mobile.required' => '手机号码必须填',
-            'mobile.regex' => '手机号码不合法',
-            'mobile.users' => '手机号码已经存在',
-            'code.required' => '验证码必填',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->respondWithFailedValidation($validator);
-        }
-
-        // 验证手机验证码
-        if (Cache::has($request->mobile)) {
-            $key = Cache::get($request->mobile);
-            if ($key != $request->code) {
-                return $this->respondWithErrors('验证码错误');
-            }
-        } else {
-            return $this->respondWithErrors('验证码错误');
-        }
-
-        // 创建用户
-        $user = new User();
-        $user->username = $request->username;
-        $user->mobile = $request->mobile;
-        $user->password = bcrypt($request->password);
-        $user->save();
-
-        return $this->respondWithSuccess([
-            'username' => $user->username,
-        ], '注册成功');
-    }
-
-    /**
-     * 获取手机验证码
-     * @param Request $request
-     * @return \Illuminate\Http\Response
      */
     public function sendCkeckCode(Request $request)
     {
@@ -157,30 +140,74 @@ class AuthenticateController extends BaseController
 
     }
 
-    // 生成随机数
-    private function makeRandString($len = 6, $format = 'ALL')
+    /**
+     * @api {post} /auth/register app注册
+     * @apiGroup Auth
+     * @apiPermission none
+     * @apiParam {String} username  账号
+     * @apiParam {String} password  密码
+     * @apiParam {String} password_confirmation 重复密码
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *     {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "注册成功",
+     *           "data": {
+     *               "username": "admin888"
+     *           }
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "用户名已经存在"
+     *      }
+     */
+    public function register(Request $request)
     {
-        switch ($format) {
-            case 'ALL':
-                $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-@#~';
-                break;
-            case 'CHAR':
-                $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-@#~';
-                break;
-            case 'NUMBER':
-                $chars = '0123456789';
-                break;
-            default :
-                $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-@#~';
-                break;
-        }
-        mt_srand((double)microtime() * 1000000 * getmypid());
-        $password = "";
-        while (strlen($password) < $len) {
-            $password .= substr($chars, (mt_rand() % strlen($chars)), 1);
+        // 验证表单
+        $validator = Validator::make($request->all(), [
+            'username' => ['required', 'between:5,16', 'unique:users'],
+            'password' => ['required', 'between:6,16'],
+//            'mobile' => ['required', 'unique:users'],
+//            'code' => ['required'],
+        ], [
+            'username.required' => '用户名为必填项',
+            'username.unique' => '用户名已经存在',
+            'username.between' => '用户名长度必须是6-16',
+            'password.required' => '密码为必填项',
+            'password.between' => '密码长度必须是6-16',
+//            'mobile.required' => '手机号码必须填',
+//            'mobile.regex' => '手机号码不合法',
+//            'mobile.users' => '手机号码已经存在',
+//            'code.required' => '验证码必填',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
         }
 
-        return $password;
+        // 验证手机验证码
+//        if (Cache::has($request->mobile)) {
+//            $key = Cache::get($request->mobile);
+//            if ($key != $request->code) {
+//                return $this->respondWithErrors('验证码错误');
+//            }
+//        } else {
+//            return $this->respondWithErrors('验证码错误');
+//        }
+
+        // 创建用户
+        $user = new User();
+        $user->username = $request->username;
+        $user->mobile = $request->mobile;
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return $this->respondWithSuccess([
+            'username' => $user->username,
+        ], '注册成功');
     }
 
     /**

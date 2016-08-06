@@ -1,6 +1,52 @@
 define({ "api": [
   {
     "type": "post",
+    "url": "/auth/code",
+    "title": "发送验证码",
+    "group": "Auth",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "mobile",
+            "description": "<p>手机号码</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n      \"status\": \"success\",\n      \"code\": 200,\n      \"message\": \"验证码发送成功\",\n      \"data\": {\n          \"mobile\": \"18888888888\"\n      }\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"验证码发送失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
+    "groupTitle": "Auth",
+    "name": "PostAuthCode"
+  },
+  {
+    "type": "post",
     "url": "/auth/login",
     "title": "app登录",
     "group": "Auth",
@@ -48,7 +94,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
+    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthLogin"
   },
@@ -108,7 +154,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
+    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthRegister"
   },
@@ -162,7 +208,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/CategoryController.php",
+    "filename": "App/Http/Controllers/Api/CategoryController.php",
     "groupTitle": "Category",
     "name": "GetCategory"
   },
@@ -223,7 +269,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/CategoryController.php",
+    "filename": "App/Http/Controllers/Api/CategoryController.php",
     "groupTitle": "Category",
     "name": "GetCategoryCategoryVideo"
   },
@@ -257,7 +303,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/VideoController.php",
+    "filename": "App/Http/Controllers/Api/VideoController.php",
     "groupTitle": "Video",
     "name": "GetParse1"
   },
@@ -291,7 +337,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/VideoController.php",
+    "filename": "App/Http/Controllers/Api/VideoController.php",
     "groupTitle": "Video",
     "name": "GetVideoVideo"
   }
