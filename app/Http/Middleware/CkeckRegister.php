@@ -18,7 +18,7 @@ class CkeckRegister
     {
         $option = Option::where('name', 'is_allow_register')->first();
         if ($option->content == '0') {
-            return redirect()->route('admin.login')->with('errors', '注册已经关闭');
+            return redirect()->route('admin.login')->with('errors', '管理员注册已经关闭');
         }
         return $next($request);
     }

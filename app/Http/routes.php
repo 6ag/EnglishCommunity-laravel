@@ -51,7 +51,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     Route::group(['prefix' => 'auth'], function () {
+        // 发送验证码
+        Route::post('code', 'AuthenticateController@sendCkeckCode');
+        // 注册
         Route::post('register', 'AuthenticateController@register');
+        // 登录
         Route::post('login', 'AuthenticateController@login');
     });
 
@@ -64,7 +68,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 根据视频信息id 获取视频信息
     Route::get('video/{video}', 'VideoController@getVideoList');
     
-    // 解析视频
+    // 解析视频 - flv视频片段,可缓存
     Route::get('parse1', 'VideoController@parseYouku1');
 
 });
