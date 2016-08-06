@@ -63,7 +63,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     // 根据视频信息id 获取视频信息
     Route::get('video/{video}', 'VideoController@getVideoList');
-
+    
     // 解析视频
     Route::get('parse1', 'VideoController@parseYouku1');
 

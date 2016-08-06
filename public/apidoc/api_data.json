@@ -123,6 +123,26 @@
         "name": "none"
       }
     ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "have_data",
+            "description": "<p>是否返回带数据的分类信息数据,只要传值就是有</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每个分类信息返回多少条视频数据</p>"
+          }
+        ]
+      }
+    },
     "version": "0.0.1",
     "success": {
       "examples": [
