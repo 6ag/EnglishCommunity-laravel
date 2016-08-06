@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateTrendsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,12 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('trends', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->comment('用户id');
-            $table->integer('video_info_id')->nullable()->comment('视频信息id');
-            $table->integer('trends_id')->nullable()->comment('动弹id');
-            $table->text('content')->comment('评论内容');
-            $table->integer('pid')->default(0)->comment('回复的那条评论id 如果为0,则表示回复视频');
+            $table->text('content')->comment('动弹内容');
+            $table->string('photo')->nullable()->comment('图片字段 只存一张图片');
+            $table->integer('view')->default(0)->comment('动弹访问量');
             $table->integer('favorite')->default(0)->comment('赞数量');
             $table->timestamps();
         });
@@ -31,6 +30,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('comments');
+        Schema::drop('trends');
     }
 }

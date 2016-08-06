@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCommentsTable extends Migration
+class CreateFavoriteRecordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,11 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('favorite_records', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->comment('用户id');
-            $table->integer('video_info_id')->nullable()->comment('视频信息id');
             $table->integer('trends_id')->nullable()->comment('动弹id');
-            $table->text('content')->comment('评论内容');
-            $table->integer('pid')->default(0)->comment('回复的那条评论id 如果为0,则表示回复视频');
-            $table->integer('favorite')->default(0)->comment('赞数量');
+            $table->integer('video_info_id')->nullable()->comment('动弹id');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('comments');
+        Schema::drop('favorite_record');
     }
 }
