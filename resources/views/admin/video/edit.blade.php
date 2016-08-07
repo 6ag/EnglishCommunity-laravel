@@ -47,8 +47,7 @@
                             {{-- 来源 --}}
                             <div class="form-group col-md-2">
                                 <label><input type="radio" class="radio-inline" name="type" value="youku" {{ $videoInfo->type == 'youku' ? 'checked' : '' }}> 优酷 </label> |
-                                <label><input type="radio" class="radio-inline" name="type" value="tudou" {{ $videoInfo->type == 'tudou' ? 'checked' : '' }}> 土豆 </label> |
-                                <label><input type="radio" class="radio-inline" name="type" value="iqiyi" {{ $videoInfo->type == 'iqiyi' ? 'checked' : '' }}> 爱奇艺 </label>
+                                <label><input type="radio" class="radio-inline" name="type" value="tudou" {{ $videoInfo->type == 'tudou' ? 'checked' : '' }}> 土豆 </label>
                             </div>
 
                             {{-- 推荐 --}}
