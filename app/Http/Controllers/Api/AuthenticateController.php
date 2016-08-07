@@ -34,7 +34,7 @@ class AuthenticateController extends BaseController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                   // 返回数据并且不直接打印
         curl_setopt($ch, CURLOPT_HEADER, false);                          // 不设置头信息
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);               // 基础授权验证
-        curl_setopt($ch, CURLOPT_USERPWD, 'api:key-' . $this->smsApiKey); // : 前面是用户名  后面是密码
+        curl_setopt($ch, CURLOPT_USERPWD, 'api:key-' . $this->smsApiKey); // 前面是用户名  后面是密码
         curl_setopt($ch, CURLOPT_PORT, true);
 
         // post请求体
@@ -261,10 +261,10 @@ class AuthenticateController extends BaseController
             ->first();
         if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
             // 更新凭证
-            if (Hash::needsRehash($userAuth->credential)) {
-                $userAuth->credential = bcrypt($request->credential);
-                $userAuth->save();
-            }
+//            if (Hash::needsRehash($userAuth->credential)) {
+//                $userAuth->credential = bcrypt($request->credential);
+//                $userAuth->save();
+//            }
 
             // 查询用户表
             $user = User::find($userAuth->user_id);

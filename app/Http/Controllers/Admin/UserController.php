@@ -94,13 +94,19 @@ class UserController extends BaseController
                 ->first();
             if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
                 // 更新凭证
-                if (Hash::needsRehash($userAuth->credential)) {
-                    $userAuth->credential = bcrypt($request->credential);
-                    $userAuth->save();
-                }
+//                if (Hash::needsRehash($userAuth->credential)) {
+//                    $userAuth->credential = bcrypt($request->credential);
+//                    $userAuth->save();
+//                }
 
                 // 查询用户表
                 $user = User::find($userAuth->user_id);
+                if ($user->status == 0) {
+                    return back()->with('errors', '用户已经被禁用');
+                }
+                if ($user->is_admin == 0) {
+                    return back()->with('errors', '普通用户禁止登陆后台');
+                }
                 Session::put('user', $user);
                 return redirect()->route('admin.index');
             } else {
