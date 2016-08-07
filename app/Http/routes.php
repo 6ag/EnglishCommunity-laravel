@@ -52,23 +52,25 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     Route::group(['prefix' => 'auth'], function () {
         // 发送验证码
-        Route::post('code', 'AuthenticateController@sendCkeckCode');
+        Route::post('seedCode.api', 'AuthenticateController@sendCkeckCode');
         // 注册
-        Route::post('register', 'AuthenticateController@register');
+        Route::post('register.api', 'AuthenticateController@register');
         // 登录
-        Route::post('login', 'AuthenticateController@login');
+        Route::post('login.api', 'AuthenticateController@login');
+        // 修改密码
+        Route::post('modifyUserPassword.api', 'AuthenticateController@modifyUserPassword');
     });
 
     // 查询所有分类列表
-    Route::get('category', 'CategoryController@getCategoryies');
+    Route::get('getAllCategories.api', 'CategoryController@getCategoryies');
 
     // 根据分类id查询视频信息列表
-    Route::get('category/{category}/video', 'CategoryController@getVideInfosList');
+    Route::get('getVideoInfosList.api', 'CategoryController@getVideInfosList');
 
     // 根据视频信息id 获取视频信息
-    Route::get('video/{video}', 'VideoController@getVideoList');
+    Route::get('getVideoList.api', 'VideoController@getVideoList');
     
     // 解析视频 - flv视频片段,可缓存
-    Route::get('parse1', 'VideoController@parseYouku1');
+    Route::get('parseYouku1.api', 'VideoController@parseYouku1');
 
 });

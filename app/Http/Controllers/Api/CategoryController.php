@@ -12,13 +12,14 @@ use App\Http\Requests;
 class CategoryController extends BaseController
 {
     /**
-     * @api {get} /category/{category}/video 视频信息列表
+     * @api {get} /getVideoInfosList.api 视频信息列表
      * @apiDescription 根据分类id查询视频信息列表
      * @apiGroup Category
      * @apiPermission none
+     * @apiParam {Number} category_id  分类id
      * @apiParam {Number} page  页码
      * @apiParam {Number} [count]  每页数量,默认10条
-     * @apiParam {Number} [recomend]  可传任意参数,返回推荐的视频
+     * @apiParam {Number} [recomend]  是否返回推荐的视频 1是 0否
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -64,10 +65,10 @@ class CategoryController extends BaseController
      *           "message": "查询视频列表失败"
      *      }
      */
-    public function getVideInfosList(Request $request, $category_id)
+    public function getVideInfosList(Request $request)
     {
         // 如果分类id是0,则查询所有分类
-        if ($category_id == 0) {
+        if ($request->category_id == 0) {
             $videoInfos = VideoInfo::where('recommend', '>=', (isset($request->recommend) && $request->recommend == 1) ? 1 : 0)
                 ->orderBy('id', 'desc')
                 ->paginate(isset($request->count) ? $request->count : 10);
@@ -85,14 +86,14 @@ class CategoryController extends BaseController
         }
 
         // 分类id不是0,查询指定分类,并分类访问量自增 1
-        $category = Category::find($category_id);
+        $category = Category::find($request->category_id);
         $category->increment('view');
 
         if (! isset($category)) {
             return $this->respondWithErrors('查询指定分类视频列表失败');
         }
 
-        $videoInfos = VideoInfo::where('category_id', $category_id)
+        $videoInfos = VideoInfo::where('category_id', $request->category_id)
             ->where('recommend', '>=', (isset($request->recommend) && $request->recommend == 1) ? 1 : 0)
             ->orderBy('id', 'desc')
             ->paginate(isset($request->count) ? $request->count : 10);
@@ -111,11 +112,11 @@ class CategoryController extends BaseController
     }
 
     /**
-     * @api {get} /category 分类列表
+     * @api {get} /getAllCategories.api 所有分类信息
      * @apiDescription 获取所有分类信息
      * @apiGroup Category
      * @apiPermission none
-     * @apiParam {Number} [have_data]  是否返回带数据的分类信息数据,只要传值就是有
+     * @apiParam {Number} [have_data]  是否返回带数据的分类信息数据, 1有 0无
      * @apiParam {Number} [count]  每个分类信息返回多少条视频数据
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:

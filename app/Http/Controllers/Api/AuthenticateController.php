@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Model\Group;
 use App\Http\Model\Permission;
 use App\Http\Model\User;
+use App\Http\Model\UserAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -89,19 +90,17 @@ class AuthenticateController extends BaseController
     }
 
     /**
-     * @api {post} /auth/code 发送验证码
+     * @api {post} /auth/seedCode.api 发送验证码
      * @apiGroup Auth
      * @apiPermission none
-     * @apiParam {Number} mobile  手机号码
+     * @apiParam {String} mobile  手机号码
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *     {
      *           "status": "success",
      *           "code": 200,
      *           "message": "验证码发送成功",
-     *           "data": {
-     *               "mobile": "18888888888"
-     *           }
+     *           "data": null
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -130,10 +129,8 @@ class AuthenticateController extends BaseController
         // 发送验证码短信
         $result = $this->sendCheckSms($mobile, $smsText);
 
-        if ($result) {
-            return $this->respondWithSuccess([
-                'mobile' => $mobile,
-            ], '验证码发送成功');
+        if (isset($result)) {
+            return $this->respondWithSuccess(null, '验证码发送成功');
         } else {
             return $this->respondWithErrors('验证码发送失败');
         }
@@ -141,21 +138,18 @@ class AuthenticateController extends BaseController
     }
 
     /**
-     * @api {post} /auth/register app注册
+     * @api {post} /auth/register.api app注册
      * @apiGroup Auth
      * @apiPermission none
-     * @apiParam {String} username  账号
-     * @apiParam {String} password  密码
-     * @apiParam {String} password_confirmation 重复密码
+     * @apiParam {String} identifier  账号
+     * @apiParam {String} credential  密码
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *     {
      *           "status": "success",
      *           "code": 200,
      *           "message": "注册成功",
-     *           "data": {
-     *               "username": "admin888"
-     *           }
+     *           "data": null
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -168,22 +162,20 @@ class AuthenticateController extends BaseController
     {
         // 验证表单
         $validator = Validator::make($request->all(), [
-            'username' => ['required', 'between:5,16', 'unique:users'],
-            'password' => ['required', 'between:6,16'],
+            'identifier' => ['required', 'between:5,16', 'unique:user_auths'],
+            'credential' => ['required', 'min:6'],
 //            'mobile' => ['required', 'unique:users'],
 //            'code' => ['required'],
         ], [
-            'username.required' => '用户名为必填项',
-            'username.unique' => '用户名已经存在',
-            'username.between' => '用户名长度必须是6-16',
-            'password.required' => '密码为必填项',
-            'password.between' => '密码长度必须是6-16',
+            'identifier.required' => '用户名为必填项',
+            'identifier.unique' => '用户名已经存在',
+            'identifier.between' => '用户名长度必须是6-16',
+            'credential.required' => '密码为必填项',
+            'credential.min' => '密码长度最少6位',
 //            'mobile.required' => '手机号码必须填',
-//            'mobile.regex' => '手机号码不合法',
 //            'mobile.users' => '手机号码已经存在',
 //            'code.required' => '验证码必填',
         ]);
-
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
         }
@@ -200,22 +192,25 @@ class AuthenticateController extends BaseController
 
         // 创建用户
         $user = new User();
-        $user->username = $request->username;
-        $user->mobile = $request->mobile;
-        $user->password = bcrypt($request->password);
         $user->save();
 
-        return $this->respondWithSuccess([
-            'username' => $user->username,
-        ], '注册成功');
+        // 创建授权
+        $userAuth = new UserAuth();
+        $userAuth->user_id = $user->id;
+        $userAuth->identity_type = 'username';
+        $userAuth->identifier = $request->identifier;
+        $userAuth->credential = bcrypt($request->credential);
+        $userAuth->save();
+
+        return $this->respondWithSuccess(null, '注册成功');
     }
 
     /**
-     * @api {post} /auth/login app登录
+     * @api {post} /auth/login.api app登录
      * @apiGroup Auth
      * @apiPermission none
-     * @apiParam {String} username  账号
-     * @apiParam {String} password  密码
+     * @apiParam {String} identifier  账号
+     * @apiParam {String} credential  密码
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *     {
@@ -230,15 +225,12 @@ class AuthenticateController extends BaseController
      *               "say": null,
      *               "avatar": null,
      *               "mobile": null,
-     *               "score": 0,
      *               "sex": 0,
      *               "qq_binding": 0,
-     *               "wx_binding": 0,
-     *               "wb_binding": 0,
-     *               "group": "一级会员",
-     *               "permission": "管理员",
-     *               "status": 1,
-     *               "register_time": -62169984000
+     *               "weixin_binding": 0,
+     *               "weibo_binding": 0,
+     *               "phone_binding": 0,
+     *               "email_binding": 0,
      *           }
      *       }
      * @apiErrorExample {json} Error-Response:
@@ -252,53 +244,52 @@ class AuthenticateController extends BaseController
     {
         // 验证输入
         $validator = Validator::make($request->all(), [
-            'username' => ['required'],
-            'password' => ['required'],
+            'identifier' => ['required', 'exists:user_auths'],
+            'credential' => ['required'],
         ], [
-            'username.exists' => '用户不存在',
-            'username.required' => '用户名或手机号码为必填项',
-            'password.required' => '密码为必填项',
+            'identifier.exists' => '用户不存在',
+            'identifier.required' => '用户名、手机号码或邮箱为必填项',
+            'credential.required' => '密码为必填项',
         ]);
-
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
         }
 
-        // 查询用户信息
-        $user = User::where('username', $request->username)->first();
-        if (! isset($user)) {
-            $user = User::where('mobile', $request->username)->first();
-        }
+        // 3种登录方式,查询其中一条记录即可
+        $userAuth = UserAuth::where('identifier' , $request->identifier)
+            ->whereIn('identity_type', ['username', 'phone', 'email'])
+            ->first();
+        if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
+            // 更新凭证
+            if (Hash::needsRehash($userAuth->credential)) {
+                $userAuth->credential = bcrypt($request->credential);
+                $userAuth->save();
+            }
 
-        // 验证密码是否正确
-        if (isset($user) && Hash::check($request->password, $user->password)) {
-            // 登录成功
-            if (Hash::needsRehash($user->password)) {
-                $user->password = Hash::make($request->password);
-                $user->save();
+            // 查询用户表
+            $user = User::find($userAuth->user_id);
+            if ($user->status == 0) {
+                return $this->respondWithErrors('登录失败,用户已被禁用');
             }
 
             return $this->respondWithSuccess([
                 'token' => JWTAuth::fromUser($user),
                 'id' => $user->id,
-                'username' => $user->username,
                 'nickname' => $user->nickname,
                 'say' => $user->say,
                 'avatar' => $user->avatar,
                 'mobile' => $user->mobile,
-                'score' => $user->score,
                 'sex' => $user->sex,
                 'qq_binding' => $user->qq_binding,
-                'wx_binding' => $user->wx_binding,
-                'wb_binding' => $user->wb_binding,
-                'group' => Group::findOrFail($user->group_id)->name,
-                'permission' => Permission::findOrFail($user->permission_id)->name,
-                'status' => $user->status,
-                'register_time' => $user->created_at->timestamp,
+                'weixin_binding' => $user->weixin_binding,
+                'weibo_binding' => $user->weibo_binding,
+                'email_binding' => $user->email_binding,
+                'phone_binding' => $user->phone_binding,
             ], '登录成功');
         } else {
-            return $this->respondWithErrors('登录失败');
+            return $this->respondWithErrors('登录失败,密码错误');
         }
+
     }
 
     /**
@@ -314,12 +305,59 @@ class AuthenticateController extends BaseController
     }
 
     /**
-     * 修改密码
-     * @param Request $request
+     * @api {post} /auth/modifyUserPassword.api 修改用户密码
+     * @apiGroup Auth
+     * @apiPermission none
+     * @apiParam {Number} user_id  用户id
+     * @apiParam {String} credential_old  密码
+     * @apiParam {String} credential_new  新密码
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *     {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "修改密码成功",
+     *           "data": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "旧密码错误"
+     *      }
      */
-    public function modifyPassword(Request $request)
+    public function modifyUserPassword(Request $request)
     {
+        // 验证输入字段
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:users'],
+            'credential_old' => ['required'],
+            'credential_new' => ['required', 'between:6,20'],
+        ], [
+            'user_id.required' => '用户id必须传',
+            'user_id.exists' => '用户不存在',
+            'credential_old.required' => '旧密码必须传',
+            'credential_new.required' => '新密码不能为空!',
+            'credential_new.between' => '新密码必须在6-20位之间',
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
 
+        // 查询用户权限表,修改密码
+        $userAuths = UserAuth::where('user_id', $request->user_id)
+            ->whereIn('identity_type', ['username', 'email', 'phone'])
+            ->get();
+
+        if (count($userAuths) && Hash::check($request->credential_old, $userAuths[0]->credential)) {
+            UserAuth::where('user_id', $request->user_id)
+                ->whereIn('identity_type', ['username', 'email', 'phone'])
+                ->update(['credential' => bcrypt($request->credential_new)]);
+
+            return $this->respondWithSuccess(null, '修改密码成功');
+        }
+
+        return $this->respondWithErrors('旧密码错误');
     }
 
 }

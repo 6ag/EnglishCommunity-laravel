@@ -12,10 +12,11 @@ use App\Http\Requests;
 class VideoController extends BaseController
 {
     /**
-     * @api {get} /video/{video} 视频播放列表
+     * @api {get} /getVideoList.api 视频播放列表
      * @apiDescription 根据视频信息id查询视频播放列表
      * @apiGroup Video
      * @apiPermission none
+     * @apiParam {Number} video_info_id  视频信息id
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -68,10 +69,10 @@ class VideoController extends BaseController
      *           "message": "查询视频播放列表失败"
      *      }
      */
-    public function getVideoList($video_id)
+    public function getVideoList(Request $request)
     {
-        $videoInfo = VideoInfo::find($video_id);
-        if (empty($videoInfo)) {
+        $videoInfo = VideoInfo::find($request->video_info_id);
+        if (! isset($videoInfo)) {
             return $this->respondWithErrors('查询视频播放列表失败');
         }
 
@@ -83,10 +84,11 @@ class VideoController extends BaseController
     }
     
     /**
-     * @api {get} /parse1 解析优酷视频1
+     * @api {get} /parseYouku1.api 解析优酷视频1
      * @apiDescription 根据url/id解析flv视频列表,可供分段下载
      * @apiGroup Video
      * @apiPermission none
+     * @apiParam {String} url  视频地址
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {

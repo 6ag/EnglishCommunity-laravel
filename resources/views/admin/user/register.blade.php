@@ -13,15 +13,15 @@
             <form action="#" method="post">
                 {{ csrf_field() }}
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="用户名" name="username">
+                    <input type="text" class="form-control" placeholder="用户名" name="identifier">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="密码" name="password">
+                    <input type="password" class="form-control" placeholder="密码" name="credential">
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="确认密码" name="password_confirmation">
+                    <input type="password" class="form-control" placeholder="确认密码" name="credential_confirmation">
                     <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
                 </div>
                 <div class="row">

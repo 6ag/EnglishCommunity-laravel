@@ -14,23 +14,22 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('username', 30)->unique()->index()->comment('用户名');
-            $table->string('password')->comment('密码');
-            $table->string('nickname', 30)->nullable()->comment('昵称');
+            $table->string('nickname', 30)->default('宝宝')->comment('昵称');
             $table->string('say')->nullable()->comment('心情寄语');
-            $table->string('avatar', 50)->nullable()->comment('头像');
+            $table->string('avatar', 50)->default('uploads/user/avatar.jpg')->comment('头像');
             $table->string('mobile', 11)->nullable()->comment('手机号码');
-            $table->integer('score')->default(0)->comment('积分');
-            $table->tinyInteger('sex')->default(0)->comment('性别 0 男 1女');
-            $table->tinyInteger('qq_binding')->default(0)->comment('是否绑定QQ登录');
-            $table->tinyInteger('wx_binding')->default(0)->comment('是否绑定微信登录');
-            $table->tinyInteger('wb_binding')->default(0)->comment('是否绑定微博登录');
-            $table->tinyInteger('group_id')->default(1)->comment('用户组id');
-            $table->tinyInteger('permission_id')->default(1)->comment('权限id');
+            $table->string('email', 50)->nullable()->comment('邮箱');
+            $table->tinyInteger('sex')->default(0)->comment('性别 0女 1男');
             $table->tinyInteger('status')->default(1)->comment('状态 1可用 0 不可用');
-            $table->string('token')->nullable()->comment('token');
+            $table->tinyInteger('is_admin')->default(0)->comment('是否是管理员');
+            $table->tinyInteger('qq_binding')->default(0)->comment('QQ登录是否绑定');
+            $table->tinyInteger('weixin_binding')->default(0)->comment('微信登录是否绑定');
+            $table->tinyInteger('weibo_binding')->default(0)->comment('微博登录是否绑定');
+            $table->tinyInteger('email_binding')->default(0)->comment('邮箱登录是否绑定');
+            $table->tinyInteger('phone_binding')->default(0)->comment('手机登录是否绑定');
             $table->timestamps();
         });
+
     }
 
     /**

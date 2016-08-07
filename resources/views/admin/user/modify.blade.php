@@ -23,15 +23,15 @@
                     <form role="form" action="{{ url('admin/modify') }}" method="post">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="原密码" name="password_o">
+                            <input type="password" class="form-control" placeholder="原密码" name="credential_o">
                         </div>
 
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="新密码" name="password">
+                            <input type="password" class="form-control" placeholder="新密码" name="credential">
                         </div>
 
                         <div class="form-group">
-                            <input type="password" class="form-control" placeholder="确认新密码" name="password_confirmation">
+                            <input type="password" class="form-control" placeholder="确认新密码" name="credential_confirmation">
                         </div>
 
                         <div class="form-group">

@@ -13,11 +13,11 @@
             <form action="#" method="post">
                 {{ csrf_field() }}
                 <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="用户名" name="username" value="{{ Session::get('username', '') }}">
+                    <input type="text" class="form-control" placeholder="用户名" name="identifier" value="{{ Session::get('identifier', '') }}">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="密码" name="password" value="{{ Session::get('password', '') }}">
+                    <input type="password" class="form-control" placeholder="密码" name="credential" value="{{ Session::get('credential', '') }}">
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
                 <div class="row">

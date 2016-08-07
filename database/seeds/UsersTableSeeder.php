@@ -12,13 +12,15 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'username' => 'admin',
-            'password' => bcrypt('123456'), // Hash散列
             'nickname' => '管理员',
-            'group_id' => 1,
-            'permission_id' => 2,
-            'created_at' => \Carbon\Carbon::getLocale(),
-            'updated_at' => \Carbon\Carbon::getLocale(),
+            'say' => '好好学习天天向上',
+            'avatar' => 'uploads/user/avatar.jpg',
+            'mobile' => '15626427299',
+            'email' => 'admin@6ag.cn',
+            'phone_binding' => 1,
+            'email_binding' => 1,
+            'sex' => 1,
+            'is_admin' => 1,
         ]);
     }
 }
