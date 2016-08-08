@@ -5,19 +5,19 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Category
+ * Class Comment
  * @package App\Http\Model
  * @property integer id
- * @property string name
- * @property string alias
- * @property integer view
- * @property integer order
+ * @property string type
+ * @property integer source_id
+ * @property integer user_id
+ * @property string content
  * @property integer pid
+ * @property integer favorite
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at
  */
-class Category extends Model
+class Comment extends Model
 {
-    protected $table = 'categories';
-    protected $guarded = [];
+    
 }

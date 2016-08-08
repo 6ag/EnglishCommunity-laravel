@@ -12,11 +12,12 @@ class CreateFavoriteRecordsTable extends Migration
      */
     public function up()
     {
+        // 记录谁赞过 动弹、视频
         Schema::create('favorite_records', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->comment('用户id');
-            $table->integer('trends_id')->nullable()->comment('动弹id');
-            $table->integer('video_info_id')->nullable()->comment('动弹id');
+            $table->string('type', 20)->comment('赞的类型 video_info trends');
+            $table->integer('source_id')->unsigned()->index()->comment('来源id');
+            $table->integer('user_id')->unsigned()->index()->comment('用户id');
             $table->timestamps();
         });
     }

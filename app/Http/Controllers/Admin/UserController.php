@@ -93,7 +93,7 @@ class UserController extends BaseController
 
         // 授权信息
         $userAuth = UserAuth::where('identifier' , $request->identifier)
-            ->whereIn('identity_type', ['username', 'phone', 'email'])
+            ->whereIn('identity_type', ['username', 'mobile', 'email'])
             ->first();
         if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
             // 查询用户表
@@ -153,12 +153,12 @@ class UserController extends BaseController
 
         // 查询用户权限表,修改密码
         $userAuths = UserAuth::where('user_id', $user->id)
-            ->whereIn('identity_type', ['username', 'email', 'phone'])
+            ->whereIn('identity_type', ['username', 'email', 'mobile'])
             ->get();
 
         if (count($userAuths) && Hash::check($request->credential_o, $userAuths[0]->credential)) {
             UserAuth::where('user_id', $user->id)
-                ->whereIn('identity_type', ['username', 'email', 'phone'])
+                ->whereIn('identity_type', ['username', 'email', 'mobile'])
                 ->update(['credential' => bcrypt($request->credential)]);
 
             return back()->with('errors', '修改密码成功!');

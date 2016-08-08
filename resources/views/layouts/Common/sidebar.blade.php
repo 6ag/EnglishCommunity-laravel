@@ -28,25 +28,26 @@
             <li class="header">后台管理</li>
 
             <li class="{{ Request::is('admin') ? 'active' : '' }}"><a href="{{ url('admin') }}"><i class="fa fa-dashboard"></i> <span> 仪表盘</span></a></li>
-
             <li class="{{ Request::is('admin/apidoc') ? 'active' : '' }}"><a href="{{ url('admin/apidoc') }}"><i class="fa fa-sticky-note-o"></i> <span> API文档</span></a></li>
 
-            <li class="treeview {{ (Request::is('admin/category/create') || Request::is('admin/category') || Request::is('admin/wallpaper/create') || Request::is('admin/wallpaper')) ? 'active' : '' }}">
+            {{-- 数据管理 --}}
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-database"></i> <span> 数据管理</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                 </a>
-                <ul class="treeview-menu" style="display: {{ (Request::is('admin/category/create') || Request::is('admin/category') || Request::is('admin/video/create') || Request::is('admin/video')) ? 'block' : 'none' }};">
+                <ul class="treeview-menu" style="display: {{ (Request::is('admin/category*') || Request::is('admin/video*')) ? 'block' : 'none' }};">
                     <li class="{{ Request::is('admin/category/create') ? 'active' : '' }}"><a href="{{ url('admin/category/create') }}"><i class="fa fa-edit"></i> 添加分类</a></li>
                     <li class="{{ Request::is('admin/category') ? 'active' : '' }}"><a href="{{ url('admin/category') }}"><i class="fa fa-folder"></i> 管理分类</a></li>
                     <li class="{{ Request::is('admin/video/create') ? 'active' : '' }}"><a href="{{ url('admin/video/create') }}"><i class="fa fa-cloud-upload"></i> 添加视频</a></li>
-                    <li class="{{ Request::is('admin/video') ? 'active' : '' }}"><a href="{{ url('admin/video') }}"><i class="fa fa-list-alt"></i> 管理视频</a></li>
+                    <li class="{{ (Request::is('admin/video') || Request::is('admin/video/*/edit')) ? 'active' : '' }}"><a href="{{ url('admin/video') }}"><i class="fa fa-list-alt"></i> 管理视频</a></li>
                 </ul>
             </li>
 
-            <li class="treeview {{ Request::is('admin/option') || Request::is('admin/feedback') ? 'active' : '' }}">
+            {{-- 系统管理 --}}
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-circle-o-notch"></i> <span> 系统管理</span>
             <span class="pull-right-container">

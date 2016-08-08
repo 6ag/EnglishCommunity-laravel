@@ -14,11 +14,11 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->comment('用户id');
-            $table->integer('video_info_id')->nullable()->comment('视频信息id');
-            $table->integer('trends_id')->nullable()->comment('动弹id');
+            $table->string('type', 20)->comment('评论的类型 video_info trends');
+            $table->integer('source_id')->unsigned()->index()->comment('来源id');
+            $table->integer('user_id')->unsigned()->index()->comment('用户id');
             $table->text('content')->comment('评论内容');
-            $table->integer('pid')->default(0)->comment('回复的那条评论id 如果为0,则表示回复视频');
+            $table->integer('pid')->default(0)->comment('回复的那条评论id 如果为0,则表示回复视频信息/动弹');
             $table->integer('favorite')->default(0)->comment('赞数量');
             $table->timestamps();
         });

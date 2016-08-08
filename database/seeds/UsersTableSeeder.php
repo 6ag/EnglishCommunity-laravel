@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
             'avatar' => 'uploads/user/avatar.jpg',
             'mobile' => '15626427299',
             'email' => 'admin@6ag.cn',
-            'phone_binding' => 1,
+            'mobile_binding' => 1,
             'email_binding' => 1,
             'sex' => 1,
             'is_admin' => 1,

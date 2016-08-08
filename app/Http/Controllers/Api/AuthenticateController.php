@@ -257,7 +257,7 @@ class AuthenticateController extends BaseController
 
         // 3种登录方式,查询其中一条记录即可
         $userAuth = UserAuth::where('identifier' , $request->identifier)
-            ->whereIn('identity_type', ['username', 'phone', 'email'])
+            ->whereIn('identity_type', ['username', 'mobile', 'email'])
             ->first();
         if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
             // 更新凭证
@@ -284,7 +284,7 @@ class AuthenticateController extends BaseController
                 'weixin_binding' => $user->weixin_binding,
                 'weibo_binding' => $user->weibo_binding,
                 'email_binding' => $user->email_binding,
-                'phone_binding' => $user->phone_binding,
+                'mobile_binding' => $user->phone_binding,
             ], '登录成功');
         } else {
             return $this->respondWithErrors('登录失败,密码错误');
@@ -346,12 +346,12 @@ class AuthenticateController extends BaseController
 
         // 查询用户权限表,修改密码
         $userAuths = UserAuth::where('user_id', $request->user_id)
-            ->whereIn('identity_type', ['username', 'email', 'phone'])
+            ->whereIn('identity_type', ['username', 'email', 'mobile'])
             ->get();
 
         if (count($userAuths) && Hash::check($request->credential_old, $userAuths[0]->credential)) {
             UserAuth::where('user_id', $request->user_id)
-                ->whereIn('identity_type', ['username', 'email', 'phone'])
+                ->whereIn('identity_type', ['username', 'email', 'mobile'])
                 ->update(['credential' => bcrypt($request->credential_new)]);
 
             return $this->respondWithSuccess(null, '修改密码成功');
