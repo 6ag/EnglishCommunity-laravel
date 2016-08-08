@@ -73,48 +73,43 @@ class UserController extends BaseController
             return redirect()->route('admin.index');
         }
 
-        if ($request->method() === 'POST') {
-            // 验证输入
-            $validator = Validator::make($request->all(), [
-                'identifier' => ['required', 'exists:user_auths'],
-                'credential' => ['required', 'between:6,16'],
-            ], [
-                'identifier.exists' => '用户不存在',
-                'identifier.required' => '用户名为必填项',
-                'credential.required' => '密码为必填项',
-                'credential.between' => '密码长度必须是6-16',
-            ]);
-            if ($validator->fails()) {
-                return back()->withErrors($validator);
-            }
-
-            // 授权信息
-            $userAuth = UserAuth::where('identifier' , $request->identifier)
-                ->whereIn('identity_type', ['username', 'phone', 'email'])
-                ->first();
-            if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
-                // 更新凭证
-//                if (Hash::needsRehash($userAuth->credential)) {
-//                    $userAuth->credential = bcrypt($request->credential);
-//                    $userAuth->save();
-//                }
-
-                // 查询用户表
-                $user = User::find($userAuth->user_id);
-                if ($user->status == 0) {
-                    return back()->with('errors', '用户已经被禁用');
-                }
-                if ($user->is_admin == 0) {
-                    return back()->with('errors', '普通用户禁止登陆后台');
-                }
-                Session::put('user', $user);
-                return redirect()->route('admin.index');
-            } else {
-                return back()->with('errors', '管理员密码错误');
-            }
+        if ($request->method() === 'GET') {
+            return view('admin.user.login');
         }
 
-        return view('admin.user.login');
+        // 验证表单
+        $validator = Validator::make($request->all(), [
+            'identifier' => ['required', 'exists:user_auths'],
+            'credential' => ['required', 'between:6,16'],
+        ], [
+            'identifier.exists' => '用户不存在',
+            'identifier.required' => '用户名为必填项',
+            'credential.required' => '密码为必填项',
+            'credential.between' => '密码长度必须是6-16',
+        ]);
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        // 授权信息
+        $userAuth = UserAuth::where('identifier' , $request->identifier)
+            ->whereIn('identity_type', ['username', 'phone', 'email'])
+            ->first();
+        if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
+            // 查询用户表
+            $user = User::find($userAuth->user_id);
+            if ($user->status == 0) {
+                return back()->with('errors', '用户已经被禁用');
+            }
+            if ($user->is_admin == 0) {
+                return back()->with('errors', '普通用户禁止登陆后台');
+            }
+            Session::put('user', $user);
+            return redirect()->route('admin.index');
+        } else {
+            return back()->with('errors', '管理员密码错误');
+        }
+
     }
 
     /**

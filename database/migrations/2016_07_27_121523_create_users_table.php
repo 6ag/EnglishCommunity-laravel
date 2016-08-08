@@ -29,7 +29,6 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('phone_binding')->default(0)->comment('手机登录是否绑定');
             $table->timestamps();
         });
-
     }
 
     /**

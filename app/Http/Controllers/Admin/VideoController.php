@@ -16,15 +16,18 @@ class VideoController extends BaseController
     // get admin/video  全部视频列表
     public function index(Request $request)
     {
-        if (empty($request->category_id) || $request->category_id == 0) {
-            $videoInfos = VideoInfo::orderBy('id', 'desc')->paginate(15);
-            $categories = Category::all();
-            return view('admin/video/index', compact('videoInfos', 'categories'));
-        } else {
-            $videoInfos = VideoInfo::where('category_id', $request->category_id)->orderBy('id', 'desc')->paginate(15);
+        if (isset($request->category_id) && $request->category_id != 0) {
+            $videoInfos = VideoInfo::where('category_id', $request->category_id)
+                ->orderBy('id', 'desc')
+                ->paginate(15);
             $categories = Category::all();
             $currentCategory = Category::findOrFail($request->category_id);
             return view('admin/video/index', compact('videoInfos', 'categories', 'currentCategory'));
+        } else {
+            $videoInfos = VideoInfo::orderBy('id', 'desc')
+                ->paginate(15);
+            $categories = Category::all();
+            return view('admin/video/index', compact('videoInfos', 'categories'));
         }
 
     }
@@ -146,7 +149,7 @@ class VideoController extends BaseController
             $video_urls .= $video->video_url;
             $key == count($videos) - 1 ?: $video_urls .= "\r\n";
         }
-        
+
         return view('admin.video.edit', compact('videoInfo', 'categories', 'video_urls'));
     }
 

@@ -22,8 +22,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::group(['middleware' => ['admin.login']], function () {
     
         // 后台首页
-        Route::get('index', 'IndexController@index')->name('admin.index');
-
+        Route::get('/', 'IndexController@index')->name('admin.index');
+        
         // 文档
         Route::get('apidoc', function () {
             return view('admin.apidoc');

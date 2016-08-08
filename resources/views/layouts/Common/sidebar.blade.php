@@ -27,7 +27,7 @@
         <ul class="sidebar-menu">
             <li class="header">后台管理</li>
 
-            <li class="{{ Request::is('admin/index') ? 'active' : '' }}"><a href="{{ url('admin/index') }}"><i class="fa fa-dashboard"></i> <span> 仪表盘</span></a></li>
+            <li class="{{ Request::is('admin') ? 'active' : '' }}"><a href="{{ url('admin') }}"><i class="fa fa-dashboard"></i> <span> 仪表盘</span></a></li>
 
             <li class="{{ Request::is('admin/apidoc') ? 'active' : '' }}"><a href="{{ url('admin/apidoc') }}"><i class="fa fa-sticky-note-o"></i> <span> API文档</span></a></li>
 
