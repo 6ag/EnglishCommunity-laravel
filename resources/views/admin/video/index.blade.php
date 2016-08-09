@@ -60,7 +60,7 @@
                                             <td>{{ date('Y-m-d H:i:s', $videoInfo->updated_at->timestamp) }}</td>
                                             <td>
                                                 <a href="">推送</a> |
-                                                <a href="{{ url('admin/video/' . $videoInfo->id . '/edit') }}">编辑</a> |
+                                                <a href="{{ route('admin.video.edit', ['video' => $videoInfo->id]) }}">编辑</a> |
                                                 <a href="javascript:;" onclick="deleteVideoInfo({{ $videoInfo->id }})">删除</a>
                                             </td>
                                         </tr>
@@ -98,7 +98,7 @@
         layer.confirm('您确定要删除这个教程集吗？', {
             btn: ['确定','取消'] //按钮
         }, function(){
-            $.post("{{url('admin/video')}}/" + id, {'_token' : '{{csrf_token()}}', '_method' : 'delete'}, function(data) {
+            $.post("{{ url('admin/video')}}/" + id, {'_token' : '{{csrf_token()}}', '_method' : 'delete'}, function(data) {
                 if (data.status == 1) {
                     layer.msg(data.msg, {icon: 6});
                 } else {

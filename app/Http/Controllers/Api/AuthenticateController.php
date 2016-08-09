@@ -284,7 +284,7 @@ class AuthenticateController extends BaseController
                 'weixin_binding' => $user->weixin_binding,
                 'weibo_binding' => $user->weibo_binding,
                 'email_binding' => $user->email_binding,
-                'mobile_binding' => $user->phone_binding,
+                'mobile_binding' => $user->mobile_binding,
             ], '登录成功');
         } else {
             return $this->respondWithErrors('登录失败,密码错误');

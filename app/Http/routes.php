@@ -1,5 +1,6 @@
 <?php
 
+// 首页直接跳转到后台
 Route::get('/', function () {
     return redirect()->route('admin.index');
 });
@@ -7,10 +8,8 @@ Route::get('/', function () {
 // 后台路由组
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
-    Route::group(['middleware' => ['check.register']], function () {
-        // 注册
-        Route::any('register', 'UserController@register')->name('admin.register');
-    });
+    // 注册
+    Route::any('register', 'UserController@register')->name('admin.register')->middleware('check.register');
 
     // 登录
     Route::any('login', 'UserController@login')->name('admin.login');
@@ -72,5 +71,13 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     
     // 解析视频 - flv视频片段,可缓存
     Route::get('parseYouku1.api', 'VideoController@parseYouku1');
+
+    // 动弹列表
+    Route::get('getTrendsList.api', 'TrendsController@getTrendsList');
+
+    // 动弹详情
+    Route::get('getTrendsDetail.api', 'TrendsController@getTrendsDetail');
+
+
 
 });

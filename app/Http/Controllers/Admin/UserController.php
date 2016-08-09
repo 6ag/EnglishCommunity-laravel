@@ -25,7 +25,7 @@ class UserController extends BaseController
             return redirect()->route('admin.index');
         }
 
-        if ($request->method() === 'GET') {
+        if ($request->isMethod('get')) {
             return view('admin.user.register');
         }
 
@@ -73,7 +73,7 @@ class UserController extends BaseController
             return redirect()->route('admin.index');
         }
 
-        if ($request->method() === 'GET') {
+        if ($request->isMethod('get')) {
             return view('admin.user.login');
         }
 
@@ -88,6 +88,7 @@ class UserController extends BaseController
             'credential.between' => '密码长度必须是6-16',
         ]);
         if ($validator->fails()) {
+            $request->flashOnly('identifier', 'credential');
             return back()->withErrors($validator);
         }
 
@@ -107,6 +108,7 @@ class UserController extends BaseController
             Session::put('user', $user);
             return redirect()->route('admin.index');
         } else {
+            $request->flashOnly('identifier', 'credential');
             return back()->with('errors', '管理员密码错误');
         }
 
@@ -129,7 +131,7 @@ class UserController extends BaseController
      */
     public function modify(Request $request)
     {
-        if ($request->method() === 'GET') {
+        if ($request->isMethod('get')) {
             return view('admin.user.modify');
         }
 

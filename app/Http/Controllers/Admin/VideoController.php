@@ -61,6 +61,7 @@ class VideoController extends BaseController
         ]);
 
         if ($validator->fails()) {
+            $request->flashExcept('_token');
             return back()->withErrors($validator);
         }
 
@@ -203,15 +204,13 @@ class VideoController extends BaseController
     }
 
     /**
-     * 上传图片到临时目录,并返回路径
+     * 上传图片到临时目录,并返回路径 public/temp
      * @param Request $request
      * @return string 图片相对网站根目录路径
      */
     public function uploadImage(Request $request)
     {
-        // 单张图片处理
         $file = $request->file('Filedata');
-
         if ($file->isValid()) {
             $file->move('temp', $file->getClientOriginalName());
             $tempPath = 'temp/'.$file->getClientOriginalName();

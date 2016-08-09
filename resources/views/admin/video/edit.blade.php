@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="box-body">
-                    <form role="form" action="{{ url('admin/video/' . $videoInfo->id) }}" method="post">
+                    <form role="form" action="{{ route('admin.video.update', ['video' => $videoInfo->id]) }}" method="post">
                         {{ method_field('put') }}
                         {{ csrf_field() }}
 
@@ -77,7 +77,7 @@
                                             'formData' : {
                                                 '_token' : '{{ csrf_token() }}'
                                             },
-                                            'uploadScript' : '{{ url('admin/upload') }}',
+                                            'uploadScript' : '{{ route('admin.upload') }}',
                                             'onUploadComplete' : function(file, imagePath) {
                                                 // 赋值给隐藏域
                                                 $('input[name=photo]').val(imagePath);

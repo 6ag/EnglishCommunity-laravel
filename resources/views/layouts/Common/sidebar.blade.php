@@ -31,7 +31,7 @@
             <li class="{{ Request::is('admin/apidoc') ? 'active' : '' }}"><a href="{{ url('admin/apidoc') }}"><i class="fa fa-sticky-note-o"></i> <span> API文档</span></a></li>
 
             {{-- 数据管理 --}}
-            <li class="treeview">
+            <li class="treeview {{ (Request::is('admin/category*') || Request::is('admin/video*')) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-database"></i> <span> 数据管理</span>
             <span class="pull-right-container">
@@ -47,7 +47,7 @@
             </li>
 
             {{-- 系统管理 --}}
-            <li class="treeview">
+            <li class="treeview {{ (Request::is('admin/feedback') || Request::is('admin/option')) ? 'active' : '' }}">
                 <a href="#">
                     <i class="fa fa-circle-o-notch"></i> <span> 系统管理</span>
             <span class="pull-right-container">
