@@ -79,7 +79,7 @@ class VideoController extends BaseController
         // 视频浏览量自增1
         $videoInfo->increment('view');
         $videos = Video::where('video_info_id', $videoInfo->id)->get();
-
+        
         return $this->respondWithSuccess($videos, '查询视频播放列表成功');
     }
     

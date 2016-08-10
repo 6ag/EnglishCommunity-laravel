@@ -78,4 +78,13 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 动弹详情
     Route::get('getTrendsDetail.api', 'TrendsController@getTrendsDetail');
 
+    // 发布动弹
+    Route::post('postTrends.api', 'TrendsController@postTrends');
+
+    // 发布评论
+    Route::post('postComment.api', 'CommentController@postComment');
+
+    // 评论列表
+    Route::get('getCommentList.api', 'CommentController@getCommentList');
+
 });

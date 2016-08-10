@@ -34,7 +34,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n      \"status\": \"success\",\n      \"code\": 200,\n      \"message\": \"登录成功\",\n      \"data\": {\n          \"token\": \"xxxx.xxxx.xxx-xx\",\n          \"id\": 1,\n          \"username\": \"admin\",\n          \"nickname\": \"管理员\",\n          \"say\": null,\n          \"avatar\": null,\n          \"mobile\": null,\n          \"sex\": 0,\n          \"qq_binding\": 0,\n          \"weixin_binding\": 0,\n          \"weibo_binding\": 0,\n          \"phone_binding\": 0,\n          \"email_binding\": 0,\n      }\n  }",
+          "content": "{\n      \"status\": \"success\",\n      \"code\": 200,\n      \"message\": \"登录成功\",\n      \"data\": {\n          \"token\": \"xxxx.xxxx.xxx-xx\",\n          \"id\": 1,\n          \"username\": \"admin\",\n          \"nickname\": \"管理员\",\n          \"say\": null,\n          \"avatar\": \"uploads/user/avatar.jpg\",\n          \"mobile\": null,\n          \"sex\": 0,\n          \"qq_binding\": 0,\n          \"weixin_binding\": 0,\n          \"weibo_binding\": 0,\n          \"phone_binding\": 0,\n          \"email_binding\": 0,\n          \"register_time\": 1470797736\n      }\n  }",
           "type": "json"
         }
       ]
@@ -335,6 +335,318 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/getCommentList.api",
+    "title": "获取评论列表",
+    "description": "<p>获取动弹或视频信息的评论列表</p>",
+    "group": "Comment",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>类型:trends/video</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "source_id",
+            "description": "<p>动弹或视频信息的id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取评论列表失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "App/Http/Controllers/Api/CommentController.php",
+    "groupTitle": "Comment",
+    "name": "GetGetcommentlistApi"
+  },
+  {
+    "type": "get",
+    "url": "/postComment.api",
+    "title": "发布评论",
+    "description": "<p>发布或者回复一条评论</p>",
+    "group": "Comment",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>类型:trends/video</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "source_id",
+            "description": "<p>动弹或视频信息的id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>评论内容</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "pid",
+            "description": "<p>默认0,评论当前主题.为其他评论id则是回复评论</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"发布评论信息成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"发布评论信息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "App/Http/Controllers/Api/CommentController.php",
+    "groupTitle": "Comment",
+    "name": "GetPostcommentApi"
+  },
+  {
+    "type": "get",
+    "url": "/getTrendsDetail.api",
+    "title": "动弹详情",
+    "description": "<p>获取动弹详情,获取动弹赞列表、评论列表是其他接口</p>",
+    "group": "Trends",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "trends_id",
+            "description": "<p>动弹id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "user_id",
+            "description": "<p>访客用户id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹详情成功\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"content\": \"今天吃屎非常合适\",\n        \"small_photo\": null,\n        \"photo\": null,\n        \"view\": 8,\n        \"created_at\": \"2016-08-10 14:40:12\",\n        \"updated_at\": \"2016-08-10 16:28:44\",\n        \"comment_count\": 3,\n        \"favorite_count\": 0,\n        \"is_favorite\": 0,\n        \"user_nickname\": \"管理员\",\n        \"user_avatar\": \"uploads/user/avatar.jpg\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"查询动弹详情失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "App/Http/Controllers/Api/TrendsController.php",
+    "groupTitle": "Trends",
+    "name": "GetGettrendsdetailApi"
+  },
+  {
+    "type": "get",
+    "url": "/getTrendsList.api",
+    "title": "动弹列表",
+    "description": "<p>获取动弹列表,可根据参数返回不同的数据</p>",
+    "group": "Trends",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "type",
+            "description": "<p>返回类型 默认new, new最新 hot热门 me我的</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页码,默认当然是第1页</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每页数量,默认10条</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "user_id",
+            "description": "<p>访客用户id,type为me,这个字段必须传,游客传0</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹列表成功\",\n    \"data\": {\n    \"total\": 4,\n    \"rows\": \"2\",\n    \"current_page\": 1,\n    \"data\": [\n        {\n        \"id\": 4,\n        \"user_id\": 3,\n        \"content\": \"吃屎的这么这么多\",\n        \"photo\": null,\n        \"view\": 15,\n        \"created_at\": \"2016-08-08 15:57:08\",\n        \"updated_at\": \"2016-08-08 15:57:08\",\n        \"comment_count\": 0,\n        \"favorite_count\": 0,\n        \"user\": {\n            \"id\": 3,\n            \"nickname\": \"宝宝\",\n            \"say\": null,\n            \"avatar\": \"uploads/user/avatar.jpg\",\n            \"mobile\": null,\n            \"email\": null,\n            \"sex\": 0,\n            \"status\": 1,\n            \"is_admin\": 0,\n            \"qq_binding\": 0,\n            \"weixin_binding\": 0,\n            \"weibo_binding\": 0,\n            \"email_binding\": 0,\n            \"mobile_binding\": 0,\n            \"created_at\": \"2016-08-08 15:24:53\",\n            \"updated_at\": \"2016-08-08 15:24:53\"\n            }\n        },\n        {\n        \"id\": 3,\n        \"user_id\": 2,\n        \"content\": \"你们吃什么样的屎\",\n        \"photo\": null,\n        \"view\": 12,\n        \"created_at\": \"2016-08-08 15:55:08\",\n        \"updated_at\": \"2016-08-08 15:55:08\",\n        \"comment_count\": 0,\n        \"favorite_count\": 0,\n        \"user\": {\n            \"id\": 2,\n            \"nickname\": \"宝宝\",\n            \"say\": null,\n            \"avatar\": \"uploads/user/avatar.jpg\",\n            \"mobile\": null,\n            \"email\": null,\n            \"sex\": 0,\n            \"status\": 1,\n            \"is_admin\": 0,\n            \"qq_binding\": 0,\n            \"weixin_binding\": 0,\n            \"weibo_binding\": 0,\n            \"email_binding\": 0,\n            \"mobile_binding\": 0,\n            \"created_at\": \"2016-08-08 15:24:26\",\n            \"updated_at\": \"2016-08-08 15:24:26\"\n        }\n        }\n        ]\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"查询动弹列表失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "App/Http/Controllers/Api/TrendsController.php",
+    "groupTitle": "Trends",
+    "name": "GetGettrendslistApi"
+  },
+  {
+    "type": "get",
+    "url": "/postTrends.api",
+    "title": "发布动弹",
+    "description": "<p>发布一条新的动弹</p>",
+    "group": "Trends",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>作者用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>动弹内容</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "File",
+            "optional": true,
+            "field": "photo",
+            "description": "<p>配图,这个字段以图片上传方式提交即可</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"发布动弹成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"发布动弹失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "App/Http/Controllers/Api/TrendsController.php",
+    "groupTitle": "Trends",
+    "name": "GetPosttrendsApi"
+  },
+  {
+    "type": "get",
     "url": "/getVideoList.api",
     "title": "视频播放列表",
     "description": "<p>根据视频信息id查询视频播放列表</p>",
@@ -384,7 +696,7 @@ define({ "api": [
     "type": "get",
     "url": "/parseYouku1.api",
     "title": "解析优酷视频1",
-    "description": "<p>根据url/id解析flv视频列表,可供分段下载</p>",
+    "description": "<p>根据url/id解析flv视频列表,可供分段下载 ffmpeg合成</p>",
     "group": "Video",
     "permission": [
       {

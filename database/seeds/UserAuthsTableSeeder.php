@@ -17,16 +17,36 @@ class UserAuthsTableSeeder extends Seeder
                 'identity_type' => 'username',
                 'identifier' => 'admin',
                 'credential' => bcrypt('123456'),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
             ], [
                 'user_id' => 1,
                 'identity_type' => 'phone',
                 'identifier' => '15626427299',
                 'credential' => bcrypt('123456'),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
             ], [
                 'user_id' => 1,
                 'identity_type' => 'email',
                 'identifier' => 'admin@6ag.cn',
                 'credential' => bcrypt('123456'),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ], [
+                'user_id' => 2,
+                'identity_type' => 'username',
+                'identifier' => 'admin8',
+                'credential' => bcrypt('123456'),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ], [
+                'user_id' => 3,
+                'identity_type' => 'username',
+                'identifier' => 'admin88',
+                'credential' => bcrypt('123456'),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
             ]
         ]);
     }

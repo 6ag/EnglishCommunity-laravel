@@ -16,6 +16,8 @@ class OptionsTableSeeder extends Seeder
                 'name' => 'is_allow_register',
                 'content' => '0',
                 'comment' => '是否允许注册 0不允许 1允许',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
             ]
         ]);
     }
