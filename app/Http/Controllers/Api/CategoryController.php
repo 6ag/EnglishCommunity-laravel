@@ -72,9 +72,8 @@ class CategoryController extends BaseController
             $videoInfos = VideoInfo::where('recommend', '>=', (isset($request->recommend) && $request->recommend == 1) ? 1 : 0)
                 ->orderBy('id', 'desc')
                 ->paginate(isset($request->count) ? $request->count : 10);
-
             if (! count($videoInfos)) {
-                return $this->respondWithErrors('查询指定分类视频列表失败');
+                return $this->respondWithErrors('没有查到视频信息');
             }
 
             return $this->respondWithSuccess([
@@ -88,18 +87,16 @@ class CategoryController extends BaseController
         // 分类id不是0,查询指定分类,并分类访问量自增 1
         $category = Category::find($request->category_id);
         $category->increment('view');
-
         if (! isset($category)) {
-            return $this->respondWithErrors('查询指定分类视频列表失败');
+            return $this->respondWithErrors('category_id错误', 400);
         }
 
         $videoInfos = VideoInfo::where('category_id', $request->category_id)
             ->where('recommend', '>=', (isset($request->recommend) && $request->recommend == 1) ? 1 : 0)
             ->orderBy('id', 'desc')
             ->paginate(isset($request->count) ? $request->count : 10);
-
         if (! count($videoInfos)) {
-            return $this->respondWithErrors('查询指定分类视频列表失败');
+            return $this->respondWithErrors('没有查到视频信息');
         }
 
         return $this->respondWithSuccess([
@@ -168,7 +165,7 @@ class CategoryController extends BaseController
     {
         $categories = Category::orderBy('order', 'asc')->get(['id', 'name', 'view', 'pid']);
         if (count($categories) == 0) {
-            return $this->respondWithErrors('查询分类列表失败');
+            return $this->respondWithErrors('没有查到任何分类');
         }
 
         // 如果不带数据,则直接返回分类信息
@@ -183,7 +180,6 @@ class CategoryController extends BaseController
                 ->take(isset($request->count) ? $request->count : 4)
                 ->get();
         }
-
         return $this->respondWithSuccess($categories, '查询分类列表成功');
     }
 

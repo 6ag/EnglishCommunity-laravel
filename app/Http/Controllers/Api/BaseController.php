@@ -32,6 +32,7 @@ class BaseController extends Controller
      */
     protected function respondWithFailedValidation(\Illuminate\Validation\Validator $validator)
     {
+        // 只取出一条错误信息
         return $this->respondWithErrors($validator->messages()->first());
     }
     

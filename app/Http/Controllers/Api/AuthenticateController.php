@@ -223,7 +223,7 @@ class AuthenticateController extends BaseController
      *               "username": "admin",
      *               "nickname": "管理员",
      *               "say": null,
-     *               "avatar": null,
+     *               "avatar": "uploads/user/avatar.jpg",
      *               "mobile": null,
      *               "sex": 0,
      *               "qq_binding": 0,
@@ -231,6 +231,7 @@ class AuthenticateController extends BaseController
      *               "weibo_binding": 0,
      *               "phone_binding": 0,
      *               "email_binding": 0,
+     *               "register_time": 1470797736
      *           }
      *       }
      * @apiErrorExample {json} Error-Response:
@@ -260,16 +261,10 @@ class AuthenticateController extends BaseController
             ->whereIn('identity_type', ['username', 'mobile', 'email'])
             ->first();
         if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
-            // 更新凭证
-//            if (Hash::needsRehash($userAuth->credential)) {
-//                $userAuth->credential = bcrypt($request->credential);
-//                $userAuth->save();
-//            }
-
             // 查询用户表
             $user = User::find($userAuth->user_id);
             if ($user->status == 0) {
-                return $this->respondWithErrors('登录失败,用户已被禁用');
+                return $this->respondWithErrors('登录失败,用户已被禁用', 403);
             }
 
             return $this->respondWithSuccess([
@@ -285,9 +280,10 @@ class AuthenticateController extends BaseController
                 'weibo_binding' => $user->weibo_binding,
                 'email_binding' => $user->email_binding,
                 'mobile_binding' => $user->mobile_binding,
+                'register_time' => $user->created_at->timestamp,
             ], '登录成功');
         } else {
-            return $this->respondWithErrors('登录失败,密码错误');
+            return $this->respondWithErrors('登录失败,密码错误', 403);
         }
 
     }
@@ -357,7 +353,7 @@ class AuthenticateController extends BaseController
             return $this->respondWithSuccess(null, '修改密码成功');
         }
 
-        return $this->respondWithErrors('旧密码错误');
+        return $this->respondWithErrors('旧密码错误', 403);
     }
 
 }

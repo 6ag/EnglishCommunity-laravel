@@ -73,7 +73,7 @@ class VideoController extends BaseController
     {
         $videoInfo = VideoInfo::find($request->video_info_id);
         if (! isset($videoInfo)) {
-            return $this->respondWithErrors('查询视频播放列表失败');
+            return $this->respondWithErrors('video_info_id不存在', 400);
         }
 
         // 视频浏览量自增1
@@ -133,7 +133,7 @@ class VideoController extends BaseController
         if (count($data)) {
             return $this->respondWithSuccess($data, '解析视频地址成功');
         } else {
-            return $this->respondWithErrors('解析视频地址失败');
+            return $this->respondWithErrors('解析视频地址失败,已经放弃治疗', 500);
         }
     }
 

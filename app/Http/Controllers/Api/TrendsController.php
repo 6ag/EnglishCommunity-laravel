@@ -102,8 +102,11 @@ class TrendsController extends BaseController
      */
     public function getTrendsList(Request $request)
     {
-        $trands = Trends::orderBy('id', 'desc');
+        if (! $request->has('type')) {
+            return $this->respondWithErrors('type为必传参数', 400);
+        }
 
+        $trands = Trends::orderBy('id', 'desc');
         if ($request->type === 'new') {
             // 最新
             $trands = $trands->paginate(isset($request->count) ? $request->count : 10);
