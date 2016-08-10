@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 class BaseController extends Controller
 {
     /**
+     * 响应成功
      * @param string $message
      * @return \Illuminate\Http\Response
      */
@@ -25,7 +26,7 @@ class BaseController extends Controller
     }
 
     /**
-     * respond with all validation errors
+     * 响应所有的validation验证错误
      * @param  \Illuminate\Validation\Validator $validator the validator that failed to pass
      * @return \Illuminate\Http\Response the appropriate response containing the error message
      */
@@ -33,7 +34,14 @@ class BaseController extends Controller
     {
         return $this->respondWithErrors($validator->messages()->first());
     }
-
+    
+    /**
+     * 响应错误
+     * @param string $message
+     * @param int $code
+     * @param string $status
+     * @return Response
+     */
     protected function respondWithErrors($message = '', $code = 404, $status = 'error')
     {
         return new Response(json_encode([

@@ -85,10 +85,10 @@ class VideoController extends BaseController
     
     /**
      * @api {get} /parseYouku1.api 解析优酷视频1
-     * @apiDescription 根据url/id解析flv视频列表,可供分段下载
+     * @apiDescription 根据url/id解析flv视频列表,可供分段下载 ffmpeg合成
      * @apiGroup Video
      * @apiPermission none
-     * @apiParam {String} url  视频地址
+     * @apiParam {String} url 视频地址
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {

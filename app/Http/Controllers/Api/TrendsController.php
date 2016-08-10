@@ -102,26 +102,28 @@ class TrendsController extends BaseController
      */
     public function getTrendsList(Request $request)
     {
-        $trands = null;
+        $trands = Trends::orderBy('id', 'desc');
+
         if ($request->type === 'new') {
-            $trands = Trends::orderBy('id', 'desc')
-                ->paginate(isset($request->count) ? $request->count : 10);
+            // 最新
+            $trands = $trands->paginate(isset($request->count) ? $request->count : 10);
         } elseif ($request->type === 'hot') {
-            $trands = Trends::orderBy('id', 'desc')
-                ->orderBy('view', 'desc')
+            // 最热
+            $trands = $trands->orderBy('view', 'desc')
                 ->paginate(isset($request->count) ? $request->count : 10);
         } elseif ($request->type === 'me') {
-            $trands = Trends::orderBy('id', 'desc')
-                ->where('user_id', isset($request->user_id) ? $request->user_id : 0)
+            // 我的
+            $trands = $trands->where('user_id', isset($request->user_id) ? $request->user_id : 0)
                 ->paginate(isset($request->count) ? $request->count : 10);
         }
 
-        // 向单条数据里添加数据
+        // 没有查询到数据
         $data = $trands->all();
         if (count($data) == 0) {
             return $this->respondWithErrors('没有查询到动弹列表数据');
         }
 
+        // 向单条数据里添加数据
         foreach ($data as $key => $value) {
             $data[$key]['comment_count'] = Comment::where('type', 'trends')->where('source_id', $value->id)->count();
             $data[$key]['favorite_count'] = Comment::where('type', 'trends')->where('source_id', $value->id)->count();

@@ -16,7 +16,8 @@ class CreateTrendsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index()->comment('用户id');
             $table->text('content')->comment('动弹内容');
-            $table->string('photo')->nullable()->comment('图片字段 只存一张图片');
+            $table->string('small_photo')->nullable()->comment('缩略图');
+            $table->string('photo')->nullable()->comment('只存一张图片');
             $table->integer('view')->default(0)->comment('动弹访问量');
             $table->timestamps();
         });

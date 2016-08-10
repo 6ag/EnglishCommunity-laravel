@@ -14,9 +14,9 @@ class CreateOptionsTable extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('配置项名称');
+            $table->string('name')->unique()->index()->comment('配置项名称');
             $table->string('content')->comment('配置项内容');
-            $table->string('comment')->comment('配置项描述');
+            $table->string('comment')->nullable()->comment('配置项描述');
             $table->timestamps();
         });
     }

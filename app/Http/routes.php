@@ -78,6 +78,4 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 动弹详情
     Route::get('getTrendsDetail.api', 'TrendsController@getTrendsDetail');
 
-
-
 });

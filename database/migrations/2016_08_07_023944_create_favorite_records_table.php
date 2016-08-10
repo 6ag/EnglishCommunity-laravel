@@ -15,7 +15,7 @@ class CreateFavoriteRecordsTable extends Migration
         // 记录谁赞过 动弹、视频
         Schema::create('favorite_records', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type', 20)->comment('赞的类型 video_info trends');
+            $table->string('type', 20)->comment('赞的类型 video_info trends comment');
             $table->integer('source_id')->unsigned()->index()->comment('来源id');
             $table->integer('user_id')->unsigned()->index()->comment('用户id');
             $table->timestamps();
