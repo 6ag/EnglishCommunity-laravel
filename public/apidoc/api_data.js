@@ -369,7 +369,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取评论列表成功\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"type\": \"trends\",\n            \"source_id\": 2,\n            \"user_id\": 1,\n            \"content\": \"测试评论\",\n            \"pid\": 0,\n            \"created_at\": \"2016-08-11 09:36:43\",\n            \"updated_at\": \"2016-08-11 09:36:43\"\n        },\n        {\n            \"id\": 8,\n            \"type\": \"trends\",\n            \"source_id\": 2,\n            \"user_id\": 2,\n            \"content\": \"测试评论\",\n            \"pid\": 7,\n            \"created_at\": \"2016-08-11 09:41:34\",\n            \"updated_at\": \"2016-08-11 09:41:34\"\n        }\n    ]\n}",
           "type": "json"
         }
       ]
@@ -378,7 +378,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取评论列表失败\"\n }",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"没有任何评论信息\"\n }",
           "type": "json"
         }
       ]
@@ -507,7 +507,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"查询动弹详情失败\"\n }",
+          "content": "{\n    \"status\": \"error\",\n    \"code\": 400,\n    \"message\": \"trends_id无效\"\n}",
           "type": "json"
         }
       ]
