@@ -16,15 +16,22 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
+            "field": "type",
+            "description": "<p>登录类型(username email mobile qq weixin weibo)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
             "field": "identifier",
-            "description": "<p>账号</p>"
+            "description": "<p>唯一标识</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "credential",
-            "description": "<p>密码</p>"
+            "description": "<p>凭证</p>"
           }
         ]
       }
@@ -129,15 +136,22 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
+            "field": "type",
+            "description": "<p>注册类型(username email mobile qq weixin weibo)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
             "field": "identifier",
-            "description": "<p>账号</p>"
+            "description": "<p>唯一标识</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "credential",
-            "description": "<p>密码</p>"
+            "description": "<p>凭证</p>"
           }
         ]
       }
@@ -360,6 +374,20 @@ define({ "api": [
             "optional": false,
             "field": "source_id",
             "description": "<p>动弹或视频信息的id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页码,默认当然是第1页</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每页数量,默认10条</p>"
           }
         ]
       }
@@ -369,7 +397,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取评论列表成功\",\n    \"data\": [\n        {\n            \"id\": 4,\n            \"type\": \"trends\",\n            \"source_id\": 2,\n            \"user_id\": 1,\n            \"content\": \"测试评论\",\n            \"pid\": 0,\n            \"created_at\": \"2016-08-11 09:36:43\",\n            \"updated_at\": \"2016-08-11 09:36:43\"\n        },\n        {\n            \"id\": 8,\n            \"type\": \"trends\",\n            \"source_id\": 2,\n            \"user_id\": 2,\n            \"content\": \"测试评论\",\n            \"pid\": 7,\n            \"created_at\": \"2016-08-11 09:41:34\",\n            \"updated_at\": \"2016-08-11 09:41:34\"\n        }\n    ]\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询评论列表成功\",\n    \"data\": {\n        \"total\": 4,\n        \"rows\": 2,\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 1,\n                \"type\": \"trends\",\n                \"source_id\": 43,\n                \"user_id\": 2,\n                \"content\": \"一起吃行不\",\n                \"pid\": 0,\n                \"created_at\": \"2016-08-10 14:40:12\",\n                \"updated_at\": \"2016-08-10 14:40:12\",\n                \"user_nickname\": \"王麻子\",\n                \"user_avatar\": \"uploads/user/avatar.jpg\"\n            },\n            {\n                \"id\": 2,\n                \"type\": \"trends\",\n                \"source_id\": 43,\n                \"user_id\": 1,\n                \"content\": \"完全可以啊\",\n                \"pid\": 1,\n                \"created_at\": \"2016-08-10 14:40:12\",\n                \"updated_at\": \"2016-08-10 14:40:12\",\n                \"user_nickname\": \"管理员\",\n                \"user_avatar\": \"uploads/user/avatar.jpg\",\n                \"puser_id\": 2,\n                \"puser_nickname\": \"王麻子\",\n                \"puser_avatar\": \"uploads/user/avatar.jpg\"\n            }\n        ]\n    }\n}",
           "type": "json"
         }
       ]

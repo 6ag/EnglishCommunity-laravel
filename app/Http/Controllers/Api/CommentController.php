@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Comment;
+use App\Http\Model\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -77,34 +78,48 @@ class CommentController extends BaseController
      * @apiPermission none
      * @apiParam {String} type 类型:trends/video
      * @apiParam {Number} source_id 动弹或视频信息的id
+     * @apiParam {Number} [page] 页码,默认当然是第1页
+     * @apiParam {Number} [count] 每页数量,默认10条
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
      *           "status": "success",
      *           "code": 200,
-     *           "message": "获取评论列表成功",
-     *           "data": [
-     *               {
-     *                   "id": 4,
-     *                   "type": "trends",
-     *                   "source_id": 2,
-     *                   "user_id": 1,
-     *                   "content": "测试评论",
-     *                   "pid": 0,
-     *                   "created_at": "2016-08-11 09:36:43",
-     *                   "updated_at": "2016-08-11 09:36:43"
-     *               },
-     *               {
-     *                   "id": 8,
-     *                   "type": "trends",
-     *                   "source_id": 2,
-     *                   "user_id": 2,
-     *                   "content": "测试评论",
-     *                   "pid": 7,
-     *                   "created_at": "2016-08-11 09:41:34",
-     *                   "updated_at": "2016-08-11 09:41:34"
-     *               }
-     *           ]
+     *           "message": "查询评论列表成功",
+     *           "data": {
+     *               "total": 4,
+     *               "rows": 2,
+     *               "current_page": 1,
+     *               "data": [
+     *                   {
+     *                       "id": 1,
+     *                       "type": "trends",
+     *                       "source_id": 43,
+     *                       "user_id": 2,
+     *                       "content": "一起吃行不",
+     *                       "pid": 0,
+     *                       "created_at": "2016-08-10 14:40:12",
+     *                       "updated_at": "2016-08-10 14:40:12",
+     *                       "user_nickname": "王麻子",
+     *                       "user_avatar": "uploads/user/avatar.jpg"
+     *                   },
+     *                   {
+     *                       "id": 2,
+     *                       "type": "trends",
+     *                       "source_id": 43,
+     *                       "user_id": 1,
+     *                       "content": "完全可以啊",
+     *                       "pid": 1,
+     *                       "created_at": "2016-08-10 14:40:12",
+     *                       "updated_at": "2016-08-10 14:40:12",
+     *                       "user_nickname": "管理员",
+     *                       "user_avatar": "uploads/user/avatar.jpg",
+     *                       "puser_id": 2,
+     *                       "puser_nickname": "王麻子",
+     *                       "puser_avatar": "uploads/user/avatar.jpg"
+     *                   }
+     *               ]
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -126,11 +141,40 @@ class CommentController extends BaseController
             return $this->respondWithFailedValidation($validator);
         }
 
-        $comments = Comment::where('type', $request->type)->where('source_id', $request->source_id)->get();
-        if (! count($comments)) {
+        // 单页数量
+        $count = isset($request->count) ? (int)$request->count : 10;
+
+        $comments = Comment::where(['source_id' => $request->source_id, 'type' => $request->type])->paginate($count);
+        
+        // 没有查询到数据
+        $data = $comments->all();
+        if (count($data) == 0) {
             return $this->respondWithErrors('没有任何评论信息', 404);
         }
 
-        return $this->respondWithSuccess($comments, '获取评论列表成功');
+        foreach ($data as $key => $value) {
+            // 评论作者的信息
+            $user = User::find($value->user_id);
+            $data[$key]['user_nickname'] = $user->nickname;
+            $data[$key]['user_avatar'] =  $user->avatar;
+
+            // 如果是回复评论,则带上被回复用户的信息
+            if ($value->pid != 0) {
+                $comment = Comment::find($value->pid);
+                $puser = User::find($comment->user_id);
+                $data[$key]['puser_id'] = $puser->id;
+                $data[$key]['puser_nickname'] = $puser->nickname;
+                $data[$key]['puser_avatar'] =  $puser->avatar;
+            }
+        }
+
+        return $this->respondWithSuccess([
+            'total' => $comments->total(),
+            'rows' => $comments->perPage(),
+            'current_page' => $comments->currentPage(),
+            'data' => $comments->all(),
+        ], '查询评论列表成功');
     }
 }
+
+

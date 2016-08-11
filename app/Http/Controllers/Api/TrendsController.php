@@ -194,10 +194,10 @@ class TrendsController extends BaseController
             return $this->respondWithErrors('trends_id无效', 400);
         }
 
-        $trends = Trends::find($trends_id); // 当前动弹
-        $user = User::find($trends->user_id);        // 当前动弹的作者
+        $trends = Trends::find($trends_id);   // 当前动弹
+        $user = User::find($trends->user_id); // 当前动弹的作者
         $user_favoriteRecord = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->where('user_id', $user_id)->first();
-
+        
         // 浏览量递增
         $trends->increment('view');
 
