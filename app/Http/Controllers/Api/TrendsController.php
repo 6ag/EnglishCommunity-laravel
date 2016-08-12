@@ -212,7 +212,7 @@ class TrendsController extends BaseController
     }
 
     /**
-     * @api {get} /postTrends.api 发布动弹
+     * @api {post} /postTrends.api 发布动弹
      * @apiDescription 发布一条新的动弹
      * @apiGroup Trends
      * @apiPermission none

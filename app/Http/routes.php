@@ -87,4 +87,6 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 评论列表
     Route::get('getCommentList.api', 'CommentController@getCommentList');
 
+    Route::get('getGramarManual.api', 'GrammarController@getGramarManual');
+
 });

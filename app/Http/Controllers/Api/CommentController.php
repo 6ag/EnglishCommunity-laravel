@@ -151,7 +151,7 @@ class CommentController extends BaseController
         if (count($data) == 0) {
             return $this->respondWithErrors('没有任何评论信息', 404);
         }
-
+        
         foreach ($data as $key => $value) {
             // 评论作者的信息
             $user = User::find($value->user_id);
