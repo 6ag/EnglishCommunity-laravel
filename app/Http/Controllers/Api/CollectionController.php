@@ -1,0 +1,128 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Model\Collection;
+use App\Http\Model\User;
+use App\Http\Model\VideoInfo;
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
+
+class CollectionController extends BaseController
+{
+    /**
+     * @api {post} /collectVideoInfo.api 收藏视频
+     * @apiDescription 收藏视频信息
+     * @apiGroup Collection
+     * @apiPermission none
+     * @apiParam {Number} user_id 用户id
+     * @apiParam {Number} video_info_id 视频信息的id
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "收藏视频信息成功",
+     *           "data": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 400,
+     *           "message": "收藏视频信息失败"
+     *      }
+     */
+    public function collectVideoInfo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required'],
+            'video_info_id' => ['required'],
+        ], [
+            'user_id.required' => 'user_id不能为空',
+            'video_info_id.required' => 'video_info_id不能为空',
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        // 过滤用户是否存在
+        $user = User::find($request->user_id);
+        if (! isset($user)) {
+            return $this->respondWithErrors('用户不存在');
+        }
+
+        // 过滤视频信息是否存在
+        $videoInfo = VideoInfo::find($request->video_info_id);
+        if (! isset($videoInfo)) {
+            return $this->respondWithErrors('视频信息不存在');
+        }
+
+        Collection::create($request->only(['user_id', 'video_info_id']));
+        return $this->respondWithSuccess(null, '收藏视频信息成功');
+    }
+
+    /**
+     * @api {get} /getCollectionList.api 获取收藏列表
+     * @apiDescription 获取指定用户的收藏列表
+     * @apiGroup Collection
+     * @apiPermission none
+     * @apiParam {Number} user_id 用户id
+     * @apiParam {Number} [page] 页码,默认当然是第1页
+     * @apiParam {Number} [count] 每页数量,默认10条
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "收藏视频信息成功",
+     *           "data": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 400,
+     *           "message": "收藏视频信息失败"
+     *      }
+     */
+    public function getCollectionList(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required'
+        ], [
+            'user_id.required' => 'user_id不能为空'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        // 过滤用户是否存在
+        $user = User::find($request->user_id);
+        if (! isset($user)) {
+            return $this->respondWithErrors('用户不存在');
+        }
+
+        $count = isset($request->count) ? (int)$request->count : 10;      // 单页数量
+        $collections = Collection::where('user_id', $request->user_id)
+            ->paginate($count);
+
+        // 没有数据
+        if (! count($collections)) {
+            return $this->respondWithErrors('没有任何收藏数据');
+        }
+
+        $data = null;
+        // 查询视频信息
+        foreach ($collections as $key => $collection) {
+            $data[$key] = VideoInfo::find($collection->video_info_id);
+        }
+
+        return $this->respondWithSuccess([
+            'total' => $collections->total(),
+            'rows' => $collections->perPage(),
+            'current_page' => $collections->currentPage(),
+            'data' => $data,
+        ], '查询动弹列表成功');
+    }
+}

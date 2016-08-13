@@ -105,7 +105,8 @@ class TrendsController extends BaseController
      */
     public function getTrendsList(Request $request)
     {
-        $type = isset($request->type) ? $request->type : 'new';      // 请求类型
+
+        $type = isset($request->type) ? $request->type : 'new';           // 请求类型
         $count = isset($request->count) ? (int)$request->count : 10;      // 单页数量
         $user_id = isset($request->user_id) ? (int)$request->user_id : 0; // 请求用户
 
@@ -188,7 +189,7 @@ class TrendsController extends BaseController
      */
     public function getTrendsDetail(Request $request)
     {
-        $user_id = isset($request->user_id) ? (int)$request->user_id : 0; // 请求用户
+        $user_id = isset($request->user_id) ? (int)$request->user_id : 0;       // 请求用户
         $trends_id = isset($request->trends_id) ? (int)$request->trends_id : 0; // 动弹id
         if ($trends_id == 0) {
             return $this->respondWithErrors('trends_id无效', 400);
@@ -236,7 +237,7 @@ class TrendsController extends BaseController
      */
     public function postTrends(Request $request)
     {
-
+        
     }
 
 

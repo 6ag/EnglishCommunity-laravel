@@ -87,6 +87,13 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 评论列表
     Route::get('getCommentList.api', 'CommentController@getCommentList');
 
+    // 获取语法手册
     Route::get('getGramarManual.api', 'GrammarController@getGramarManual');
+
+    // 收藏视频
+    Route::post('collectVideoInfo.api', 'CollectionController@collectVideoInfo');
+
+    // 获取收藏信息列表
+    Route::get('getCollectionList.api', 'CollectionController@getCollectionList');
 
 });

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGrammarsTable extends Migration
+class CreateCollectionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,14 @@ class CreateGrammarsTable extends Migration
      */
     public function up()
     {
-        Schema::create('grammars', function (Blueprint $table) {
+        Schema::create('collections', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title', 100)->comment('标题');
-            $table->text('content')->comment('内容 html代码');
+            $table->integer('user_id')->index()->comment('收藏用户id');
+            $table->integer('video_info_id')->index()->comment('视频信息id');
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *
@@ -27,6 +27,6 @@ class CreateGrammarsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('grammar_contents');
+        Schema::drop('collections');
     }
 }

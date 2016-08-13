@@ -36,6 +36,30 @@ class TrendsTableSeeder extends Seeder
                 'photo' => null,
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
+            ], [
+                'user_id' => 1,
+                'content' => '测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊测试一下啊',
+                'view' => 1,
+                'small_photo' => null,
+                'photo' => null,
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ], [
+                'user_id' => 2,
+                'content' => '刚把爹',
+                'view' => 1,
+                'small_photo' => 'uploads/0ac23ab277e4b0e458e5aeccb49e327c.jpg',
+                'photo' => 'uploads/0ac23ab277e4b0e458e5aeccb49e327c.jpg',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ], [
+                'user_id' => 3,
+                'content' => '刚把爹',
+                'view' => 1,
+                'small_photo' => null,
+                'photo' => null,
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
             ]
         ]);
     }
