@@ -55,7 +55,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
+    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthLoginApi"
   },
@@ -115,7 +115,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
+    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthModifyuserpasswordApi"
   },
@@ -175,7 +175,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
+    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthRegisterApi"
   },
@@ -221,7 +221,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/AuthenticateController.php",
+    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthSeedcodeApi"
   },
@@ -275,7 +275,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/CategoryController.php",
+    "filename": "app/Http/Controllers/Api/CategoryController.php",
     "groupTitle": "Category",
     "name": "GetGetallcategoriesApi"
   },
@@ -343,9 +343,124 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/CategoryController.php",
+    "filename": "app/Http/Controllers/Api/CategoryController.php",
     "groupTitle": "Category",
     "name": "GetGetvideoinfoslistApi"
+  },
+  {
+    "type": "get",
+    "url": "/getCollectionList.api",
+    "title": "获取收藏列表",
+    "description": "<p>获取指定用户的收藏列表</p>",
+    "group": "Collection",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页码,默认当然是第1页</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每页数量,默认10条</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"收藏视频信息成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"收藏视频信息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/CollectionController.php",
+    "groupTitle": "Collection",
+    "name": "GetGetcollectionlistApi"
+  },
+  {
+    "type": "post",
+    "url": "/collectVideoInfo.api",
+    "title": "收藏视频",
+    "description": "<p>收藏视频信息</p>",
+    "group": "Collection",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "video_info_id",
+            "description": "<p>视频信息的id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"收藏视频信息成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"收藏视频信息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/CollectionController.php",
+    "groupTitle": "Collection",
+    "name": "PostCollectvideoinfoApi"
   },
   {
     "type": "get",
@@ -411,7 +526,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/CommentController.php",
+    "filename": "app/Http/Controllers/Api/CommentController.php",
     "groupTitle": "Comment",
     "name": "GetGetcommentlistApi"
   },
@@ -486,9 +601,63 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/CommentController.php",
+    "filename": "app/Http/Controllers/Api/CommentController.php",
     "groupTitle": "Comment",
     "name": "GetPostcommentApi"
+  },
+  {
+    "type": "get",
+    "url": "/getGramarManual.api",
+    "title": "获取语法手册数据",
+    "description": "<p>获取所有语法数据,并存储到客户端</p>",
+    "group": "Grammar",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页码,默认当然是第1页</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每页数量,默认10条</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹列表成功\",\n    \"data\": {\n        \"total\": 55,\n        \"rows\": 2,\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 1,\n                \"title\": \"关于词类和句子成分\",\n                \"content\": \"根据词的形式、意义及其在句中的功用将词分为若干类，叫做词类。一个句子由各个功用不同的部分所构成，这些部分叫做句子成分。\\n\",\n                \"created_at\": null,\n                \"updated_at\": null\n            },\n            {\n                \"id\": 2,\n                \"title\": \"英语词法和句法\",\n                \"content\": \"1.词法(morphology)词法研究的对象是各种词的形式及其用法。\\n英语词类的形式变化有：名词和代词的数、格和性的形式变化；动词的人称、时态、语态、语气等形式变化；以及形容词和副词比较等级的形式变化。\\n\",\n                \"created_at\": null,\n                \"updated_at\": null\n            }\n        ]\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/GrammarController.php",
+    "groupTitle": "Grammar",
+    "name": "GetGetgramarmanualApi"
   },
   {
     "type": "get",
@@ -540,7 +709,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/TrendsController.php",
+    "filename": "app/Http/Controllers/Api/TrendsController.php",
     "groupTitle": "Trends",
     "name": "GetGettrendsdetailApi"
   },
@@ -608,12 +777,12 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/TrendsController.php",
+    "filename": "app/Http/Controllers/Api/TrendsController.php",
     "groupTitle": "Trends",
     "name": "GetGettrendslistApi"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/postTrends.api",
     "title": "发布动弹",
     "description": "<p>发布一条新的动弹</p>",
@@ -669,9 +838,9 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/TrendsController.php",
+    "filename": "app/Http/Controllers/Api/TrendsController.php",
     "groupTitle": "Trends",
-    "name": "GetPosttrendsApi"
+    "name": "PostPosttrendsApi"
   },
   {
     "type": "get",
@@ -716,7 +885,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/VideoController.php",
+    "filename": "app/Http/Controllers/Api/VideoController.php",
     "groupTitle": "Video",
     "name": "GetGetvideolistApi"
   },
@@ -763,7 +932,7 @@
         }
       ]
     },
-    "filename": "App/Http/Controllers/Api/VideoController.php",
+    "filename": "app/Http/Controllers/Api/VideoController.php",
     "groupTitle": "Video",
     "name": "GetParseyouku1Api"
   }
