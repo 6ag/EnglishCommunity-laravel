@@ -73,14 +73,14 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('parseYouku1.api', 'VideoController@parseYouku1');
 
     // 动弹列表
-    Route::get('getTrendsList.api', 'TrendsController@getTrendsList');
+    Route::get('getTweetsList.api', 'TrendsController@getTweetsList');
 
     // 动弹详情
-    Route::get('getTrendsDetail.api', 'TrendsController@getTrendsDetail');
+    Route::get('getTweetsDetail.api', 'TrendsController@getTweetsDetail');
 
     // 发布动弹
     Route::post('postTrends.api', 'TrendsController@postTrends');
-
+    
     // 发布评论
     Route::post('postComment.api', 'CommentController@postComment');
 

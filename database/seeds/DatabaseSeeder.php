@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OptionsTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
         $this->call(CommentsTableSeeder::class);
-        $this->call(TrendsTableSeeder::class);
+        $this->call(TweetsTableSeeder::class);
         Model::reguard();
     }
 }

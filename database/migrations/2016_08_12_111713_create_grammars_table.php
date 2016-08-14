@@ -27,6 +27,6 @@ class CreateGrammarsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('grammar_contents');
+        Schema::drop('grammars');
     }
 }

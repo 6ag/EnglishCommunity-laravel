@@ -5,17 +5,18 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class FavoriteRecord
+ * Class Tweets
  * @package App\Http\Model
  * @property integer id
- * @property string type
- * @property integer source_id
  * @property integer user_id
+ * @property string content
+ * @property string photo
+ * @property integer view
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at
  */
-class FavoriteRecord extends Model
+class Tweets extends Model
 {
-    protected $table = 'favorite_records';
+    protected $table = 'tweets';
     protected $guarded = [];
 }

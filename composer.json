@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "tymon/jwt-auth": "0.5.x",
         "almasaeed2010/adminlte": "~2.0",
-        "barryvdh/laravel-ide-helper": "^2.2"
+        "barryvdh/laravel-ide-helper": "^2.2",
+        "intervention/image": "^2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

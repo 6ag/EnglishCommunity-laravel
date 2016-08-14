@@ -14,7 +14,7 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type', 20)->comment('评论的类型 video_info trends');
+            $table->string('type', 20)->comment('评论的类型 video_info tweet');
             $table->integer('source_id')->unsigned()->index()->comment('来源id');
             $table->integer('user_id')->unsigned()->index()->comment('用户id');
             $table->text('content')->comment('评论内容');

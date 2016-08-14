@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Comment;
-use App\Http\Model\FavoriteRecord;
-use App\Http\Model\Trends;
+use App\Http\Model\LikeRecord;
+use App\Http\Model\Tweets;
 use App\Http\Model\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
-class TrendsController extends BaseController
+class TweetsController extends BaseController
 {
     /**
-     * @api {get} /getTrendsList.api 动弹列表
+     * @api {get} /getTweetsList.api 动弹列表
      * @apiDescription 获取动弹列表,可根据参数返回不同的数据
      * @apiGroup Trends
      * @apiPermission none
@@ -103,13 +105,13 @@ class TrendsController extends BaseController
      *           "message": "查询动弹列表失败"
      *      }
      */
-    public function getTrendsList(Request $request)
+    public function getTweetsList(Request $request)
     {
-
         $type = isset($request->type) ? $request->type : 'new';           // 请求类型
         $count = isset($request->count) ? (int)$request->count : 10;      // 单页数量
         $user_id = isset($request->user_id) ? (int)$request->user_id : 0; // 请求用户
 
+        // 根据参数过滤数据
         $trands = Trends::orderBy('id', 'desc');
         if ($type === 'new') {
             $trands = $trands->paginate($count);
@@ -119,40 +121,62 @@ class TrendsController extends BaseController
             $trands = $trands->where('user_id', $user_id)->paginate($count);
         }
 
+        // 只读一次到内存,节省资源
+        $comments = Comment::where('type', 'tweet')->get();
+        $likeRecords = LikeRecord::where('type', 'tweet')->get();
+
+        // 返回数据
+        $result = null;
+
         // 没有查询到数据
         $data = $trands->all();
         if (count($data) == 0) {
             return $this->respondWithErrors('没有查询到动弹列表数据');
         }
-
-        // 只读一次到内存,节省资源
-        $comments = Comment::where('type', 'trends')->get();
-        $favoriteRecords = FavoriteRecord::where('type', 'trends')->get();
-
+        
         // 向单条数据里添加数据
         foreach ($data as $key => $value) {
             // 动弹作者
             $user = User::find($value->user_id);
             // 访客对这条动弹的赞记录
-            $user_favoriteRecord = $favoriteRecords->where('source_id', $value->id)->where('user_id', $user_id)->first();
+            $userLikeRecord = $likeRecords->where('source_id', $value->id)->where('user_id', $user_id)->first();
 
-            $data[$key]['comment_count'] = $comments->where('source_id', $value->id)->count();
-            $data[$key]['favorite_count'] = $favoriteRecords->where('source_id', $value->id)->count();
-            $data[$key]['is_favorite'] = isset($user_favoriteRecord) ? 1 : 0;
-            $data[$key]['user_nickname'] = $user->nickname;
-            $data[$key]['user_avatar'] =  $user->avatar;
+            $result[$key]['id'] = $value->id;
+            $result[$key]['appClient'] = $value->app_client;
+            $result[$key]['content'] = $value->content;
+            $result[$key]['commentCount'] = $comments->where('source_id', $value->id)->count();
+            $result[$key]['likeCount'] = $likeRecords->where('source_id', $value->id)->count();
+            $result[$key]['liked'] = isset($userLikeRecord) ? 1 : 0;
+            $result[$key]['publishDate'] = $value->created_at;
+            $result[$key]['author'] = [
+                'id' => $user->id,
+                'nickname' => $user->nickname,
+                'avatar' => $user->avatar,
+            ];
+
+            // 拆分图片
+            $photos = explode(',', $value->photos);
+            $photoThumbs = explode(',', $value->photo_thumbs);
+            $images = null;
+            foreach ($photos as $k => $v) {
+                $images[$k]['href'] = $photos[$k];
+                $images[$k]['thumb'] = $photoThumbs[$k];
+            }
+            if (count($images)) {
+                $result[$key]['images'] = $images;
+            }
         }
 
         return $this->respondWithSuccess([
             'total' => $trands->total(),
             'rows' => $trands->perPage(),
             'current_page' => $trands->currentPage(),
-            'data' => $data,
+            'data' => $result,
         ], '查询动弹列表成功');
     }
 
     /**
-     * @api {get} /getTrendsDetail.api 动弹详情
+     * @api {get} /getTweetsDetail.api 动弹详情
      * @apiDescription 获取动弹详情,获取动弹赞列表、评论列表是其他接口
      * @apiGroup Trends
      * @apiPermission none
@@ -187,29 +211,29 @@ class TrendsController extends BaseController
      *           "message": "trends_id无效"
      *       }
      */
-    public function getTrendsDetail(Request $request)
+    public function getTweetsDetail(Request $request)
     {
-        $user_id = isset($request->user_id) ? (int)$request->user_id : 0;       // 请求用户
-        $trends_id = isset($request->trends_id) ? (int)$request->trends_id : 0; // 动弹id
-        if ($trends_id == 0) {
-            return $this->respondWithErrors('trends_id无效', 400);
-        }
-
-        $trends = Trends::find($trends_id);   // 当前动弹
-        $user = User::find($trends->user_id); // 当前动弹的作者
-        $user_favoriteRecord = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->where('user_id', $user_id)->first();
-        
-        // 浏览量递增
-        $trends->increment('view');
-
-        $data = $trends->toArray();
-        $data['comment_count'] = Comment::where('type', 'trends')->where('source_id', $trends->id)->count();
-        $data['favorite_count'] = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->count();
-        $data['is_favorite'] = isset($user_favoriteRecord) ? 1 : 0;
-        $data['user_nickname'] = $user->nickname;
-        $data['user_avatar'] = $user->avatar;
-
-        return $this->respondWithSuccess($data, '查询动弹详情成功');
+//        $user_id = isset($request->user_id) ? (int)$request->user_id : 0;       // 请求用户
+//        $trends_id = isset($request->trends_id) ? (int)$request->trends_id : 0; // 动弹id
+//        if ($trends_id == 0) {
+//            return $this->respondWithErrors('trends_id无效', 400);
+//        }
+//
+//        $trends = Trends::find($trends_id);   // 当前动弹
+//        $user = User::find($trends->user_id); // 当前动弹的作者
+//        $user_favoriteRecord = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->where('user_id', $user_id)->first();
+//
+//        // 浏览量递增
+//        $trends->increment('view');
+//
+//        $data = $trends->toArray();
+//        $data['comment_count'] = Comment::where('type', 'trends')->where('source_id', $trends->id)->count();
+//        $data['favorite_count'] = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->count();
+//        $data['is_favorite'] = isset($user_favoriteRecord) ? 1 : 0;
+//        $data['user_nickname'] = $user->nickname;
+//        $data['user_avatar'] = $user->avatar;
+//
+//        return $this->respondWithSuccess($data, '查询动弹详情成功');
     }
 
     /**
@@ -237,7 +261,31 @@ class TrendsController extends BaseController
      */
     public function postTrends(Request $request)
     {
-        
+//        $validator = Validator::make($request->all(), [
+//            'user_id' => ['required'],
+//            'content' => ['required']
+//        ], [
+//            'user_id.required' => 'user_id不能为空',
+//            'content.required' => '发布内容不能为空'
+//        ]);
+//        if ($validator->fails()) {
+//            return $this->respondWithFailedValidation($validator);
+//        }
+
+
+//        return $this->respondWithSuccess($request->get('photo'));
+//        $image = Image::make($request->file())->resize(300, 200);
+//        dd($image);
+
+//        dd($file);
+
+//        if ($file->isValid()) {
+//            $file->move('temp', $file->getClientOriginalName());
+//            $tempPath = 'temp/'.$file->getClientOriginalName();
+//            return $tempPath;
+//        }
+
+
     }
 
 

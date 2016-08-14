@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer user_id
  * @property string content
  * @property integer pid
- * @property integer favorite
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at
  */
