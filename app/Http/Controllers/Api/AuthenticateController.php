@@ -223,26 +223,7 @@ class AuthenticateController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *     {
-     *           "status": "success",
-     *           "code": 200,
-     *           "message": "登录成功",
-     *           "data": {
-     *               "token": "xxxx.xxxx.xxx-xx",
-     *               "id": 1,
-     *               "username": "admin",
-     *               "nickname": "管理员",
-     *               "say": null,
-     *               "avatar": "uploads/user/avatar.jpg",
-     *               "mobile": null,
-     *               "sex": 0,
-     *               "qq_binding": 0,
-     *               "weixin_binding": 0,
-     *               "weibo_binding": 0,
-     *               "phone_binding": 0,
-     *               "email_binding": 0,
-     *               "register_time": 1470797736
-     *           }
-     *       }
+     *      }
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
@@ -306,16 +287,16 @@ class AuthenticateController extends BaseController
                 'id' => $user->id,
                 'nickname' => $user->nickname,
                 'say' => $user->say,
-                'avatar' => $user->avatar,
+                'avatar' => url($user->avatar),
                 'mobile' => $user->mobile,
                 'email' => $user->email,
                 'sex' => $user->sex,
-                'qq_binding' => $user->qq_binding,
-                'weixin_binding' => $user->weixin_binding,
-                'weibo_binding' => $user->weibo_binding,
-                'email_binding' => $user->email_binding,
-                'mobile_binding' => $user->mobile_binding,
-                'register_time' => $user->created_at,
+                'qqBinding' => $user->qq_binding,
+                'weixinBinding' => $user->weixin_binding,
+                'weiboBinding' => $user->weibo_binding,
+                'emailBinding' => $user->email_binding,
+                'mobileBinding' => $user->mobile_binding,
+                'registerTime' => $user->created_at,
             ], '登录成功');
         } else {
             return $this->respondWithErrors('登录失败,密码错误', 403);

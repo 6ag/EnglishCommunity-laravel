@@ -64,7 +64,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('getAllCategories.api', 'CategoryController@getCategoryies');
 
     // 根据分类id查询视频信息列表
-    Route::get('getVideoInfosList.api', 'CategoryController@getVideInfosList');
+    Route::get('getVideoInfosList.api', 'CategoryController@getVideoInfosList');
 
     // 根据视频信息id 获取视频信息
     Route::get('getVideoList.api', 'VideoController@getVideoList');
@@ -73,13 +73,13 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('parseYouku1.api', 'VideoController@parseYouku1');
 
     // 动弹列表
-    Route::get('getTweetsList.api', 'TrendsController@getTweetsList');
+    Route::get('getTweetsList.api', 'TweetsController@getTweetsList');
 
     // 动弹详情
-    Route::get('getTweetsDetail.api', 'TrendsController@getTweetsDetail');
+    Route::get('getTweetsDetail.api', 'TweetsController@getTweetsDetail');
 
     // 发布动弹
-    Route::post('postTrends.api', 'TrendsController@postTrends');
+    Route::post('postTrends.api', 'TweetsController@postTrends');
     
     // 发布评论
     Route::post('postComment.api', 'CommentController@postComment');

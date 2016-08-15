@@ -112,17 +112,25 @@ class CollectionController extends BaseController
             return $this->respondWithErrors('没有任何收藏数据');
         }
 
-        $data = null;
+        $result = null;
         // 查询视频信息
         foreach ($collections as $key => $collection) {
-            $data[$key] = VideoInfo::find($collection->video_info_id);
+            $videoInfo = VideoInfo::find($collection->video_info_id);
+            $result[$key]['id'] = $videoInfo->id;
+            $result[$key]['title'] = $videoInfo->title;
+            $result[$key]['cover'] = url($videoInfo->photo);
+            $result[$key]['view'] = $videoInfo->view;
+            $result[$key]['teacherName'] = $videoInfo->teacher;
+            $result[$key]['videoType'] = $videoInfo->type;
+            $result[$key]['recommended'] = $videoInfo->recommend;
         }
 
         return $this->respondWithSuccess([
-            'total' => $collections->total(),
-            'rows' => $collections->perPage(),
-            'current_page' => $collections->currentPage(),
-            'data' => $data,
+            'pageInfo' => [
+                'total' => $collections->total(),
+                'currentPage' => $collections->currentPage(),
+            ],
+            'data' => $result,
         ], '查询动弹列表成功');
     }
 }

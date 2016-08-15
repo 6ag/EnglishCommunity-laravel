@@ -18,8 +18,8 @@ class CreateTweetsTable extends Migration
             $table->text('content')->comment('动弹内容');
             $table->tinyInteger('app_client')->default(0)->comment('0:iOS 1:Android');
             $table->integer('view')->default(0)->comment('动弹访问量');
-            $table->string('photos')->nullable()->comment('正常尺寸图片。以,分割 存储多张图片');
-            $table->string('photo_thumbs')->nullable()->comment('缩略图');
+            $table->text('photos')->nullable()->comment('正常尺寸图片。以,分割 存储多张图片');
+            $table->text('photo_thumbs')->nullable()->comment('缩略图');
             $table->timestamps();
         });
     }

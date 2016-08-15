@@ -62,9 +62,10 @@ class GrammarController extends BaseController
         }
 
         return $this->respondWithSuccess([
-            'total' => $grammars->total(),
-            'rows' => $grammars->perPage(),
-            'current_page' => $grammars->currentPage(),
+            'pageInfo' => [
+                'total' => $grammars->total(),
+                'currentPage' => $grammars->currentPage(),
+            ],
             'data' => $grammars->all(),
         ], '查询动弹列表成功');
     }

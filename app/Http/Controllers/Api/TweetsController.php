@@ -29,74 +29,6 @@ class TweetsController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
-     *           "status": "success",
-     *           "code": 200,
-     *           "message": "查询动弹列表成功",
-     *           "data": {
-     *           "total": 4,
-     *           "rows": "2",
-     *           "current_page": 1,
-     *           "data": [
-     *               {
-     *               "id": 4,
-     *               "user_id": 3,
-     *               "content": "吃屎的这么这么多",
-     *               "photo": null,
-     *               "view": 15,
-     *               "created_at": "2016-08-08 15:57:08",
-     *               "updated_at": "2016-08-08 15:57:08",
-     *               "comment_count": 0,
-     *               "favorite_count": 0,
-     *               "user": {
-     *                   "id": 3,
-     *                   "nickname": "宝宝",
-     *                   "say": null,
-     *                   "avatar": "uploads/user/avatar.jpg",
-     *                   "mobile": null,
-     *                   "email": null,
-     *                   "sex": 0,
-     *                   "status": 1,
-     *                   "is_admin": 0,
-     *                   "qq_binding": 0,
-     *                   "weixin_binding": 0,
-     *                   "weibo_binding": 0,
-     *                   "email_binding": 0,
-     *                   "mobile_binding": 0,
-     *                   "created_at": "2016-08-08 15:24:53",
-     *                   "updated_at": "2016-08-08 15:24:53"
-     *                   }
-     *               },
-     *               {
-     *               "id": 3,
-     *               "user_id": 2,
-     *               "content": "你们吃什么样的屎",
-     *               "photo": null,
-     *               "view": 12,
-     *               "created_at": "2016-08-08 15:55:08",
-     *               "updated_at": "2016-08-08 15:55:08",
-     *               "comment_count": 0,
-     *               "favorite_count": 0,
-     *               "user": {
-     *                   "id": 2,
-     *                   "nickname": "宝宝",
-     *                   "say": null,
-     *                   "avatar": "uploads/user/avatar.jpg",
-     *                   "mobile": null,
-     *                   "email": null,
-     *                   "sex": 0,
-     *                   "status": 1,
-     *                   "is_admin": 0,
-     *                   "qq_binding": 0,
-     *                   "weixin_binding": 0,
-     *                   "weibo_binding": 0,
-     *                   "email_binding": 0,
-     *                   "mobile_binding": 0,
-     *                   "created_at": "2016-08-08 15:24:26",
-     *                   "updated_at": "2016-08-08 15:24:26"
-     *               }
-     *               }
-     *               ]
-     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -112,13 +44,13 @@ class TweetsController extends BaseController
         $user_id = isset($request->user_id) ? (int)$request->user_id : 0; // 请求用户
 
         // 根据参数过滤数据
-        $trands = Trends::orderBy('id', 'desc');
+        $tweets = Tweets::orderBy('id', 'desc');
         if ($type === 'new') {
-            $trands = $trands->paginate($count);
+            $tweets = $tweets->paginate($count);
         } elseif ($type === 'hot') {
-            $trands = $trands->orderBy('view', 'desc')->paginate($count);
+            $tweets = $tweets->orderBy('view', 'desc')->paginate($count);
         } elseif ($type === 'me') {
-            $trands = $trands->where('user_id', $user_id)->paginate($count);
+            $tweets = $tweets->where('user_id', $user_id)->paginate($count);
         }
 
         // 只读一次到内存,节省资源
@@ -129,11 +61,11 @@ class TweetsController extends BaseController
         $result = null;
 
         // 没有查询到数据
-        $data = $trands->all();
+        $data = $tweets->all();
         if (count($data) == 0) {
             return $this->respondWithErrors('没有查询到动弹列表数据');
         }
-        
+
         // 向单条数据里添加数据
         foreach ($data as $key => $value) {
             // 动弹作者
@@ -147,30 +79,33 @@ class TweetsController extends BaseController
             $result[$key]['commentCount'] = $comments->where('source_id', $value->id)->count();
             $result[$key]['likeCount'] = $likeRecords->where('source_id', $value->id)->count();
             $result[$key]['liked'] = isset($userLikeRecord) ? 1 : 0;
-            $result[$key]['publishDate'] = $value->created_at;
+            $result[$key]['publishTime'] = (string)$value->created_at->timestamp;
             $result[$key]['author'] = [
                 'id' => $user->id,
                 'nickname' => $user->nickname,
-                'avatar' => $user->avatar,
+                'avatar' => url($user->avatar),
             ];
 
-            // 拆分图片
-            $photos = explode(',', $value->photos);
-            $photoThumbs = explode(',', $value->photo_thumbs);
-            $images = null;
-            foreach ($photos as $k => $v) {
-                $images[$k]['href'] = $photos[$k];
-                $images[$k]['thumb'] = $photoThumbs[$k];
-            }
-            if (count($images)) {
+            // 有图片才拆分
+            if (! empty($value->photos)) {
+                $photos = explode(',', $value->photos);
+                $photoThumbs = explode(',', $value->photo_thumbs);
+                $images = null;
+
+                foreach ($photos as $k => $v) {
+                    $images[$k]['href'] = $photos[$k];
+                    $images[$k]['thumb'] = $photoThumbs[$k];
+                }
                 $result[$key]['images'] = $images;
             }
+
         }
 
         return $this->respondWithSuccess([
-            'total' => $trands->total(),
-            'rows' => $trands->perPage(),
-            'current_page' => $trands->currentPage(),
+            'pageInfo' => [
+                'total' => $tweets->total(),
+                'currentPage' => $tweets->currentPage(),
+            ],
             'data' => $result,
         ], '查询动弹列表成功');
     }
@@ -185,24 +120,6 @@ class TweetsController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
-     *           "status": "success",
-     *           "code": 200,
-     *           "message": "查询动弹详情成功",
-     *           "data": {
-     *               "id": 1,
-     *               "user_id": 1,
-     *               "content": "今天吃屎非常合适",
-     *               "small_photo": null,
-     *               "photo": null,
-     *               "view": 8,
-     *               "created_at": "2016-08-10 14:40:12",
-     *               "updated_at": "2016-08-10 16:28:44",
-     *               "comment_count": 3,
-     *               "favorite_count": 0,
-     *               "is_favorite": 0,
-     *               "user_nickname": "管理员",
-     *               "user_avatar": "uploads/user/avatar.jpg"
-     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *       {

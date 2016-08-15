@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Comment;
 use App\Http\Model\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -62,7 +63,7 @@ class CommentController extends BaseController
             }
         } else {
             // 通知被回复的用户
-
+            
         }
 
         // 添加评论信息
@@ -76,50 +77,13 @@ class CommentController extends BaseController
      * @apiDescription 获取动弹或视频信息的评论列表
      * @apiGroup Comment
      * @apiPermission none
-     * @apiParam {String} type 类型:trends/video
+     * @apiParam {String} type 类型:tweet/video
      * @apiParam {Number} source_id 动弹或视频信息的id
      * @apiParam {Number} [page] 页码,默认当然是第1页
      * @apiParam {Number} [count] 每页数量,默认10条
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
-     *           "status": "success",
-     *           "code": 200,
-     *           "message": "查询评论列表成功",
-     *           "data": {
-     *               "total": 4,
-     *               "rows": 2,
-     *               "current_page": 1,
-     *               "data": [
-     *                   {
-     *                       "id": 1,
-     *                       "type": "trends",
-     *                       "source_id": 43,
-     *                       "user_id": 2,
-     *                       "content": "一起吃行不",
-     *                       "pid": 0,
-     *                       "created_at": "2016-08-10 14:40:12",
-     *                       "updated_at": "2016-08-10 14:40:12",
-     *                       "user_nickname": "王麻子",
-     *                       "user_avatar": "uploads/user/avatar.jpg"
-     *                   },
-     *                   {
-     *                       "id": 2,
-     *                       "type": "trends",
-     *                       "source_id": 43,
-     *                       "user_id": 1,
-     *                       "content": "完全可以啊",
-     *                       "pid": 1,
-     *                       "created_at": "2016-08-10 14:40:12",
-     *                       "updated_at": "2016-08-10 14:40:12",
-     *                       "user_nickname": "管理员",
-     *                       "user_avatar": "uploads/user/avatar.jpg",
-     *                       "puser_id": 2,
-     *                       "puser_nickname": "王麻子",
-     *                       "puser_avatar": "uploads/user/avatar.jpg"
-     *                   }
-     *               ]
-     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -151,28 +115,40 @@ class CommentController extends BaseController
         if (count($data) == 0) {
             return $this->respondWithErrors('没有任何评论信息', 404);
         }
-        
+
+        $result = null;
         foreach ($data as $key => $value) {
-            // 评论作者的信息
-            $user = User::find($value->user_id);
-            $data[$key]['user_nickname'] = $user->nickname;
-            $data[$key]['user_avatar'] =  $user->avatar;
+            $result[$key]['id'] = $value->id;
+            $result[$key]['type'] = $value->type;
+            $result[$key]['sourceId'] = $value->source_id;
+            $result[$key]['content'] = $value->content;
+            $result[$key]['publishTime'] = (string)$value->created_at->timestamp;
+
+            // 评论作者
+            $author = User::find($value->user_id);
+            $result[$key]['author'] = [
+                'id' => $author->id,
+                'nickname' => $author->nickname,
+                'avatar' => url($author->avatar)
+            ];
 
             // 如果是回复评论,则带上被回复用户的信息
             if ($value->pid != 0) {
-                $comment = Comment::find($value->pid);
-                $puser = User::find($comment->user_id);
-                $data[$key]['puser_id'] = $puser->id;
-                $data[$key]['puser_nickname'] = $puser->nickname;
-                $data[$key]['puser_avatar'] =  $puser->avatar;
+                $puser = User::find(Comment::find($value->pid)->user_id);
+                $result[$key]['extendsAuthor'] = [
+                    'id' => $puser->id,
+                    'nickname' => $puser->nickname,
+                    'avatar' => url($puser->avatar)
+                ];
             }
         }
 
         return $this->respondWithSuccess([
-            'total' => $comments->total(),
-            'rows' => $comments->perPage(),
-            'current_page' => $comments->currentPage(),
-            'data' => $comments->all(),
+            'pageInfo' => [
+                'total' => $comments->total(),
+                'currentPage' => $comments->currentPage(),
+            ],
+            'data' => $result,
         ], '查询评论列表成功');
     }
 }

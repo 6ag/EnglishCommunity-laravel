@@ -21,7 +21,7 @@ class BaseController extends Controller
             'status' => $status,
             'code' => $code,
             'message' => $message,
-            'data' => $data,
+            'result' => $data,
         ]));
     }
 
