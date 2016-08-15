@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('weibo_binding')->default(0)->comment('微博登录是否绑定');
             $table->tinyInteger('email_binding')->default(0)->comment('邮箱登录是否绑定');
             $table->tinyInteger('mobile_binding')->default(0)->comment('手机登录是否绑定');
+            $table->timestamp('last_login_time')->nullable()->comment('最后一次登录时间');
             $table->timestamps();
         });
     }

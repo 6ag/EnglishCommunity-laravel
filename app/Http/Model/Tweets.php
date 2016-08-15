@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Http\Model
  * @property integer id
  * @property integer user_id
+ * @property integer app_client
  * @property string content
- * @property string photo
+ * @property string photos
+ * @property string photo_thumbs
  * @property integer view
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at

@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
             [
                 'nickname' => '管理员',
                 'say' => '好好学习天天向上',
-                'avatar' => 'uploads/user/avatar.jpg',
+                'avatar' => 'uploads/user/default/avatar.jpg',
                 'mobile' => '15626427299',
                 'email' => 'admin@6ag.cn',
                 'mobile_binding' => 1,
@@ -27,7 +27,7 @@ class UsersTableSeeder extends Seeder
             ], [
                 'nickname' => '王麻子',
                 'say' => '好好学习天天向上',
-                'avatar' => 'uploads/user/avatar.jpg',
+                'avatar' => 'uploads/user/default/avatar.jpg',
                 'mobile' => null,
                 'email' => null,
                 'mobile_binding' => 0,
@@ -39,7 +39,7 @@ class UsersTableSeeder extends Seeder
             ], [
                 'nickname' => '李二狗',
                 'say' => '好好学习天天向上',
-                'avatar' => 'uploads/user/avatar.jpg',
+                'avatar' => 'uploads/user/default/avatar.jpg',
                 'mobile' => null,
                 'email' => null,
                 'mobile_binding' => 0,

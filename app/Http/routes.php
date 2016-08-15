@@ -79,7 +79,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('getTweetsDetail.api', 'TweetsController@getTweetsDetail');
 
     // 发布动弹
-    Route::post('postTrends.api', 'TweetsController@postTrends');
+    Route::post('postTweets.api', 'TweetsController@postTweets');
     
     // 发布评论
     Route::post('postComment.api', 'CommentController@postComment');

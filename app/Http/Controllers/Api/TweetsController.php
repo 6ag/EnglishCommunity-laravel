@@ -6,6 +6,7 @@ use App\Http\Model\Comment;
 use App\Http\Model\LikeRecord;
 use App\Http\Model\Tweets;
 use App\Http\Model\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -93,8 +94,8 @@ class TweetsController extends BaseController
                 $images = null;
 
                 foreach ($photos as $k => $v) {
-                    $images[$k]['href'] = $photos[$k];
-                    $images[$k]['thumb'] = $photoThumbs[$k];
+                    $images[$k]['href'] = url($photos[$k]);
+                    $images[$k]['thumb'] = url($photoThumbs[$k]);
                 }
                 $result[$key]['images'] = $images;
             }
@@ -154,13 +155,14 @@ class TweetsController extends BaseController
     }
 
     /**
-     * @api {post} /postTrends.api 发布动弹
+     * @api {post} /postTweets.api 发布动弹
      * @apiDescription 发布一条新的动弹
      * @apiGroup Trends
      * @apiPermission none
      * @apiParam {Number} user_id 作者用户id
      * @apiParam {String} content 动弹内容
-     * @apiParam {File} [photo] 配图,这个字段以图片上传方式提交即可
+     * @apiParam {Array<String>} [photos] 配图,这个字段以图片上传方式提交即可
+     * @apiParam {Number} [app_client] 客户端类型 0iOS 1Android
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -176,34 +178,78 @@ class TweetsController extends BaseController
      *           "message": "发布动弹失败"
      *      }
      */
-    public function postTrends(Request $request)
+    public function postTweets(Request $request)
     {
-//        $validator = Validator::make($request->all(), [
-//            'user_id' => ['required'],
-//            'content' => ['required']
-//        ], [
-//            'user_id.required' => 'user_id不能为空',
-//            'content.required' => '发布内容不能为空'
-//        ]);
-//        if ($validator->fails()) {
-//            return $this->respondWithFailedValidation($validator);
-//        }
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required'],
+            'content' => ['required']
+        ], [
+            'user_id.required' => 'user_id不能为空',
+            'content.required' => '发布内容不能为空'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
 
+        // 客户端类型
+        $app_client = isset($request->app_client) ? $request->app_client : 0;
 
-//        return $this->respondWithSuccess($request->get('photo'));
-//        $image = Image::make($request->file())->resize(300, 200);
-//        dd($image);
+        $originalPaths = null;
+        $thumbPaths = null;
+        if (isset($request->photos)) {
+            $base64Photos = $request->photos;
+            foreach ($base64Photos as $key => $base64Photo) {
+                $originalImage = Image::make($base64Photo);
+                $thumbImage = Image::make($base64Photo)->resize(150, null, function ($constraint) {
+                    // 等比缩放图片,固定宽度150
+                    $constraint->aspectRatio();
+                });
 
-//        dd($file);
+                // 生成唯一的图片名 0ac23ab277e4b0e458e5aeccb49e327c.jpg 0ac23ab277e4b0e458e5aeccb49e327c_thumb.jpg
+                $extend = '.jpg';
+                $uniqueFileName = md5(uniqid(microtime(true), true));
+                $originalFileName = $uniqueFileName . $extend;
+                $thumbFileName = $uniqueFileName . '_thumb' . $extend;
 
-//        if ($file->isValid()) {
-//            $file->move('temp', $file->getClientOriginalName());
-//            $tempPath = 'temp/'.$file->getClientOriginalName();
-//            return $tempPath;
-//        }
+                // 根据日期创建目录 uploads/tweets/2016-08-15/
+                $carbon = Carbon::now();
+                $directory = 'uploads/tweets/' . $carbon->toDateString() . '/';
+                if (!file_exists($directory)) {
+                    if (!(mkdir($directory, 0777, true) && chmod($directory, 0777))) {
+                        return $this->respondWithErrors('无权限创建路径,请设置public下的uploads目录权限为777', 500);
+                    }
+                }
 
+                // 拼接最终图片路径
+                $originalPath = $directory . $originalFileName;
+                $thumbPath = $directory . $thumbFileName;
+
+                // 存储图片到指定目录
+                $originalImage->save($originalPath);
+                $thumbImage->save($thumbPath);
+
+                // 将路径存储到数组中,准备入库
+                $originalPaths[$key] = $originalPath;
+                $thumbPaths[$key] = $thumbPath;
+
+            }
+
+            $originalPaths = implode(',', $originalPaths);
+            $thumbPaths = implode(',', $thumbPaths);
+        }
+
+        $tweet = new Tweets();
+        $tweet->user_id = $request->user_id;
+        $tweet->app_client = $app_client;
+        $tweet->content = $request->get('content');
+        if (isset($originalPaths) && isset($thumbPaths)) {
+            $tweet->photos = $originalPaths;
+            $tweet->photo_thumbs = $thumbPaths;
+        }
+        $tweet->save();
+
+        return $this->respondWithSuccess(null, '发布动弹成功');
 
     }
-
 
 }

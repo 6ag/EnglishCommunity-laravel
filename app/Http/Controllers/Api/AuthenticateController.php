@@ -6,6 +6,7 @@ use App\Http\Model\Group;
 use App\Http\Model\Permission;
 use App\Http\Model\User;
 use App\Http\Model\UserAuth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -282,6 +283,9 @@ class AuthenticateController extends BaseController
                 return $this->respondWithErrors('登录失败,用户已被禁用', 403);
             }
 
+            // 修改登录时间
+            $user->update(['last_login_time' => Carbon::now()]);
+
             return $this->respondWithSuccess([
                 'token' => JWTAuth::fromUser($user),
                 'id' => $user->id,
@@ -296,7 +300,8 @@ class AuthenticateController extends BaseController
                 'weiboBinding' => $user->weibo_binding,
                 'emailBinding' => $user->email_binding,
                 'mobileBinding' => $user->mobile_binding,
-                'registerTime' => $user->created_at,
+                'registerTime' => (string)$user->created_at->timestamp,
+                'lastLoginTime' => (string)$user->last_login_time->timestamp,
             ], '登录成功');
         } else {
             return $this->respondWithErrors('登录失败,密码错误', 403);

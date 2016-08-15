@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer weixin_binding
  * @property integer email_binding
  * @property integer mobile_binding
+ * @property \Carbon\Carbon last_login_time
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at
  */
