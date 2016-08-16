@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Friend;
+use App\Http\Model\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -16,9 +17,7 @@ class FriendController extends BaseController
      * @apiGroup Friend
      * @apiPermission none
      * @apiParam {Number} user_id 当前用户的id
-     * @apiParam {String} [relation] 关系类型 默认粉丝: 0粉丝 1关注
-     * @apiParam {Number} [page] 页码,默认当然是第1页
-     * @apiParam {Number} [count] 每页数量,默认10条
+     * @apiParam {String} relation 关系类型 0粉丝 1关注
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -45,7 +44,20 @@ class FriendController extends BaseController
             return $this->respondWithFailedValidation($validator);
         }
 
-        Friend::where('user_id', $request->user_id)->where('relation', $request->relation);
+        $friends = Friend::where('user_id', $request->user_id)->where('relation', $request->relation)->get();
+        if (count($friends) == 0) {
+            return $this->respondWithErrors('没有查询到朋友关系数据');
+        }
+
+        $result = null;
+        foreach ($friends as $key => $value) {
+            $user = User::find($value->relation_user_id);
+            $result[$key]['relationUserId'] = $user->id;
+            $result[$key]['relationNickname'] = $user->nickname;
+            $result[$key]['relationAvatar'] = url($user->avatar);
+        }
+
+        return $this->respondWithSuccess($result, '查询朋友关系列表成功');
 
     }
 
