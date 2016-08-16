@@ -37,26 +37,16 @@ class CollectionController extends BaseController
     public function collectVideoInfo(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
-            'video_info_id' => ['required'],
+            'user_id' => ['required', 'exists:users,id'],
+            'video_info_id' => ['required', 'exists:video_infos,id'],
         ], [
             'user_id.required' => 'user_id不能为空',
+            'user_id.exists' => '用户不存在',
             'video_info_id.required' => 'video_info_id不能为空',
+            'video_info_id.exists' => '视频信息不存在'
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
-        }
-
-        // 过滤用户是否存在
-        $user = User::find($request->user_id);
-        if (! isset($user)) {
-            return $this->respondWithErrors('用户不存在');
-        }
-
-        // 过滤视频信息是否存在
-        $videoInfo = VideoInfo::find($request->video_info_id);
-        if (! isset($videoInfo)) {
-            return $this->respondWithErrors('视频信息不存在');
         }
 
         Collection::create($request->only(['user_id', 'video_info_id']));
@@ -89,21 +79,16 @@ class CollectionController extends BaseController
     public function getCollectionList(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required'
+            'user_id' => ['required', 'exists:users,id']
         ], [
-            'user_id.required' => 'user_id不能为空'
+            'user_id.required' => 'user_id不能为空',
+            'user_id.exists' => '用户不存在'
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
         }
 
-        // 过滤用户是否存在
-        $user = User::find($request->user_id);
-        if (! isset($user)) {
-            return $this->respondWithErrors('用户不存在');
-        }
-
-        $count = isset($request->count) ? (int)$request->count : 10;      // 单页数量
+        $count = isset($request->count) ? (int)$request->count : 10;
         $collections = Collection::where('user_id', $request->user_id)
             ->paginate($count);
 

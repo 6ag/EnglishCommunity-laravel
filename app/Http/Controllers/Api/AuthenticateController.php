@@ -238,12 +238,13 @@ class AuthenticateController extends BaseController
         $validator = Validator::make($request->all(), [
             'identifier' => ['required', 'exists:user_auths'],
             'credential' => ['required'],
-            'type' => ['required'],
+            'type' => ['required', 'in:username,email,mobile,qq,weixin,weibo'],
         ], [
             'identifier.exists' => '用户不存在',
             'identifier.required' => '用户名、手机号码或邮箱为必填项',
             'credential.required' => '密码为必填项',
             'type.required' => '注册类型不能为空',
+            'type.in' => '类型必须为username,email,mobile,qq,weixin,weibo其中一种'
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
@@ -347,7 +348,7 @@ class AuthenticateController extends BaseController
     {
         // 验证输入字段
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:users'],
+            'user_id' => ['required', 'exists:users,id'],
             'credential_old' => ['required'],
             'credential_new' => ['required', 'between:6,20'],
         ], [

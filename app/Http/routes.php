@@ -96,4 +96,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 获取收藏信息列表
     Route::get('getCollectionList.api', 'CollectionController@getCollectionList');
 
+    // 获取朋友关系列表
+    Route::get('getFriendList.api', 'FriendController@getFriendList');
+
 });

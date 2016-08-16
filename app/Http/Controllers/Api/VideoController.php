@@ -8,6 +8,7 @@ use App\Http\ParseVideo;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Validator;
 
 class VideoController extends BaseController
 {
@@ -30,12 +31,17 @@ class VideoController extends BaseController
      */
     public function getVideoList(Request $request)
     {
-        $videoInfo = VideoInfo::find($request->video_info_id);
-        if (! isset($videoInfo)) {
-            return $this->respondWithErrors('video_info_id不存在', 400);
+        $validator = Validator::make($request->all(), [
+            'video_info_id' => ['required', 'exists:video_infos,id']
+        ], [
+            'video_info_id.required' => 'video_info_id不能为空',
+            'video_info_id.exists' => '视频信息不存在'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
         }
 
-        // 视频浏览量自增1
+        $videoInfo = VideoInfo::find($request->video_info_id);
         $videoInfo->increment('view');
         $videos = Video::where('video_info_id', $videoInfo->id)->get();
 

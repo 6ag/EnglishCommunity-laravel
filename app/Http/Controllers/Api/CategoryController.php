@@ -20,7 +20,7 @@ class CategoryController extends BaseController
      * @apiParam {Number} category_id  分类id
      * @apiParam {Number} [page]  页码
      * @apiParam {Number} [count]  每页数量,默认10条
-     * @apiParam {Number} [recomend]  是否返回推荐的视频 1是 0否
+     * @apiParam {Number} [recommend]  是否返回推荐的视频 1是 0否
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -35,9 +35,11 @@ class CategoryController extends BaseController
     public function getVideoInfosList(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'category_id' => ['required']
+            'category_id' => ['required'],
+            'recommend' => ['in:0,1']
         ], [
-            'category_id.required' => 'category_id不能为空'
+            'category_id.required' => 'category_id不能为空',
+            'recommend.in' => 'recommend只能传0、1'
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);

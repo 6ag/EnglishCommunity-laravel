@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
@@ -40,7 +39,17 @@ class TweetsController extends BaseController
      */
     public function getTweetsList(Request $request)
     {
-        $type = isset($request->type) ? $request->type : 'new';           // 请求类型
+        $validator = Validator::make($request->all(), [
+            'type' => ['required', 'in:new,hot,me'],
+        ], [
+            'type.required' => 'type不能为空',
+            'type.in' => 'type只能是new、hot、me'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        $type = $request->type;
         $count = isset($request->count) ? (int)$request->count : 10;      // 单页数量
         $user_id = isset($request->user_id) ? (int)$request->user_id : 0; // 请求用户
 
@@ -92,12 +101,24 @@ class TweetsController extends BaseController
                 $photos = explode(',', $value->photos);
                 $photoThumbs = explode(',', $value->photo_thumbs);
                 $images = null;
-
                 foreach ($photos as $k => $v) {
                     $images[$k]['href'] = url($photos[$k]);
                     $images[$k]['thumb'] = url($photoThumbs[$k]);
                 }
                 $result[$key]['images'] = $images;
+            }
+
+            // 有at用户才拆分
+            if (! empty($value->at_nicknames)) {
+                $at_user_ids = explode(',', $value->at_user_ids);
+                $at_nicknames = explode(',', $value->at_nicknames);
+                $at_users = null;
+                foreach ($at_user_ids as $k => $v) {
+                    $at_users[$k]['id'] = $at_user_ids[$k];
+                    $at_users[$k]['nickname'] = $at_nicknames[$k];
+                    $at_users[$k]['sequence'] = $k;
+                }
+                $result[$key]['atUsers'] = $at_users;
             }
 
         }
@@ -162,6 +183,7 @@ class TweetsController extends BaseController
      * @apiParam {Number} user_id 作者用户id
      * @apiParam {String} content 动弹内容
      * @apiParam {Array<String>} [photos] 配图,这个字段以图片上传方式提交即可
+     * @apiParam {Array<id: String => String, nickname: String => String>} [atUsers] at的用户
      * @apiParam {Number} [app_client] 客户端类型 0iOS 1Android
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
@@ -181,10 +203,11 @@ class TweetsController extends BaseController
     public function postTweets(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required'],
+            'user_id' => ['required', 'exists:users,id'],
             'content' => ['required']
         ], [
             'user_id.required' => 'user_id不能为空',
+            'user_id.exists' => '用户不存在',
             'content.required' => '发布内容不能为空'
         ]);
         if ($validator->fails()) {
@@ -194,9 +217,10 @@ class TweetsController extends BaseController
         // 客户端类型
         $app_client = isset($request->app_client) ? $request->app_client : 0;
 
+        // 处理图片
         $originalPaths = null;
         $thumbPaths = null;
-        if (isset($request->photos)) {
+        if (isset($request->photos) && count($request->photos)) {
             $base64Photos = $request->photos;
             foreach ($base64Photos as $key => $base64Photo) {
                 $originalImage = Image::make($base64Photo);
@@ -238,14 +262,40 @@ class TweetsController extends BaseController
             $thumbPaths = implode(',', $thumbPaths);
         }
 
+        // 处理被at用户
+        $at_nicknames = null;
+        $at_user_ids = null;
+        if (isset($request->atUsers) && count($request->atUsers)) {
+            $atUsers = $request->atUsers;
+            foreach ($atUsers as $key => $atUser) {
+                $at_nicknames[$key] = $atUser['id'];
+                $at_user_ids[$key] = $atUser['nickname'];
+
+                // 在这里通知指定用户收到了信息
+
+            }
+
+            $at_nicknames = implode(',', $at_nicknames);
+            $at_user_ids = implode(',', $at_user_ids);
+        }
+
         $tweet = new Tweets();
         $tweet->user_id = $request->user_id;
         $tweet->app_client = $app_client;
         $tweet->content = $request->get('content');
+
+        // 发布参数中带配图
         if (isset($originalPaths) && isset($thumbPaths)) {
             $tweet->photos = $originalPaths;
             $tweet->photo_thumbs = $thumbPaths;
         }
+
+        // 发布参数中有at其他用户
+        if (isset($at_nicknames) && isset($at_user_ids)) {
+            $tweet->at_nicknames = $at_nicknames;
+            $tweet->at_user_ids = $at_user_ids;
+        }
+
         $tweet->save();
 
         return $this->respondWithSuccess(null, '发布动弹成功');

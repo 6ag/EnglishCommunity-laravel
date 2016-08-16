@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string content
  * @property string photos
  * @property string photo_thumbs
+ * @property string at_user_ids
+ * @property string at_nicknames
  * @property integer view
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at
