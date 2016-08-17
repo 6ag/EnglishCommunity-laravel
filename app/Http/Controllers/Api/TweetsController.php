@@ -220,8 +220,8 @@ class TweetsController extends BaseController
         // 处理图片
         $originalPaths = null;
         $thumbPaths = null;
-        if (isset($request->photos) && count($request->photos)) {
-            $base64Photos = $request->photos;
+        if (isset($request->photos)) {
+            $base64Photos = json_decode($request->photos, true);
             foreach ($base64Photos as $key => $base64Photo) {
                 $originalImage = Image::make($base64Photo);
                 $thumbImage = Image::make($base64Photo)->resize(150, null, function ($constraint) {
@@ -263,27 +263,25 @@ class TweetsController extends BaseController
         }
 
         // 处理被at用户
-        $at_nicknames = null;
         $at_user_ids = null;
-        if (isset($request->atUsers) && count($request->atUsers)) {
-            $atUsers = $request->atUsers;
+        $at_nicknames = null;
+        if (isset($request->atUsers)) {
+            $atUsers = json_decode($request->atUsers, true);
             foreach ($atUsers as $key => $atUser) {
-                $at_nicknames[$key] = $atUser['id'];
-                $at_user_ids[$key] = $atUser['nickname'];
-
+                $at_user_ids[$key] = $atUser['id'];
+                $at_nicknames[$key] = $atUser['nickname'];
                 // 在这里通知指定用户收到了信息
-
             }
 
-            $at_nicknames = implode(',', $at_nicknames);
             $at_user_ids = implode(',', $at_user_ids);
+            $at_nicknames = implode(',', $at_nicknames);
         }
 
         $tweet = new Tweets();
         $tweet->user_id = $request->user_id;
         $tweet->app_client = $app_client;
         $tweet->content = $request->get('content');
-
+        
         // 发布参数中带配图
         if (isset($originalPaths) && isset($thumbPaths)) {
             $tweet->photos = $originalPaths;
