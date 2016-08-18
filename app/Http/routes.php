@@ -99,4 +99,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     // 获取朋友关系列表
     Route::get('getFriendList.api', 'FriendController@getFriendList');
 
+    // 添加或删除赞
+    Route::post('addOrCancelLikeRecord.api', 'LikeRecordController@addOrCancelLikeRecord');
+
 });

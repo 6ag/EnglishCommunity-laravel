@@ -72,14 +72,15 @@ class CategoryController extends BaseController
 
         $result = null;
         $data = $videoInfos->all();
-        foreach ($data as $key => $value) {
-            $result[$key]['id'] = $value->id;
-            $result[$key]['title'] = $value->title;
-            $result[$key]['cover'] = url($value->photo);
-            $result[$key]['view'] = $value->view;
-            $result[$key]['teacherName'] = $value->teacher;
-            $result[$key]['videoType'] = $value->type;
-            $result[$key]['recommended'] = $value->recommend;
+        foreach ($data as $key => $videoInfo) {
+            $result[$key]['id'] = $videoInfo->id;
+            $result[$key]['title'] = $videoInfo->title;
+            $result[$key]['cover'] = url($videoInfo->photo);
+            $result[$key]['view'] = $videoInfo->view;
+            $result[$key]['teacherName'] = $videoInfo->teacher;
+            $result[$key]['videoType'] = $videoInfo->type;
+            $result[$key]['recommended'] = $videoInfo->recommend;
+            $result[$key]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
         }
 
         return $this->respondWithSuccess([
@@ -112,7 +113,7 @@ class CategoryController extends BaseController
      */
     public function getCategoryies(Request $request)
     {
-        $categories = Category::orderBy('order', 'asc')->get(['id', 'name', 'view']);
+        $categories = Category::orderBy('order', 'asc')->get(['id', 'name', 'alias', 'view']);
         if (count($categories) == 0) {
             return $this->respondWithErrors('没有查到任何分类');
         }
@@ -138,6 +139,7 @@ class CategoryController extends BaseController
                 $result[$k]['teacherName'] = $videoInfo->teacher;
                 $result[$k]['videoType'] = $videoInfo->type;
                 $result[$k]['recommended'] = $videoInfo->recommend;
+                $result[$key]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
             }
 
             $categories[$key]['videoInfoList'] = $result;
