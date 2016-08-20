@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Validator;
 
 class GrammarController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth', [
+            'except' => [
+                'getGramarManual',
+            ]
+        ]);
+    }
+
     /**
      * @api {get} /getGramarManual.api 获取语法手册数据
      * @apiDescription 获取所有语法数据,并存储到客户端

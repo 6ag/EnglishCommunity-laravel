@@ -13,6 +13,7 @@ class UsersTableSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
+                'id' => 10000,
                 'nickname' => '管理员',
                 'say' => '好好学习天天向上',
                 'avatar' => 'uploads/user/default/avatar.jpg',
@@ -25,6 +26,7 @@ class UsersTableSeeder extends Seeder
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
             ], [
+                'id' => 10001,
                 'nickname' => '王麻子',
                 'say' => '好好学习天天向上',
                 'avatar' => 'uploads/user/default/avatar.jpg',
@@ -37,6 +39,7 @@ class UsersTableSeeder extends Seeder
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
             ], [
+                'id' => 10002,
                 'nickname' => '李二狗',
                 'say' => '好好学习天天向上',
                 'avatar' => 'uploads/user/default/avatar.jpg',

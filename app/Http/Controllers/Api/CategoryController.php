@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Category;
 use App\Http\Model\Collection;
+use App\Http\Model\Comment;
 use Illuminate\Http\Request;
 use App\Http\Model\Video;
 use App\Http\Model\VideoInfo;
@@ -13,6 +14,17 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth', [
+            'except' => [
+                'getVideoInfosList',
+                'getCategoryies',
+            ]
+        ]);
+    }
+    
     /**
      * @api {get} /getVideoInfosList.api 视频信息列表
      * @apiDescription 根据分类id查询视频信息列表
@@ -26,6 +38,43 @@ class CategoryController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询指定分类视频列表成功",
+     *           "result": {
+     *               "pageInfo": {
+     *                   "total": 13,
+     *                   "currentPage": 1
+     *               },
+     *               "data": [
+     *                   {
+     *                       "id": 13,
+     *                       "title": "零基础学习英语音标视频教程",
+     *                       "cover": "http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg",
+     *                       "view": 39,
+     *                       "teacherName": "Nickcen",
+     *                       "videoType": "youku",
+     *                       "recommended": 0,
+     *                       "collected": 0,
+     *                       "videoCount": 21,
+     *                       "commentCount": 0,
+     *                       "collectionCount": 0
+     *                   },
+     *                   {
+     *                       "id": 12,
+     *                       "title": "48个国际音标发音视频教程全集",
+     *                       "cover": "http://www.english.com/uploads/video-info/f05d2843f5ecf9ec9448c98a9e6bbe80.jpg",
+     *                       "view": 17,
+     *                       "teacherName": "佚名",
+     *                       "videoType": "youku",
+     *                       "recommended": 0,
+     *                       "collected": 0,
+     *                       "videoCount": 21,
+     *                       "commentCount": 0,
+     *                       "collectionCount": 0
+     *                   }
+     *               ]
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -75,6 +124,10 @@ class CategoryController extends BaseController
             }
         }
 
+        // 只读一次到内存,节省资源
+        $comments = Comment::where('type', 'video_info')->get();
+        $collections = Collection::all();
+
         $result = null;
         $data = $videoInfos->all();
         foreach ($data as $key => $videoInfo) {
@@ -86,8 +139,10 @@ class CategoryController extends BaseController
             $result[$key]['teacherName'] = $videoInfo->teacher;
             $result[$key]['videoType'] = $videoInfo->type;
             $result[$key]['recommended'] = $videoInfo->recommend;
-            $result[$key]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
             $result[$key]['collected'] = isset($collection) ? 1 : 0;
+            $result[$key]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
+            $result[$key]['commentCount'] = $comments->where('source_id', $videoInfo->id)->count();
+            $result[$key]['collectionCount'] = $collections->where('source_id', $videoInfo->id)->count();
         }
 
         return $this->respondWithSuccess([
@@ -111,6 +166,75 @@ class CategoryController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *               "status": "success",
+     *               "code": 200,
+     *               "message": "查询分类列表成功",
+     *               "result": [
+     *               {
+     *               "id": 1,
+     *               "name": "音标",
+     *               "alias": "yinbiao",
+     *               "view": 31,
+     *               "videoInfoList": [
+     *               {
+     *                   "id": 13,
+     *                   "title": "零基础学习英语音标视频教程",
+     *                   "cover": "http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg",
+     *                   "view": 39,
+     *                   "teacherName": "Nickcen",
+     *                   "videoType": "youku",
+     *                   "recommended": 0,
+     *                   "collected": 0,
+     *                   "videoCount": 16,
+     *                   "commentCount": 0,
+     *                   "collectionCount": 0
+     *               },
+     *               {
+     *                   "id": 12,
+     *                     "title": "48个国际音标发音视频教程全集",
+     *                     "cover": "http://www.english.com/uploads/video-info/f05d2843f5ecf9ec9448c98a9e6bbe80.jpg",
+     *                     "view": 17,
+     *                     "teacherName": "佚名",
+     *                     "videoType": "youku",
+     *                     "recommended": 0,
+     *                     "collected": 0,
+     *                     "videoCount": 21
+     *                   }
+     *               ]
+     *               },
+     *               {
+     *                   "id": 2,
+     *                 "name": "单词",
+     *                 "alias": "danci",
+     *                 "view": 8,
+     *                 "videoInfoList": [
+     *                   {
+     *                       "id": 87,
+     *                 "title": "英语单词拼读视频教程全集",
+     *                 "cover": "http://www.english.com/uploads/video-info/245894d3fc2312adc2df4d70ac38abfe.jpg",
+     *                 "view": 4,
+     *                 "teacherName": "阿明",
+     *                 "videoType": "youku",
+     *                 "recommended": 0,
+     *                 "collected": 0,
+     *                 "videoCount": 15
+     *               },
+     *               {
+     *                   "commentCount": 0,
+     *                 "collectionCount": 0,
+     *                 "id": 86,
+     *                 "title": "快速记单词视频教程全集",
+     *                 "cover": "http://www.english.com/uploads/video-info/feef4bc8174da15db4207262d38f980f.jpg",
+     *                 "view": 0,
+     *                 "teacherName": "阿明",
+     *                 "videoType": "youku",
+     *                 "recommended": 0,
+     *                 "collected": 0,
+     *                 "videoCount": 14
+     *               }
+     *             ]
+     *           }
+     *       ]
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -140,6 +264,11 @@ class CategoryController extends BaseController
                 ->orderBy('id', 'desc')
                 ->take(isset($request->count) ? $request->count : 4)
                 ->get();
+
+            // 只读一次到内存,节省资源
+            $comments = Comment::where('type', 'video_info')->get();
+            $collections = Collection::all();
+
             $result = null;
             foreach ($videoInfos as $k => $videoInfo) {
                 $collection = Collection::where('user_id', $user_id)->where('video_info_id', $videoInfo->id)->first();
@@ -150,8 +279,10 @@ class CategoryController extends BaseController
                 $result[$k]['teacherName'] = $videoInfo->teacher;
                 $result[$k]['videoType'] = $videoInfo->type;
                 $result[$k]['recommended'] = $videoInfo->recommend;
-                $result[$k]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
                 $result[$k]['collected'] = isset($collection) ? 1 : 0;
+                $result[$k]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
+                $result[$key]['commentCount'] = $comments->where('source_id', $videoInfo->id)->count();
+                $result[$key]['collectionCount'] = $collections->where('source_id', $videoInfo->id)->count();
             }
             
             $categories[$key]['videoInfoList'] = $result;

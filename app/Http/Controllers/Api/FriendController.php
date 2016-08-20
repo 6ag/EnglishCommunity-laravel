@@ -12,22 +12,48 @@ use Illuminate\Support\Facades\Validator;
 
 class FriendController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth');
+    }
+
     /**
      * @api {get} /getFriendList.api 朋友关系列表
      * @apiDescription 获取朋友关系列表(关注、粉丝)
      * @apiGroup Friend
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 当前用户的id
      * @apiParam {String} relation 关系类型 0粉丝 1关注
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询朋友关系列表成功",
+     *           "result": [
+     *               {
+     *                   "relationUserId": 10001,
+     *                   "relationNickname": "王麻子",
+     *                   "relationAvatar": "http://www.english.com/uploads/user/default/avatar.jpg"
+     *               },
+     *               {
+     *                   "relationUserId": 10002,
+     *                   "relationNickname": "李二狗",
+     *                   "relationAvatar": "http://www.english.com/uploads/user/default/avatar.jpg"
+     *               }
+     *           ]
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
      *           "code": 404,
-     *           "message": "查询动弹列表失败"
+     *           "message": "没有查询到朋友关系数据"
      *      }
      */
     public function getFriendList(Request $request)

@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Validator;
 
 class VideoController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth', [
+            'except' => [
+                'getVideoList',
+                'parseYouku1'
+            ]
+        ]);
+    }
+
     /**
      * @api {get} /getVideoList.api 视频播放列表
      * @apiDescription 根据视频信息id查询视频播放列表
@@ -21,6 +32,25 @@ class VideoController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询视频播放列表成功",
+     *           "result": [
+     *               {
+     *                   "id": 161,
+     *                   "title": "郝彬音标超级训练第01课",
+     *                   "videoInfoId": 7,
+     *                   "videoUrl": "http://v.youku.com/v_show/id_XMTczNDQyOTY4.html",
+     *                   "order": 1
+     *               },
+     *               {
+     *                   "id": 162,
+     *                   "title": "郝彬音标超级训练第02课",
+     *                   "videoInfoId": 7,
+     *                   "videoUrl": "http://v.youku.com/v_show/id_XMTczNDQwODU2.html",
+     *                   "order": 2
+     *               }
+     *           ]
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {

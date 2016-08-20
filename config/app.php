@@ -157,6 +157,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         Intervention\Image\ImageServiceProvider::class,

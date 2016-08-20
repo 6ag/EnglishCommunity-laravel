@@ -2,7 +2,7 @@
 
 namespace App\Http\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Carbon\Carbon created_at
  * @property \Carbon\Carbon updated_at
  */
-class User extends Model
+class User extends Authenticatable
 {
     protected $table = 'users';
     protected $guarded = ['is_admin'];

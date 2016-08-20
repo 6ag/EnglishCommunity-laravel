@@ -12,11 +12,26 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth', [
+            'except' => [
+                'getCommentList',
+            ]
+        ]);
+    }
+    
     /**
      * @api {get} /postComment.api 发布评论
      * @apiDescription 发布或者回复一条评论
      * @apiGroup Comment
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 用户id
      * @apiParam {String} type 类型:tweet/video_info
      * @apiParam {Number} source_id 动弹或视频信息的id
@@ -86,6 +101,41 @@ class CommentController extends BaseController
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询评论列表成功",
+     *           "result": {
+     *               "pageInfo": {
+     *                   "total": 2,
+     *                   "currentPage": 1
+     *               },
+     *               "data": [
+     *                   {
+     *                       "id": 6,
+     *                       "type": "tweet",
+     *                       "sourceId": 5,
+     *                       "content": "[怒][怒]",
+     *                       "publishTime": "1471619839",
+     *                       "author": {
+     *                           "id": 10000,
+     *                           "nickname": "管理员",
+     *                           "avatar": "http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg"
+     *                       }
+     *                   },
+     *                   {
+     *                       "id": 5,
+     *                       "type": "tweet",
+     *                       "sourceId": 5,
+     *                       "content": "[吃惊]还可以",
+     *                       "publishTime": "1471608154",
+     *                       "author": {
+     *                           "id": 10000,
+     *                           "nickname": "管理员",
+     *                           "avatar": "http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg"
+     *                       }
+     *                   }
+     *               ]
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -110,7 +160,7 @@ class CommentController extends BaseController
 
         // 单页数量
         $count = isset($request->count) ? (int)$request->count : 10;
-        $comments = Comment::where(['source_id' => $request->source_id, 'type' => $request->type])->paginate($count);
+        $comments = Comment::where(['source_id' => $request->source_id, 'type' => $request->type])->orderBy('id', 'desc')->paginate($count);
         
         // 没有查询到数据
         $data = $comments->all();

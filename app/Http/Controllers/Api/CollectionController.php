@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Collection;
-use App\Http\Model\User;
 use App\Http\Model\Video;
 use App\Http\Model\VideoInfo;
 use Illuminate\Http\Request;
@@ -13,11 +12,22 @@ use Illuminate\Support\Facades\Validator;
 
 class CollectionController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth');
+    }
+    
     /**
      * @api {post} /addOrCancelCollectVideoInfo.api 收藏视频
      * @apiDescription 收藏视频信息
      * @apiGroup Collection
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 用户id
      * @apiParam {Number} video_info_id 视频信息的id
      * @apiVersion 0.0.1
@@ -66,6 +76,11 @@ class CollectionController extends BaseController
      * @apiDescription 获取指定用户的收藏列表
      * @apiGroup Collection
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 用户id
      * @apiParam {Number} [page] 页码,默认当然是第1页
      * @apiParam {Number} [count] 每页数量,默认10条
@@ -74,14 +89,43 @@ class CollectionController extends BaseController
      *       {
      *           "status": "success",
      *           "code": 200,
-     *           "message": "收藏视频信息成功",
-     *           "data": null
+     *           "message": "查询动弹列表成功",
+     *           "result": {
+     *               "pageInfo": {
+     *                   "total": 2,
+     *                   "currentPage": 1
+     *               },
+     *               "data": [
+     *                   {
+     *                       "id": 1,
+     *                       "title": "音标学习视频教程全集",
+     *                       "cover": "http://www.english.com/uploads/video-info/49a201b6868097e4762928e767f0c429.jpg",
+     *                       "view": 1,
+     *                       "teacherName": "佚名",
+     *                       "videoType": "youku",
+     *                       "recommended": 0,
+     *                       "videoCount": 45,
+     *                       "collected": 1
+     *                   },
+     *                   {
+     *                       "id": 2,
+     *                       "title": "英语国际英标逆向学习法视频教程全集",
+     *                       "cover": "http://www.english.com/uploads/video-info/82603b4674f15eb07eb031906b04b3a4.jpg",
+     *                       "view": 4,
+     *                       "teacherName": "佚名",
+     *                       "videoType": "youku",
+     *                       "recommended": 0,
+     *                       "videoCount": 12,
+     *                       "collected": 1
+     *                   }
+     *               ]
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
      *           "code": 400,
-     *           "message": "收藏视频信息失败"
+     *           "message": "获取收藏列表失败"
      *      }
      */
     public function getCollectionList(Request $request)

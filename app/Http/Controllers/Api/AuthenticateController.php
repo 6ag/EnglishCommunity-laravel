@@ -17,6 +17,18 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthenticateController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth', [
+            'except' => [
+                'sendCkeckCode',
+                'register',
+                'login',
+            ]
+        ]);
+    }
+
     // 短信接口地址
     protected $smsApiUrl = 'http://sms-api.luosimao.com/v1/send.json';
     // 短信密钥
@@ -106,7 +118,7 @@ class AuthenticateController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
-     *           "code": 404,
+     *           "code": 400,
      *           "message": "验证码发送失败"
      *      }
      */
@@ -143,8 +155,8 @@ class AuthenticateController extends BaseController
      * @apiGroup Auth
      * @apiPermission none
      * @apiParam {String} type 注册类型(username email mobile qq weixin weibo)
-     * @apiParam {String} identifier  唯一标识
-     * @apiParam {String} credential  凭证
+     * @apiParam {String} identifier 唯一标识
+     * @apiParam {String} credential 凭证
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *     {
@@ -156,7 +168,7 @@ class AuthenticateController extends BaseController
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
-     *           "code": 404,
+     *           "code": 400,
      *           "message": "用户名已经存在"
      *      }
      */
@@ -223,8 +235,28 @@ class AuthenticateController extends BaseController
      * @apiParam {String} credential  凭证
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
-     *     {
-     *      }
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "登录成功",
+     *           "result": {
+     *               "token": "xxxx.xxxxxxx.xxxxxxxx",
+     *               "id": 4,
+     *               "nickname": "佚名",
+     *               "say": null,
+     *               "avatar": "http://www.english.com/uploads/user/avatar.jpg",
+     *               "mobile": null,
+     *               "email": null,
+     *               "sex": 0,
+     *               "qqBinding": 0,
+     *               "weixinBinding": 0,
+     *               "weiboBinding": 0,
+     *               "emailBinding": 0,
+     *               "mobileBinding": 0,
+     *               "registerTime": "1471685857",
+     *               "lastLoginTime": "1471685891"
+     *           }
+     *       }
      * @apiErrorExample {json} Error-Response:
      *     {
      *           "status": "error",
@@ -311,21 +343,14 @@ class AuthenticateController extends BaseController
     }
 
     /**
-     * 刷新token
-     * @return \Illuminate\Http\Response
-     */
-    public function refreshToken()
-    {
-        $token = JWTAuth::refresh();
-        return $this->respondWithSuccess([
-            'token' => $token,
-        ], '刷新token成功');
-    }
-
-    /**
      * @api {post} /auth/modifyUserPassword.api 修改用户密码
      * @apiGroup Auth
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id  用户id
      * @apiParam {String} credential_old  密码
      * @apiParam {String} credential_new  新密码
@@ -352,11 +377,11 @@ class AuthenticateController extends BaseController
             'credential_old' => ['required'],
             'credential_new' => ['required', 'between:6,20'],
         ], [
-            'user_id.required' => '用户id必须传',
+            'user_id.required' => 'user_id不能为空',
             'user_id.exists' => '用户不存在',
-            'credential_old.required' => '旧密码必须传',
-            'credential_new.required' => '新密码不能为空!',
-            'credential_new.between' => '新密码必须在6-20位之间',
+            'credential_old.required' => 'credential_old不能为空',
+            'credential_new.required' => 'credential_new不能为空!',
+            'credential_new.between' => 'credential_new必须在6-20位之间',
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);

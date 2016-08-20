@@ -10,17 +10,34 @@ use Illuminate\Support\Facades\Validator;
 
 class LikeRecordController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth');
+    }
+
     /**
      * @api {post} /addOrCancelLikeRecord.api 添加删除赞
      * @apiDescription 添加或删除赞
      * @apiGroup LikeRecord
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 当前用户id
      * @apiParam {String} type 赞类型 video_info或者tweet
      * @apiParam {Number} source_id 视频或者动弹的id
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "赞成功",
+     *           "result": {
+     *               "type": "add"
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {

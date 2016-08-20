@@ -41,7 +41,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n      \"status\": \"success\",\n      \"code\": 200,\n      \"message\": \"登录成功\",\n      \"data\": {\n          \"token\": \"xxxx.xxxx.xxx-xx\",\n          \"id\": 1,\n          \"username\": \"admin\",\n          \"nickname\": \"管理员\",\n          \"say\": null,\n          \"avatar\": \"uploads/user/avatar.jpg\",\n          \"mobile\": null,\n          \"sex\": 0,\n          \"qq_binding\": 0,\n          \"weixin_binding\": 0,\n          \"weibo_binding\": 0,\n          \"phone_binding\": 0,\n          \"email_binding\": 0,\n          \"register_time\": 1470797736\n      }\n  }",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"登录成功\",\n    \"result\": {\n        \"token\": \"xxxx.xxxxxxx.xxxxxxxx\",\n        \"id\": 4,\n        \"nickname\": \"佚名\",\n        \"say\": null,\n        \"avatar\": \"http://www.english.com/uploads/user/avatar.jpg\",\n        \"mobile\": null,\n        \"email\": null,\n        \"sex\": 0,\n        \"qqBinding\": 0,\n        \"weixinBinding\": 0,\n        \"weiboBinding\": 0,\n        \"emailBinding\": 0,\n        \"mobileBinding\": 0,\n        \"registerTime\": \"1471685857\",\n        \"lastLoginTime\": \"1471685891\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -69,6 +69,26 @@ define({ "api": [
         "name": "none"
       }
     ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "parameter": {
       "fields": {
         "Parameter": [
@@ -170,7 +190,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"用户名已经存在\"\n }",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"用户名已经存在\"\n }",
           "type": "json"
         }
       ]
@@ -216,7 +236,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"验证码发送失败\"\n }",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"验证码发送失败\"\n }",
           "type": "json"
         }
       ]
@@ -243,6 +263,13 @@ define({ "api": [
             "group": "Parameter",
             "type": "Number",
             "optional": true,
+            "field": "user_id",
+            "description": "<p>当前用户id 未登录不传或者传0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
             "field": "have_data",
             "description": "<p>是否返回带数据的分类信息数据, 1有 0无</p>"
           },
@@ -261,7 +288,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询分类列表成功\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"音标\",\n            \"view\": 0,\n            \"pid\": 0\n        },\n        {\n            \"id\": 2,\n            \"name\": \"单词\",\n            \"view\": 0,\n            \"pid\": 0\n        },\n        {\n            \"id\": 3,\n            \"name\": \"语法\",\n            \"view\": 4,\n            \"pid\": 0\n        },\n        {\n            \"id\": 4,\n            \"name\": \"口语\",\n            \"view\": 0,\n            \"pid\": 0\n        },\n        {\n            \"id\": 5,\n            \"name\": \"听力\",\n            \"view\": 0,\n            \"pid\": 0\n        }\n    ]\n}",
+          "content": "{\n        \"status\": \"success\",\n        \"code\": 200,\n        \"message\": \"查询分类列表成功\",\n        \"result\": [\n        {\n        \"id\": 1,\n        \"name\": \"音标\",\n        \"alias\": \"yinbiao\",\n        \"view\": 31,\n        \"videoInfoList\": [\n        {\n            \"id\": 13,\n            \"title\": \"零基础学习英语音标视频教程\",\n            \"cover\": \"http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg\",\n            \"view\": 39,\n            \"teacherName\": \"Nickcen\",\n            \"videoType\": \"youku\",\n            \"recommended\": 0,\n            \"collected\": 0,\n            \"videoCount\": 16,\n            \"commentCount\": 0,\n            \"collectionCount\": 0\n        },\n        {\n            \"id\": 12,\n              \"title\": \"48个国际音标发音视频教程全集\",\n              \"cover\": \"http://www.english.com/uploads/video-info/f05d2843f5ecf9ec9448c98a9e6bbe80.jpg\",\n              \"view\": 17,\n              \"teacherName\": \"佚名\",\n              \"videoType\": \"youku\",\n              \"recommended\": 0,\n              \"collected\": 0,\n              \"videoCount\": 21\n            }\n        ]\n        },\n        {\n            \"id\": 2,\n          \"name\": \"单词\",\n          \"alias\": \"danci\",\n          \"view\": 8,\n          \"videoInfoList\": [\n            {\n                \"id\": 87,\n          \"title\": \"英语单词拼读视频教程全集\",\n          \"cover\": \"http://www.english.com/uploads/video-info/245894d3fc2312adc2df4d70ac38abfe.jpg\",\n          \"view\": 4,\n          \"teacherName\": \"阿明\",\n          \"videoType\": \"youku\",\n          \"recommended\": 0,\n          \"collected\": 0,\n          \"videoCount\": 15\n        },\n        {\n            \"commentCount\": 0,\n          \"collectionCount\": 0,\n          \"id\": 86,\n          \"title\": \"快速记单词视频教程全集\",\n          \"cover\": \"http://www.english.com/uploads/video-info/feef4bc8174da15db4207262d38f980f.jpg\",\n          \"view\": 0,\n          \"teacherName\": \"阿明\",\n          \"videoType\": \"youku\",\n          \"recommended\": 0,\n          \"collected\": 0,\n          \"videoCount\": 14\n        }\n      ]\n    }\n]\n}",
           "type": "json"
         }
       ]
@@ -303,7 +330,14 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "Number",
-            "optional": false,
+            "optional": true,
+            "field": "user_id",
+            "description": "<p>当前用户id 未登录不传或者传0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
             "field": "page",
             "description": "<p>页码</p>"
           },
@@ -318,7 +352,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "Number",
             "optional": true,
-            "field": "recomend",
+            "field": "recommend",
             "description": "<p>是否返回推荐的视频 1是 0否</p>"
           }
         ]
@@ -329,7 +363,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询视频列表成功\",\n    \"data\": {\n    \"total\": 25,\n    \"rows\": 2,\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 25,\n            \"title\": \"这是一个测试标题\",\n            \"intro\": \"这是一些简介这是一些简介这是一些简介\",\n            \"photo\": \"uploads/2c9337d98f69cd02cbbab4ae0e1cd118.jpg\",\n            \"view\": 0,\n            \"category_id\": 3,\n            \"teacher\": \"苍老师\",\n            \"type\": \"youku\",\n            \"created_at\": \"2016-08-01 05:29:44\",\n            \"updated_at\": \"2016-08-01 06:22:49\"\n            },\n            {\n            \"id\": 24,\n            \"title\": \"这是一个测试标题\",\n            \"intro\": \"这是一些简介这是一些简介这是一些简介\",\n            \"photo\": \"uploads/7f32770735063583890994798c4300d3.jpg\",\n            \"view\": 0,\n            \"category_id\": 3,\n            \"teacher\": \"苍老师\",\n            \"type\": \"youku\",\n            \"created_at\": \"2016-08-01 05:29:44\",\n            \"updated_at\": \"2016-08-01 05:29:44\"\n            }\n        ]\n    }\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询指定分类视频列表成功\",\n    \"result\": {\n        \"pageInfo\": {\n            \"total\": 13,\n            \"currentPage\": 1\n        },\n        \"data\": [\n            {\n                \"id\": 13,\n                \"title\": \"零基础学习英语音标视频教程\",\n                \"cover\": \"http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg\",\n                \"view\": 39,\n                \"teacherName\": \"Nickcen\",\n                \"videoType\": \"youku\",\n                \"recommended\": 0,\n                \"collected\": 0,\n                \"videoCount\": 21,\n                \"commentCount\": 0,\n                \"collectionCount\": 0\n            },\n            {\n                \"id\": 12,\n                \"title\": \"48个国际音标发音视频教程全集\",\n                \"cover\": \"http://www.english.com/uploads/video-info/f05d2843f5ecf9ec9448c98a9e6bbe80.jpg\",\n                \"view\": 17,\n                \"teacherName\": \"佚名\",\n                \"videoType\": \"youku\",\n                \"recommended\": 0,\n                \"collected\": 0,\n                \"videoCount\": 21,\n                \"commentCount\": 0,\n                \"collectionCount\": 0\n            }\n        ]\n    }\n}",
           "type": "json"
         }
       ]
@@ -358,6 +392,26 @@ define({ "api": [
         "name": "none"
       }
     ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "parameter": {
       "fields": {
         "Parameter": [
@@ -390,7 +444,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"收藏视频信息成功\",\n    \"data\": null\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹列表成功\",\n    \"result\": {\n        \"pageInfo\": {\n            \"total\": 2,\n            \"currentPage\": 1\n        },\n        \"data\": [\n            {\n                \"id\": 1,\n                \"title\": \"音标学习视频教程全集\",\n                \"cover\": \"http://www.english.com/uploads/video-info/49a201b6868097e4762928e767f0c429.jpg\",\n                \"view\": 1,\n                \"teacherName\": \"佚名\",\n                \"videoType\": \"youku\",\n                \"recommended\": 0,\n                \"videoCount\": 45,\n                \"collected\": 1\n            },\n            {\n                \"id\": 2,\n                \"title\": \"英语国际英标逆向学习法视频教程全集\",\n                \"cover\": \"http://www.english.com/uploads/video-info/82603b4674f15eb07eb031906b04b3a4.jpg\",\n                \"view\": 4,\n                \"teacherName\": \"佚名\",\n                \"videoType\": \"youku\",\n                \"recommended\": 0,\n                \"videoCount\": 12,\n                \"collected\": 1\n            }\n        ]\n    }\n}",
           "type": "json"
         }
       ]
@@ -399,7 +453,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"收藏视频信息失败\"\n }",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取收藏列表失败\"\n }",
           "type": "json"
         }
       ]
@@ -410,7 +464,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/collectVideoInfo.api",
+    "url": "/addOrCancelCollectVideoInfo.api",
     "title": "收藏视频",
     "description": "<p>收藏视频信息</p>",
     "group": "Collection",
@@ -419,6 +473,26 @@ define({ "api": [
         "name": "none"
       }
     ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "parameter": {
       "fields": {
         "Parameter": [
@@ -460,7 +534,7 @@ define({ "api": [
     },
     "filename": "app/Http/Controllers/Api/CollectionController.php",
     "groupTitle": "Collection",
-    "name": "PostCollectvideoinfoApi"
+    "name": "PostAddorcancelcollectvideoinfoApi"
   },
   {
     "type": "get",
@@ -481,7 +555,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "type",
-            "description": "<p>类型:trends/video</p>"
+            "description": "<p>类型:tweet/video_info</p>"
           },
           {
             "group": "Parameter",
@@ -512,7 +586,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询评论列表成功\",\n    \"data\": {\n        \"total\": 4,\n        \"rows\": 2,\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 1,\n                \"type\": \"trends\",\n                \"source_id\": 43,\n                \"user_id\": 2,\n                \"content\": \"一起吃行不\",\n                \"pid\": 0,\n                \"created_at\": \"2016-08-10 14:40:12\",\n                \"updated_at\": \"2016-08-10 14:40:12\",\n                \"user_nickname\": \"王麻子\",\n                \"user_avatar\": \"uploads/user/avatar.jpg\"\n            },\n            {\n                \"id\": 2,\n                \"type\": \"trends\",\n                \"source_id\": 43,\n                \"user_id\": 1,\n                \"content\": \"完全可以啊\",\n                \"pid\": 1,\n                \"created_at\": \"2016-08-10 14:40:12\",\n                \"updated_at\": \"2016-08-10 14:40:12\",\n                \"user_nickname\": \"管理员\",\n                \"user_avatar\": \"uploads/user/avatar.jpg\",\n                \"puser_id\": 2,\n                \"puser_nickname\": \"王麻子\",\n                \"puser_avatar\": \"uploads/user/avatar.jpg\"\n            }\n        ]\n    }\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询评论列表成功\",\n    \"result\": {\n        \"pageInfo\": {\n            \"total\": 2,\n            \"currentPage\": 1\n        },\n        \"data\": [\n            {\n                \"id\": 6,\n                \"type\": \"tweet\",\n                \"sourceId\": 5,\n                \"content\": \"[怒][怒]\",\n                \"publishTime\": \"1471619839\",\n                \"author\": {\n                    \"id\": 10000,\n                    \"nickname\": \"管理员\",\n                    \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\"\n                }\n            },\n            {\n                \"id\": 5,\n                \"type\": \"tweet\",\n                \"sourceId\": 5,\n                \"content\": \"[吃惊]还可以\",\n                \"publishTime\": \"1471608154\",\n                \"author\": {\n                    \"id\": 10000,\n                    \"nickname\": \"管理员\",\n                    \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\"\n                }\n            }\n        ]\n    }\n}",
           "type": "json"
         }
       ]
@@ -541,6 +615,26 @@ define({ "api": [
         "name": "none"
       }
     ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "parameter": {
       "fields": {
         "Parameter": [
@@ -556,7 +650,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "type",
-            "description": "<p>类型:trends/video</p>"
+            "description": "<p>类型:tweet/video_info</p>"
           },
           {
             "group": "Parameter",
@@ -604,6 +698,80 @@ define({ "api": [
     "filename": "app/Http/Controllers/Api/CommentController.php",
     "groupTitle": "Comment",
     "name": "GetPostcommentApi"
+  },
+  {
+    "type": "get",
+    "url": "/getFriendList.api",
+    "title": "朋友关系列表",
+    "description": "<p>获取朋友关系列表(关注、粉丝)</p>",
+    "group": "Friend",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>当前用户的id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "relation",
+            "description": "<p>关系类型 0粉丝 1关注</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询朋友关系列表成功\",\n    \"result\": [\n        {\n            \"relationUserId\": 10001,\n            \"relationNickname\": \"王麻子\",\n            \"relationAvatar\": \"http://www.english.com/uploads/user/default/avatar.jpg\"\n        },\n        {\n            \"relationUserId\": 10002,\n            \"relationNickname\": \"李二狗\",\n            \"relationAvatar\": \"http://www.english.com/uploads/user/default/avatar.jpg\"\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"没有查询到朋友关系数据\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/FriendController.php",
+    "groupTitle": "Friend",
+    "name": "GetGetfriendlistApi"
   },
   {
     "type": "get",
@@ -660,11 +828,92 @@ define({ "api": [
     "name": "GetGetgramarmanualApi"
   },
   {
+    "type": "post",
+    "url": "/addOrCancelLikeRecord.api",
+    "title": "添加删除赞",
+    "description": "<p>添加或删除赞</p>",
+    "group": "LikeRecord",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>当前用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>赞类型 video_info或者tweet</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "source_id",
+            "description": "<p>视频或者动弹的id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"赞成功\",\n    \"result\": {\n        \"type\": \"add\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"赞操作失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/LikeRecordController.php",
+    "groupTitle": "LikeRecord",
+    "name": "PostAddorcancellikerecordApi"
+  },
+  {
     "type": "get",
-    "url": "/getTrendsDetail.api",
+    "url": "/getTweetsDetail.api",
     "title": "动弹详情",
     "description": "<p>获取动弹详情,获取动弹赞列表、评论列表是其他接口</p>",
-    "group": "Trends",
+    "group": "Tweet",
     "permission": [
       {
         "name": "none"
@@ -677,7 +926,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "Number",
             "optional": false,
-            "field": "trends_id",
+            "field": "tweet_id",
             "description": "<p>动弹id</p>"
           },
           {
@@ -695,7 +944,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹详情成功\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"content\": \"今天吃屎非常合适\",\n        \"small_photo\": null,\n        \"photo\": null,\n        \"view\": 8,\n        \"created_at\": \"2016-08-10 14:40:12\",\n        \"updated_at\": \"2016-08-10 16:28:44\",\n        \"comment_count\": 3,\n        \"favorite_count\": 0,\n        \"is_favorite\": 0,\n        \"user_nickname\": \"管理员\",\n        \"user_avatar\": \"uploads/user/avatar.jpg\"\n    }\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹详情成功\",\n    \"result\": {\n        \"id\": 1,\n        \"appClient\": 0,\n        \"content\": \"[害羞]这是一条测试数据啊，你别看错了啊，这是一条测试数据。这是一条测试数据啊。\",\n        \"commentCount\": 0,\n        \"likeCount\": 0,\n        \"liked\": 0,\n        \"publishTime\": \"1471576204\",\n        \"author\": {\n            \"id\": 10000,\n            \"nickname\": \"管理员\",\n            \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\"\n        },\n        \"images\": [\n            {\n                \"href\": \"http://www.english.com/uploads/tweets/2016-08-19/d1c632b1b01a665e09665d53ba2a18f9.jpg\",\n                \"thumb\": \"http://www.english.com/uploads/tweets/2016-08-19/d1c632b1b01a665e09665d53ba2a18f9_thumb.jpg\"\n            }\n        ]\n    }\n}",
           "type": "json"
         }
       ]
@@ -704,21 +953,21 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "{\n    \"status\": \"error\",\n    \"code\": 400,\n    \"message\": \"trends_id无效\"\n}",
+          "content": "{\n    \"status\": \"error\",\n    \"code\": 400,\n    \"message\": \"tweet_id不能为空\"\n}",
           "type": "json"
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/TrendsController.php",
-    "groupTitle": "Trends",
-    "name": "GetGettrendsdetailApi"
+    "filename": "app/Http/Controllers/Api/TweetsController.php",
+    "groupTitle": "Tweet",
+    "name": "GetGettweetsdetailApi"
   },
   {
     "type": "get",
-    "url": "/getTrendsList.api",
+    "url": "/getTweetsList.api",
     "title": "动弹列表",
     "description": "<p>获取动弹列表,可根据参数返回不同的数据</p>",
-    "group": "Trends",
+    "group": "Tweet",
     "permission": [
       {
         "name": "none"
@@ -730,7 +979,7 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "String",
-            "optional": true,
+            "optional": false,
             "field": "type",
             "description": "<p>返回类型 默认new, new最新 hot热门 me我的</p>"
           },
@@ -763,7 +1012,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹列表成功\",\n    \"data\": {\n    \"total\": 4,\n    \"rows\": \"2\",\n    \"current_page\": 1,\n    \"data\": [\n        {\n        \"id\": 4,\n        \"user_id\": 3,\n        \"content\": \"吃屎的这么这么多\",\n        \"photo\": null,\n        \"view\": 15,\n        \"created_at\": \"2016-08-08 15:57:08\",\n        \"updated_at\": \"2016-08-08 15:57:08\",\n        \"comment_count\": 0,\n        \"favorite_count\": 0,\n        \"user\": {\n            \"id\": 3,\n            \"nickname\": \"宝宝\",\n            \"say\": null,\n            \"avatar\": \"uploads/user/avatar.jpg\",\n            \"mobile\": null,\n            \"email\": null,\n            \"sex\": 0,\n            \"status\": 1,\n            \"is_admin\": 0,\n            \"qq_binding\": 0,\n            \"weixin_binding\": 0,\n            \"weibo_binding\": 0,\n            \"email_binding\": 0,\n            \"mobile_binding\": 0,\n            \"created_at\": \"2016-08-08 15:24:53\",\n            \"updated_at\": \"2016-08-08 15:24:53\"\n            }\n        },\n        {\n        \"id\": 3,\n        \"user_id\": 2,\n        \"content\": \"你们吃什么样的屎\",\n        \"photo\": null,\n        \"view\": 12,\n        \"created_at\": \"2016-08-08 15:55:08\",\n        \"updated_at\": \"2016-08-08 15:55:08\",\n        \"comment_count\": 0,\n        \"favorite_count\": 0,\n        \"user\": {\n            \"id\": 2,\n            \"nickname\": \"宝宝\",\n            \"say\": null,\n            \"avatar\": \"uploads/user/avatar.jpg\",\n            \"mobile\": null,\n            \"email\": null,\n            \"sex\": 0,\n            \"status\": 1,\n            \"is_admin\": 0,\n            \"qq_binding\": 0,\n            \"weixin_binding\": 0,\n            \"weibo_binding\": 0,\n            \"email_binding\": 0,\n            \"mobile_binding\": 0,\n            \"created_at\": \"2016-08-08 15:24:26\",\n            \"updated_at\": \"2016-08-08 15:24:26\"\n        }\n        }\n        ]\n    }\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询动弹列表成功\",\n    \"result\": {\n        \"pageInfo\": {\n            \"total\": 8,\n            \"currentPage\": 1\n        },\n        \"data\": [\n            {\n            \"id\": 8,\n            \"appClient\": 0,\n            \"content\": \"[可爱][可爱]\",\n            \"commentCount\": 0,\n            \"likeCount\": 1,\n            \"liked\": 0,\n            \"publishTime\": \"1471687444\",\n            \"author\": {\n                \"id\": 10000,\n                \"nickname\": \"管理员\",\n                \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\"\n            },\n            \"images\": [\n                {\n                    \"href\": \"http://www.english.com/uploads/tweets/2016-08-20/acc95cb2adb4efbf9837dfdd74681571.jpg\",\n                    \"thumb\": \"http://www.english.com/uploads/tweets/2016-08-20/acc95cb2adb4efbf9837dfdd74681571_thumb.jpg\"\n                }\n            ]\n            },\n            {\n            \"id\": 7,\n            \"appClient\": 0,\n            \"content\": \"三张\",\n            \"commentCount\": 1,\n            \"likeCount\": 1,\n            \"liked\": 0,\n            \"publishTime\": \"1471576544\",\n            \"author\": {\n                \"id\": 10000,\n                \"nickname\": \"管理员\",\n                \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\"\n            },\n            \"images\": [\n                {\n                    \"href\": \"http://www.english.com/uploads/tweets/2016-08-19/e1e7ec0fe33ee7290f90337bf94cad1a.jpg\",\n                    \"thumb\": \"http://www.english.com/uploads/tweets/2016-08-19/e1e7ec0fe33ee7290f90337bf94cad1a_thumb.jpg\"\n                },\n                {\n                    \"href\": \"http://www.english.com/uploads/tweets/2016-08-19/cbe5cf86c5138f520fc6cec43ec5fa0b.jpg\",\n                    \"thumb\": \"http://www.english.com/uploads/tweets/2016-08-19/cbe5cf86c5138f520fc6cec43ec5fa0b_thumb.jpg\"\n                },\n                {\n                    \"href\": \"http://www.english.com/uploads/tweets/2016-08-19/faf969467dea3ddf1dcd403852a3d68e.jpg\",\n                    \"thumb\": \"http://www.english.com/uploads/tweets/2016-08-19/faf969467dea3ddf1dcd403852a3d68e_thumb.jpg\"\n                }\n            ]\n            }\n        ]\n    }\n}",
           "type": "json"
         }
       ]
@@ -777,21 +1026,41 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/TrendsController.php",
-    "groupTitle": "Trends",
-    "name": "GetGettrendslistApi"
+    "filename": "app/Http/Controllers/Api/TweetsController.php",
+    "groupTitle": "Tweet",
+    "name": "GetGettweetslistApi"
   },
   {
     "type": "post",
-    "url": "/postTrends.api",
+    "url": "/postTweets.api",
     "title": "发布动弹",
     "description": "<p>发布一条新的动弹</p>",
-    "group": "Trends",
+    "group": "Tweet",
     "permission": [
       {
         "name": "none"
       }
     ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "parameter": {
       "fields": {
         "Parameter": [
@@ -811,10 +1080,24 @@ define({ "api": [
           },
           {
             "group": "Parameter",
-            "type": "File",
+            "type": "JSON",
             "optional": true,
-            "field": "photo",
-            "description": "<p>配图,这个字段以图片上传方式提交即可</p>"
+            "field": "photos",
+            "description": "<p>['base64'] 动弹配图,base64编码的图片数组</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "JSON",
+            "optional": true,
+            "field": "atUsers",
+            "description": "<p>[{'id':'10000','nickname':'管理员'}] 被at的用户</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "app_client",
+            "description": "<p>客户端类型 0iOS 1Android</p>"
           }
         ]
       }
@@ -838,9 +1121,238 @@ define({ "api": [
         }
       ]
     },
-    "filename": "app/Http/Controllers/Api/TrendsController.php",
-    "groupTitle": "Trends",
-    "name": "PostPosttrendsApi"
+    "filename": "app/Http/Controllers/Api/TweetsController.php",
+    "groupTitle": "Tweet",
+    "name": "PostPosttweetsApi"
+  },
+  {
+    "type": "get",
+    "url": "/getUserInfomation.api",
+    "title": "获取用户信息",
+    "description": "<p>获取用户信息</p>",
+    "group": "User",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取用户信息成功\",\n    \"result\": {\n        \"token\": \"xxxx.xxxxxxx.xxxxxxxx\",\n        \"id\": 10000,\n        \"nickname\": \"管理员\",\n        \"say\": \"Hello world!\",\n        \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\",\n        \"mobile\": \"15626427299\",\n        \"email\": \"admin@6ag.cn\",\n        \"sex\": 1,\n        \"qqBinding\": 0,\n        \"weixinBinding\": 0,\n        \"weiboBinding\": 0,\n        \"emailBinding\": 1,\n        \"mobileBinding\": 1,\n        \"registerTime\": \"1471437181\",\n        \"lastLoginTime\": \"1471715751\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取用户信息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/UserController.php",
+    "groupTitle": "User",
+    "name": "GetGetuserinfomationApi"
+  },
+  {
+    "type": "post",
+    "url": "/updateUserInfomation.api",
+    "title": "更新用户信息",
+    "description": "<p>更新用户信息</p>",
+    "group": "User",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "nickname",
+            "description": "<p>昵称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "sex",
+            "description": "<p>0女 1男</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "say",
+            "description": "<p>个性签名</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"更新用户信息成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"更新用户信息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/UserController.php",
+    "groupTitle": "User",
+    "name": "PostUpdateuserinfomationApi"
+  },
+  {
+    "type": "post",
+    "url": "/uploadUserAvatar.api",
+    "title": "上传用户头像",
+    "description": "<p>上传用户头像</p>",
+    "group": "User",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "photo",
+            "description": "<p>base64编码的图片</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"上传头像成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"上传头像失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/UserController.php",
+    "groupTitle": "User",
+    "name": "PostUploaduseravatarApi"
   },
   {
     "type": "get",
@@ -871,7 +1383,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询视频播放列表成功\",\n    \"data\": [\n        {\n            \"id\": 137,\n            \"title\": \"音标学习\",\n            \"video_info_id\": 25,\n            \"video_url\": \"http://v.youku.com/v_show/id_XNzg3NTcxMDA=.html\",\n            \"created_at\": \"2016-08-01 06:22:49\",\n            \"updated_at\": \"2016-08-01 06:22:49\",\n            \"order\": 0\n        },\n        {\n            \"id\": 138,\n            \"title\": \"语法学习\",\n            \"video_info_id\": 25,\n            \"video_url\": \"http://v.youku.com/v_show/id_XNzg3NTcxMDA=.html\",\n            \"created_at\": \"2016-08-01 06:22:49\",\n            \"updated_at\": \"2016-08-01 06:22:49\",\n            \"order\": 1\n        },\n        {\n            \"id\": 139,\n            \"title\": \"牛逼学习\",\n            \"video_info_id\": 25,\n            \"video_url\": \"http://v.youku.com/v_show/id_XNzg3NTcxMDA=.html\",\n            \"created_at\": \"2016-08-01 06:22:49\",\n            \"updated_at\": \"2016-08-01 06:22:49\",\n            \"order\": 2\n        },\n        {\n            \"id\": 140,\n            \"title\": \"傻逼学习\",\n            \"video_info_id\": 25,\n            \"video_url\": \"http://v.youku.com/v_show/id_XNzg3NTcxMDA=.html\",\n            \"created_at\": \"2016-08-01 06:22:49\",\n            \"updated_at\": \"2016-08-01 06:22:49\",\n            \"order\": 3\n        }\n    ]\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询视频播放列表成功\",\n    \"result\": [\n        {\n            \"id\": 161,\n            \"title\": \"郝彬音标超级训练第01课\",\n            \"videoInfoId\": 7,\n            \"videoUrl\": \"http://v.youku.com/v_show/id_XMTczNDQyOTY4.html\",\n            \"order\": 1\n        },\n        {\n            \"id\": 162,\n            \"title\": \"郝彬音标超级训练第02课\",\n            \"videoInfoId\": 7,\n            \"videoUrl\": \"http://v.youku.com/v_show/id_XMTczNDQwODU2.html\",\n            \"order\": 2\n        }\n    ]\n}",
           "type": "json"
         }
       ]
@@ -918,7 +1430,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"解析视频地址成功\",\n    \"data\": {\n        \"normal\": {\n            \"count\": \"2\",\n            \"data\": [\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_00/st/flv/fileid/030002020057A01079076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=a506ff12854c8ebe282b9f1b&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFg9JgALshT5m%2FmD7Wzp23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1&ymovie=1\",\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_01/st/flv/fileid/030002020157A01079076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=32258eefe0579806261f2881&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFg9JgALohT5m%2FmD7Wzp23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1&ymovie=1\"\n            ]\n        },\n        \"high\": {\n            \"count\": \"2\",\n            \"data\": [\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_00/st/mp4/fileid/030008020057A01347076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=99121930a5baabe32412b1e7&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFidJgALshT5m%2FmD3VwJ23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1\",\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_01/st/mp4/fileid/030008020157A01347076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=8aabf523c76432272412b1e7&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFidJgALohT5m%2FmD3VwJ23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1\"\n            ]\n        },\n        \"hyper\": {\n            \"count\": \"3\",\n            \"data\": [\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_00/st/flv/fileid/030001030057A013C5076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=0926bb69b555efc3261f2881&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFgNJhALshT5m%2FmD2iwp23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1\",\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_01/st/flv/fileid/030001030157A013C5076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=53e8c1867c4d32f2261f2881&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFgNJhALohT5m%2FmD2iwp23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1\",\n                \"http://k.youku.com/player/getFlvPath/sid/847022969297012c1d9f3_02/st/flv/fileid/030001030257A013C5076B31F0446F4CC58682-901F-3DB9-6F28-0B6148C748B7?K=e8d08cbef327713e261f2881&ctype=12&ev=1&token=3704&oip=3549804647&ep=eiaTGkuPX8gJ5yrYiD8bNC22fSEMXP4J9h%2BFgNJhALkhT5m%2FmD2iwp23SI1BF48ZdiYAZu%2BC2NXvbEgWYflDqB4Q3DraMPrmiPLr5a0hwpEEbmoxdsWls1SdRDD1\"\n            ]\n        }\n    }\n}",
+          "content": "{\n}",
           "type": "json"
         }
       ]

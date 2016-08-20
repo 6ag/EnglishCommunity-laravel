@@ -13,11 +13,22 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth');
+    }
+
     /**
      * @api {post} /uploadUserAvatar.api 上传用户头像
      * @apiDescription 上传用户头像
      * @apiGroup User
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 用户id
      * @apiParam {String} photo base64编码的图片
      * @apiVersion 0.0.1
@@ -80,10 +91,15 @@ class UserController extends BaseController
     }
 
     /**
-     * @api {get} /getUserInfomation.api 用户信息
+     * @api {get} /getUserInfomation.api 获取用户信息
      * @apiDescription 获取用户信息
      * @apiGroup User
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 用户id
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
@@ -91,7 +107,23 @@ class UserController extends BaseController
      *           "status": "success",
      *           "code": 200,
      *           "message": "获取用户信息成功",
-     *           "data": null
+     *           "result": {
+     *               "token": "xxxx.xxxxxxx.xxxxxxxx",
+     *               "id": 10000,
+     *               "nickname": "管理员",
+     *               "say": "Hello world!",
+     *               "avatar": "http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg",
+     *               "mobile": "15626427299",
+     *               "email": "admin@6ag.cn",
+     *               "sex": 1,
+     *               "qqBinding": 0,
+     *               "weixinBinding": 0,
+     *               "weiboBinding": 0,
+     *               "emailBinding": 1,
+     *               "mobileBinding": 1,
+     *               "registerTime": "1471437181",
+     *               "lastLoginTime": "1471715751"
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -138,5 +170,53 @@ class UserController extends BaseController
             'registerTime' => (string)$user->created_at->timestamp,
             'lastLoginTime' => (string)$user->last_login_time->timestamp,
         ], '获取用户信息成功');
+    }
+
+    /**
+     * @api {post} /updateUserInfomation.api 更新用户信息
+     * @apiDescription 更新用户信息
+     * @apiGroup User
+     * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
+     * @apiParam {Number} user_id 用户id
+     * @apiParam {String} [nickname] 昵称
+     * @apiParam {Number} [sex] 0女 1男
+     * @apiParam {String} [say] 个性签名
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "更新用户信息成功",
+     *           "data": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 400,
+     *           "message": "更新用户信息失败"
+     *      }
+     */
+    public function updateUserInfomation(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:users,id'],
+            'sex' => ['in:0,1']
+        ], [
+            'user_id.required' => 'user_id不能为空',
+            'user_id.exists' => '用户不存在',
+            'sex.in' => 'sex 0女 1男'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        User::where('id', $request->user_id)->update($request->only(['nickname', 'sex', 'say']));
+        return $this->respondWithSuccess(null, '更新用户信息成功');
+
     }
 }

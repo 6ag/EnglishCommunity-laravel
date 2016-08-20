@@ -47,7 +47,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 });
 
 // api路由组
-Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']], function () {
 
     Route::group(['prefix' => 'auth'], function () {
         // 发送验证码
@@ -107,5 +107,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     // 获取用户信息
     Route::get('getUserInfomation.api', 'UserController@getUserInfomation');
+
+    // 更新用户信息
+    Route::post('updateUserInfomation.api', 'UserController@updateUserInfomation');
 
 });

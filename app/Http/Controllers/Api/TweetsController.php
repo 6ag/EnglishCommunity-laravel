@@ -7,28 +7,96 @@ use App\Http\Model\LikeRecord;
 use App\Http\Model\Tweets;
 use App\Http\Model\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
 class TweetsController extends BaseController
 {
+    public function __construct()
+    {
+        // 执行 jwt.auth 认证
+        $this->middleware('jwt.api.auth', [
+            'except' => [
+                'getTweetsList',
+                'getTweetsDetail',
+            ]
+        ]);
+    }
+
     /**
      * @api {get} /getTweetsList.api 动弹列表
      * @apiDescription 获取动弹列表,可根据参数返回不同的数据
-     * @apiGroup Trends
+     * @apiGroup Tweet
      * @apiPermission none
-     * @apiParam {String} [type] 返回类型 默认new, new最新 hot热门 me我的
+     * @apiParam {String} type 返回类型 默认new, new最新 hot热门 me我的
      * @apiParam {Number} [page] 页码,默认当然是第1页
      * @apiParam {Number} [count] 每页数量,默认10条
      * @apiParam {Number} [user_id] 访客用户id,type为me,这个字段必须传,游客传0
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询动弹列表成功",
+     *           "result": {
+     *               "pageInfo": {
+     *                   "total": 8,
+     *                   "currentPage": 1
+     *               },
+     *               "data": [
+     *                   {
+     *                   "id": 8,
+     *                   "appClient": 0,
+     *                   "content": "[可爱][可爱]",
+     *                   "commentCount": 0,
+     *                   "likeCount": 1,
+     *                   "liked": 0,
+     *                   "publishTime": "1471687444",
+     *                   "author": {
+     *                       "id": 10000,
+     *                       "nickname": "管理员",
+     *                       "avatar": "http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg"
+     *                   },
+     *                   "images": [
+     *                       {
+     *                           "href": "http://www.english.com/uploads/tweets/2016-08-20/acc95cb2adb4efbf9837dfdd74681571.jpg",
+     *                           "thumb": "http://www.english.com/uploads/tweets/2016-08-20/acc95cb2adb4efbf9837dfdd74681571_thumb.jpg"
+     *                       }
+     *                   ]
+     *                   },
+     *                   {
+     *                   "id": 7,
+     *                   "appClient": 0,
+     *                   "content": "三张",
+     *                   "commentCount": 1,
+     *                   "likeCount": 1,
+     *                   "liked": 0,
+     *                   "publishTime": "1471576544",
+     *                   "author": {
+     *                       "id": 10000,
+     *                       "nickname": "管理员",
+     *                       "avatar": "http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg"
+     *                   },
+     *                   "images": [
+     *                       {
+     *                           "href": "http://www.english.com/uploads/tweets/2016-08-19/e1e7ec0fe33ee7290f90337bf94cad1a.jpg",
+     *                           "thumb": "http://www.english.com/uploads/tweets/2016-08-19/e1e7ec0fe33ee7290f90337bf94cad1a_thumb.jpg"
+     *                       },
+     *                       {
+     *                           "href": "http://www.english.com/uploads/tweets/2016-08-19/cbe5cf86c5138f520fc6cec43ec5fa0b.jpg",
+     *                           "thumb": "http://www.english.com/uploads/tweets/2016-08-19/cbe5cf86c5138f520fc6cec43ec5fa0b_thumb.jpg"
+     *                       },
+     *                       {
+     *                           "href": "http://www.english.com/uploads/tweets/2016-08-19/faf969467dea3ddf1dcd403852a3d68e.jpg",
+     *                           "thumb": "http://www.english.com/uploads/tweets/2016-08-19/faf969467dea3ddf1dcd403852a3d68e_thumb.jpg"
+     *                       }
+     *                   ]
+     *                   }
+     *               ]
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *     {
@@ -135,55 +203,129 @@ class TweetsController extends BaseController
     /**
      * @api {get} /getTweetsDetail.api 动弹详情
      * @apiDescription 获取动弹详情,获取动弹赞列表、评论列表是其他接口
-     * @apiGroup Trends
+     * @apiGroup Tweet
      * @apiPermission none
-     * @apiParam {Number} trends_id 动弹id
+     * @apiParam {Number} tweet_id 动弹id
      * @apiParam {Number} [user_id] 访客用户id
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询动弹详情成功",
+     *           "result": {
+     *               "id": 1,
+     *               "appClient": 0,
+     *               "content": "[害羞]这是一条测试数据啊，你别看错了啊，这是一条测试数据。这是一条测试数据啊。",
+     *               "commentCount": 0,
+     *               "likeCount": 0,
+     *               "liked": 0,
+     *               "publishTime": "1471576204",
+     *               "author": {
+     *                   "id": 10000,
+     *                   "nickname": "管理员",
+     *                   "avatar": "http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg"
+     *               },
+     *               "images": [
+     *                   {
+     *                       "href": "http://www.english.com/uploads/tweets/2016-08-19/d1c632b1b01a665e09665d53ba2a18f9.jpg",
+     *                       "thumb": "http://www.english.com/uploads/tweets/2016-08-19/d1c632b1b01a665e09665d53ba2a18f9_thumb.jpg"
+     *                   }
+     *               ]
+     *           }
      *       }
      * @apiErrorExample {json} Error-Response:
      *       {
      *           "status": "error",
      *           "code": 400,
-     *           "message": "trends_id无效"
+     *           "message": "tweet_id不能为空"
      *       }
      */
     public function getTweetsDetail(Request $request)
     {
-//        $user_id = isset($request->user_id) ? (int)$request->user_id : 0;       // 请求用户
-//        $trends_id = isset($request->trends_id) ? (int)$request->trends_id : 0; // 动弹id
-//        if ($trends_id == 0) {
-//            return $this->respondWithErrors('trends_id无效', 400);
-//        }
-//
-//        $trends = Trends::find($trends_id);   // 当前动弹
-//        $user = User::find($trends->user_id); // 当前动弹的作者
-//        $user_favoriteRecord = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->where('user_id', $user_id)->first();
-//
-//        // 浏览量递增
-//        $trends->increment('view');
-//
-//        $data = $trends->toArray();
-//        $data['comment_count'] = Comment::where('type', 'trends')->where('source_id', $trends->id)->count();
-//        $data['favorite_count'] = FavoriteRecord::where('type', 'trends')->where('source_id', $trends->id)->count();
-//        $data['is_favorite'] = isset($user_favoriteRecord) ? 1 : 0;
-//        $data['user_nickname'] = $user->nickname;
-//        $data['user_avatar'] = $user->avatar;
-//
-//        return $this->respondWithSuccess($data, '查询动弹详情成功');
+        $validator = Validator::make($request->all(), [
+            'tweet_id' => ['required', 'exists:tweets,id'],
+        ], [
+            'tweet_id.required' => 'tweet_id不能为空',
+            'tweet_id.exists' => '动弹不存在'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        // 请求用户
+        $user_id = isset($request->user_id) ? (int)$request->user_id : 0;
+
+        // 当前动弹
+        $tweet = Tweets::find($request->tweet_id);
+
+        // 当前动弹的作者
+        $user = User::find($tweet->user_id);
+        $userLikeRecord = LikeRecord::where('type', 'trends')->where('source_id', $tweet->id)->where('user_id', $user_id)->first();
+
+        // 浏览量递增
+        $tweet->increment('view');
+
+        // 返回数据
+        $result = null;
+        $result['id'] = $tweet->id;
+        $result['appClient'] = $tweet->app_client;
+        $result['content'] = $tweet->content;
+        $result['commentCount'] = Comment::where('type', 'tweet')->where('source_id', $tweet->id)->count();
+        $result['likeCount'] = LikeRecord::where('type', 'tweet')->where('source_id', $tweet->id)->count();
+        $result['liked'] = isset($userLikeRecord) ? 1 : 0;
+        $result['publishTime'] = (string)$tweet->created_at->timestamp;
+
+        // 动弹的作者
+        $result['author'] = [
+            'id' => $user->id,
+            'nickname' => $user->nickname,
+            'avatar' => url($user->avatar),
+        ];
+
+        // 有配图拆分
+        if (! empty($tweet->photos)) {
+            $photos = explode(',', $tweet->photos);
+            $photoThumbs = explode(',', $tweet->photo_thumbs);
+            $images = null;
+            foreach ($photos as $k => $v) {
+                $images[$k]['href'] = url($photos[$k]);
+                $images[$k]['thumb'] = url($photoThumbs[$k]);
+            }
+            $result['images'] = $images;
+        }
+
+        // 有at用户拆分
+        if (! empty($tweet->at_nicknames)) {
+            $at_user_ids = explode(',', $tweet->at_user_ids);
+            $at_nicknames = explode(',', $tweet->at_nicknames);
+            $at_users = null;
+            foreach ($at_user_ids as $k => $v) {
+                $at_users[$k]['id'] = $at_user_ids[$k];
+                $at_users[$k]['nickname'] = $at_nicknames[$k];
+                $at_users[$k]['sequence'] = $k;
+            }
+            $result['atUsers'] = $at_users;
+        }
+
+        return $this->respondWithSuccess($result, '查询动弹详情成功');
+
     }
 
     /**
      * @api {post} /postTweets.api 发布动弹
      * @apiDescription 发布一条新的动弹
-     * @apiGroup Trends
+     * @apiGroup Tweet
      * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {Number} user_id 作者用户id
      * @apiParam {String} content 动弹内容
-     * @apiParam {Array<String>} [photos] 配图,这个字段以图片上传方式提交即可
-     * @apiParam {Array<id: String => String, nickname: String => String>} [atUsers] at的用户
+     * @apiParam {JSON} [photos] ['base64'] 动弹配图,base64编码的图片数组
+     * @apiParam {JSON} [atUsers] [{'id':'10000','nickname':'管理员'}] 被at的用户
      * @apiParam {Number} [app_client] 客户端类型 0iOS 1Android
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
@@ -284,7 +426,7 @@ class TweetsController extends BaseController
         $tweet->user_id = $request->user_id;
         $tweet->app_client = $app_client;
         $tweet->content = $request->get('content');
-        
+
         // 发布参数中带配图
         if (isset($originalPaths) && isset($thumbPaths)) {
             $tweet->photos = $originalPaths;
