@@ -18,7 +18,7 @@ class CommentController extends BaseController
      * @apiGroup Comment
      * @apiPermission none
      * @apiParam {Number} user_id 用户id
-     * @apiParam {String} type 类型:tweet/video
+     * @apiParam {String} type 类型:tweet/video_info
      * @apiParam {Number} source_id 动弹或视频信息的id
      * @apiParam {String} content 评论内容
      * @apiParam {Number} [pid] 默认0,评论当前主题.为其他评论id则是回复评论
@@ -41,14 +41,14 @@ class CommentController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'user_id' => ['required', 'exists:users,id'],
-            'type' => ['required', 'in:tweet,video'],
+            'type' => ['required', 'in:tweet,video_info'],
             'source_id' => ['required'],
             'content' => ['required'],
         ], [
             'user_id.required' => 'user_id字段不能为空',
             'user_id.exists' => '用户不存在',
             'type.required' => 'type字段不能为空',
-            'type.in' => 'type字段只能是 tweet、video',
+            'type.in' => 'type字段只能是 tweet、video_info',
             'source_id.required' => 'source_id字段不能为空',
             'content.required' => 'content字段不能为空',
         ]);
@@ -79,7 +79,7 @@ class CommentController extends BaseController
      * @apiDescription 获取动弹或视频信息的评论列表
      * @apiGroup Comment
      * @apiPermission none
-     * @apiParam {String} type 类型:tweet/video
+     * @apiParam {String} type 类型:tweet/video_info
      * @apiParam {Number} source_id 动弹或视频信息的id
      * @apiParam {Number} [page] 页码,默认当然是第1页
      * @apiParam {Number} [count] 每页数量,默认10条
@@ -97,11 +97,11 @@ class CommentController extends BaseController
     public function getCommentList(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'type' => ['required', 'in:tweet,video'],
+            'type' => ['required', 'in:tweet,video_info'],
             'source_id' => ['required'],
         ], [
             'type.required' => 'type字段不能为空',
-            'type.in' => 'type字段只能是 tweet、video',
+            'type.in' => 'type字段只能是 tweet、video_info',
             'source_id.required' => 'source_id字段不能为空',
         ]);
         if ($validator->fails()) {

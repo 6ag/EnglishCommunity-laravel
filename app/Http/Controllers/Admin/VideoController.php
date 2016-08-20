@@ -129,6 +129,8 @@ class VideoController extends BaseController
             return back()->with('errors', '图片压缩失败,请放弃治疗');
         }
 
+        // 修改保存的图片权限
+        @chmod($imagePath, 0777);
         // 清除临时图片
         @unlink($imagePath);
         return $destinationPath;

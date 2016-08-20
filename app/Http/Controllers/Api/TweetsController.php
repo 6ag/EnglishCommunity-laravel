@@ -256,6 +256,9 @@ class TweetsController extends BaseController
                 $originalPaths[$key] = $originalPath;
                 $thumbPaths[$key] = $thumbPath;
 
+                // 修改保存的图片权限
+                @chmod($originalPath, 0777);
+                @chmod($thumbPath, 0777);
             }
 
             $originalPaths = implode(',', $originalPaths);

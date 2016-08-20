@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Collection;
 use App\Http\Model\User;
+use App\Http\Model\Video;
 use App\Http\Model\VideoInfo;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class CollectionController extends BaseController
 {
     /**
-     * @api {post} /collectVideoInfo.api 收藏视频
+     * @api {post} /addOrCancelCollectVideoInfo.api 收藏视频
      * @apiDescription 收藏视频信息
      * @apiGroup Collection
      * @apiPermission none
@@ -34,7 +35,7 @@ class CollectionController extends BaseController
      *           "message": "收藏视频信息失败"
      *      }
      */
-    public function collectVideoInfo(Request $request)
+    public function addOrCancelCollectVideoInfo(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => ['required', 'exists:users,id'],
@@ -49,8 +50,15 @@ class CollectionController extends BaseController
             return $this->respondWithFailedValidation($validator);
         }
 
-        Collection::create($request->only(['user_id', 'video_info_id']));
-        return $this->respondWithSuccess(null, '收藏视频信息成功');
+        $collection = Collection::where('user_id', $request->user_id)->where('video_info_id', $request->video_info_id)->first();
+        if (isset($collection)) {
+            $collection->delete();
+            return $this->respondWithSuccess(null, '取消收藏视频信息成功');
+        } else {
+            Collection::create($request->only(['user_id', 'video_info_id']));
+            return $this->respondWithSuccess(null, '收藏视频信息成功');
+        }
+
     }
 
     /**
@@ -108,6 +116,8 @@ class CollectionController extends BaseController
             $result[$key]['teacherName'] = $videoInfo->teacher;
             $result[$key]['videoType'] = $videoInfo->type;
             $result[$key]['recommended'] = $videoInfo->recommend;
+            $result[$key]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
+            $result[$key]['collected'] = 1;
         }
 
         return $this->respondWithSuccess([

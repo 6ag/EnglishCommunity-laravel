@@ -91,8 +91,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::get('getGramarManual.api', 'GrammarController@getGramarManual');
 
     // 收藏视频
-    Route::post('collectVideoInfo.api', 'CollectionController@collectVideoInfo');
-
+    Route::post('addOrCancelCollectVideoInfo.api', 'CollectionController@addOrCancelCollectVideoInfo');
+    
     // 获取收藏信息列表
     Route::get('getCollectionList.api', 'CollectionController@getCollectionList');
 
@@ -101,5 +101,11 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
 
     // 添加或删除赞
     Route::post('addOrCancelLikeRecord.api', 'LikeRecordController@addOrCancelLikeRecord');
+
+    // 上传头像
+    Route::post('uploadUserAvatar.api', 'UserController@uploadUserAvatar');
+
+    // 获取用户信息
+    Route::get('getUserInfomation.api', 'UserController@getUserInfomation');
 
 });

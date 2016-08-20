@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('nickname', 30)->default('佚名')->comment('昵称');
             $table->string('say')->nullable()->comment('心情寄语');
-            $table->string('avatar', 50)->default('uploads/user/avatar.jpg')->comment('头像');
+            $table->string('avatar', 100)->default('uploads/user/avatar.jpg')->comment('头像');
             $table->string('mobile', 11)->nullable()->comment('手机号码');
             $table->string('email', 50)->nullable()->comment('邮箱');
             $table->tinyInteger('sex')->default(0)->comment('性别 0女 1男');
