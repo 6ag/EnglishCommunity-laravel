@@ -24,7 +24,7 @@ class GetUserFromToken
             if (! $user = JWTAuth::parseToken()->authenticate()) {
                 return new Response(json_encode([
                     'status' => 'error',
-                    'code' => 400,
+                    'code' => 4003,
                     'message' => 'user不存在'
                 ]));
             }
@@ -33,7 +33,7 @@ class GetUserFromToken
 
             return new Response(json_encode([
                 'status' => 'error',
-                'code' => 400,
+                'code' => 4002,
                 'message' => 'token过期'
             ]));
 
@@ -41,7 +41,7 @@ class GetUserFromToken
 
             return new Response(json_encode([
                 'status' => 'error',
-                'code' => 400,
+                'code' => 4001,
                 'message' => 'token无效'
             ]));
 
@@ -49,7 +49,7 @@ class GetUserFromToken
 
             return new Response(json_encode([
                 'status' => 'error',
-                'code' => 400,
+                'code' => 4000,
                 'message' => '缺少token'
             ]));
 

@@ -105,10 +105,16 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 上传头像
     Route::post('uploadUserAvatar.api', 'UserController@uploadUserAvatar');
 
-    // 获取用户信息
-    Route::get('getUserInfomation.api', 'UserController@getUserInfomation');
+    // 获取自己的用户信息
+    Route::get('getSelfUserInfomation.api', 'UserController@getSelfUserInfomation');
+
+    // 获取他人的用户信息
+    Route::get('getOtherUserInfomation.api', 'UserController@getOtherUserInfomation');
 
     // 更新用户信息
     Route::post('updateUserInfomation.api', 'UserController@updateUserInfomation');
+
+    // 添加或删除关注
+    Route::post('addOrCancelFriend.api', 'FriendController@addOrCancelFriend');
 
 });

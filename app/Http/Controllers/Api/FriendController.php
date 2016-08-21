@@ -88,15 +88,66 @@ class FriendController extends BaseController
 
     }
 
-    // 关注某人 user_id
-    public function attention(Request $request)
+    /**
+     * @api {get} /addOrCancelFriend.api 添加或删除关注
+     * @apiDescription 添加或删除关注
+     * @apiGroup Friend
+     * @apiPermission none
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
+     * @apiParam {Number} user_id 当前用户的id
+     * @apiParam {Number} relation_user_id 关注或移除关注的用户的id
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "关注成功",
+     *           "result": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "用户不存在"
+     *      }
+     */
+    public function addOrCancelFriend(Request $request)
     {
-        
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:users,id'],
+            'relation_user_id' => ['required', 'exists:users,id']
+        ], [
+            'user_id.required' => 'uesr_id不能为空',
+            'user_id.exists' => '当前用户不存在',
+            'relation_user_id.required' => 'relation_user_id不能为空',
+            'relation_user_id.exists' => '关注的用户不存在'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        // 查询关注记录是否存在
+        $friend = Friend::where('user_id', $request->user_id)->where('relation', 1)->where('relation_user_id', $request->relation_user_id)->first();
+        if (isset($friend)) {
+            $friend->delete();
+            return $this->respondWithSuccess([
+                'type' => 'cancel'
+            ], '取消关注成功');
+        } else {
+            Friend::create([
+                'user_id' => $request->user_id,
+                'relation' => 1,
+                'relation_user_id' => $request->relation_user_id
+            ]);
+            return $this->respondWithSuccess([
+                'type' => 'add'
+            ], '关注成功');
+        }
+
     }
 
-    // 取消关注某人 user_id
-    public function unAttention(Request $request)
-    {
-        
-    }
 }

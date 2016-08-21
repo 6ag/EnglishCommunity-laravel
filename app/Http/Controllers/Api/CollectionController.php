@@ -63,10 +63,14 @@ class CollectionController extends BaseController
         $collection = Collection::where('user_id', $request->user_id)->where('video_info_id', $request->video_info_id)->first();
         if (isset($collection)) {
             $collection->delete();
-            return $this->respondWithSuccess(null, '取消收藏视频信息成功');
+            return $this->respondWithSuccess([
+                'type' => 'cancel'
+            ], '取消收藏视频信息成功');
         } else {
             Collection::create($request->only(['user_id', 'video_info_id']));
-            return $this->respondWithSuccess(null, '收藏视频信息成功');
+            return $this->respondWithSuccess([
+                'type' => 'add'
+            ], '收藏视频信息成功');
         }
 
     }
@@ -141,8 +145,7 @@ class CollectionController extends BaseController
         }
 
         $count = isset($request->count) ? (int)$request->count : 10;
-        $collections = Collection::where('user_id', $request->user_id)
-            ->paginate($count);
+        $collections = Collection::where('user_id', $request->user_id)->orderBy('id', 'desc')->paginate($count);
 
         // 没有数据
         if (! count($collections)) {

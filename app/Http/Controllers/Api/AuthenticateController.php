@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Model\Friend;
 use App\Http\Model\Group;
 use App\Http\Model\Permission;
 use App\Http\Model\User;
@@ -253,6 +254,8 @@ class AuthenticateController extends BaseController
      *               "weiboBinding": 0,
      *               "emailBinding": 0,
      *               "mobileBinding": 0,
+     *               "followersCount": 32,
+     *               "followingCount": 2,
      *               "registerTime": "1471685857",
      *               "lastLoginTime": "1471685891"
      *           }
@@ -321,6 +324,7 @@ class AuthenticateController extends BaseController
 
             return $this->respondWithSuccess([
                 'token' => JWTAuth::fromUser($user),
+                'expiryTime' => (string)(Carbon::now()->timestamp + config('jwt.ttl') * 60),
                 'id' => $user->id,
                 'nickname' => $user->nickname,
                 'say' => $user->say,
@@ -333,6 +337,8 @@ class AuthenticateController extends BaseController
                 'weiboBinding' => $user->weibo_binding,
                 'emailBinding' => $user->email_binding,
                 'mobileBinding' => $user->mobile_binding,
+                'followersCount' => Friend::where('user_id', $user_id)->where('relation', 0)->count(),
+                'followingCount' => Friend::where('user_id', $user_id)->where('relation', 1)->count(),
                 'registerTime' => (string)$user->created_at->timestamp,
                 'lastLoginTime' => (string)$user->last_login_time->timestamp,
             ], '登录成功');
