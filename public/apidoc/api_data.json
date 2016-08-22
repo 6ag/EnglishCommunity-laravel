@@ -41,7 +41,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"登录成功\",\n    \"result\": {\n        \"token\": \"xxxx.xxxxxxx.xxxxxxxx\",\n        \"id\": 4,\n        \"nickname\": \"佚名\",\n        \"say\": null,\n        \"avatar\": \"http://www.english.com/uploads/user/avatar.jpg\",\n        \"mobile\": null,\n        \"email\": null,\n        \"sex\": 0,\n        \"qqBinding\": 0,\n        \"weixinBinding\": 0,\n        \"weiboBinding\": 0,\n        \"emailBinding\": 0,\n        \"mobileBinding\": 0,\n        \"registerTime\": \"1471685857\",\n        \"lastLoginTime\": \"1471685891\"\n    }\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"登录成功\",\n    \"result\": {\n        \"token\": \"xxxx.xxxxxxx.xxxxxxxx\",\n        \"id\": 4,\n        \"nickname\": \"佚名\",\n        \"say\": null,\n        \"avatar\": \"http://www.english.com/uploads/user/avatar.jpg\",\n        \"mobile\": null,\n        \"email\": null,\n        \"sex\": 0,\n        \"qqBinding\": 0,\n        \"weixinBinding\": 0,\n        \"weiboBinding\": 0,\n        \"emailBinding\": 0,\n        \"mobileBinding\": 0,\n        \"followersCount\": 32,\n        \"followingCount\": 2,\n        \"registerTime\": \"1471685857\",\n        \"lastLoginTime\": \"1471685891\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -66,7 +66,7 @@
     "group": "Auth",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -389,7 +389,7 @@
     "group": "Collection",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -470,7 +470,7 @@
     "group": "Collection",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -612,7 +612,7 @@
     "group": "Comment",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -701,13 +701,87 @@
   },
   {
     "type": "get",
+    "url": "/addOrCancelFriend.api",
+    "title": "添加或删除关注",
+    "description": "<p>添加或删除关注</p>",
+    "group": "Friend",
+    "permission": [
+      {
+        "name": "Token"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>当前用户的id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "relation_user_id",
+            "description": "<p>关注或移除关注的用户的id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"关注成功\",\n    \"result\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"用户不存在\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/FriendController.php",
+    "groupTitle": "Friend",
+    "name": "GetAddorcancelfriendApi"
+  },
+  {
+    "type": "get",
     "url": "/getFriendList.api",
     "title": "朋友关系列表",
     "description": "<p>获取朋友关系列表(关注、粉丝)</p>",
     "group": "Friend",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -835,7 +909,7 @@
     "group": "LikeRecord",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -1038,7 +1112,7 @@
     "group": "Tweet",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -1127,13 +1201,67 @@
   },
   {
     "type": "get",
-    "url": "/getUserInfomation.api",
-    "title": "获取用户信息",
-    "description": "<p>获取用户信息</p>",
+    "url": "/getOtherUserInfomation.api",
+    "title": "他人用户信息",
+    "description": "<p>获取他人的用户信息</p>",
     "group": "User",
     "permission": [
       {
         "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>当前登录的用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "other_user_id",
+            "description": "<p>需要用户信息的用户id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取用户信息成功\",\n    \"result\": {\n        \"id\": 10000,\n        \"nickname\": \"管理员\",\n        \"say\": \"Hello world!\",\n        \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\",\n        \"sex\": 1,\n        \"followersCount\": 32,\n        \"followingCount\": 2,\n        \"registerTime\": \"1471437181\",\n        \"lastLoginTime\": \"1471715751\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取用户信息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/UserController.php",
+    "groupTitle": "User",
+    "name": "GetGetotheruserinfomationApi"
+  },
+  {
+    "type": "get",
+    "url": "/getUserInfomation.api",
+    "title": "自己用户信息",
+    "description": "<p>获取自己的用户信息</p>",
+    "group": "User",
+    "permission": [
+      {
+        "name": "Token"
       }
     ],
     "header": {
@@ -1174,7 +1302,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取用户信息成功\",\n    \"result\": {\n        \"token\": \"xxxx.xxxxxxx.xxxxxxxx\",\n        \"id\": 10000,\n        \"nickname\": \"管理员\",\n        \"say\": \"Hello world!\",\n        \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\",\n        \"mobile\": \"15626427299\",\n        \"email\": \"admin@6ag.cn\",\n        \"sex\": 1,\n        \"qqBinding\": 0,\n        \"weixinBinding\": 0,\n        \"weiboBinding\": 0,\n        \"emailBinding\": 1,\n        \"mobileBinding\": 1,\n        \"registerTime\": \"1471437181\",\n        \"lastLoginTime\": \"1471715751\"\n    }\n}",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取用户信息成功\",\n    \"result\": {\n        \"id\": 10000,\n        \"nickname\": \"管理员\",\n        \"say\": \"Hello world!\",\n        \"avatar\": \"http://www.english.com/uploads/user/avatar/9f4ed11179f6962bd57cf9635474446b.jpg\",\n        \"mobile\": \"15626427299\",\n        \"email\": \"admin@6ag.cn\",\n        \"sex\": 1,\n        \"qqBinding\": 0,\n        \"weixinBinding\": 0,\n        \"weiboBinding\": 0,\n        \"emailBinding\": 1,\n        \"mobileBinding\": 1,\n        \"followersCount\": 32,\n        \"followingCount\": 2,\n        \"registerTime\": \"1471437181\",\n        \"lastLoginTime\": \"1471715751\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -1194,13 +1322,67 @@
   },
   {
     "type": "post",
+    "url": "/postFeedback.api",
+    "title": "意见反馈",
+    "description": "<p>提交意见反馈信息</p>",
+    "group": "User",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "contact",
+            "description": "<p>联系方式</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>反馈内容</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"提交反馈信息成功\",\n    \"data\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"contact不能为空\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/FeedbackController.php",
+    "groupTitle": "User",
+    "name": "PostPostfeedbackApi"
+  },
+  {
+    "type": "post",
     "url": "/updateUserInfomation.api",
     "title": "更新用户信息",
     "description": "<p>更新用户信息</p>",
     "group": "User",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -1288,7 +1470,7 @@
     "group": "User",
     "permission": [
       {
-        "name": "none"
+        "name": "Token"
       }
     ],
     "header": {
@@ -1356,6 +1538,73 @@
   },
   {
     "type": "get",
+    "url": "/getVideoDownloadList.api",
+    "title": "视频下载地址",
+    "description": "<p>根据url/id解析flv视频列表,可供分段下载 ffmpeg合成</p>",
+    "group": "Video",
+    "permission": [
+      {
+        "name": "Token"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "url",
+            "description": "<p>视频地址</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"解析视频地址成功\",\n    \"result\": {\n        \"normal\": {\n            \"count\": \"3\",\n            \"data\": [\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_00/st/flv/fileid/.........\",\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_01/st/flv/fileid/.........\",\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_02/st/flv/fileid/.........\"\n            ]\n        },\n        \"high\": {\n            \"count\": \"2\",\n            \"data\": [\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_00/st/mp4/fileid/.........\",\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_01/st/mp4/fileid/.........\"\n            ]\n        },\n        \"hyper\": {\n            \"count\": \"4\",\n            \"data\": [\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_00/st/flv/fileid/.........\",\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_01/st/flv/fileid/.........\",\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_02/st/flv/fileid/.........\",\n                \"http://k.youku.com/player/getFlvPath/sid/347183583803712c9019d_03/st/flv/fileid/.........\"\n            ]\n        }\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"解析视频地址失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/VideoController.php",
+    "groupTitle": "Video",
+    "name": "GetGetvideodownloadlistApi"
+  },
+  {
+    "type": "get",
     "url": "/getVideoList.api",
     "title": "视频播放列表",
     "description": "<p>根据视频信息id查询视频播放列表</p>",
@@ -1403,9 +1652,9 @@
   },
   {
     "type": "get",
-    "url": "/parseYouku1.api",
-    "title": "解析优酷视频1",
-    "description": "<p>根据url/id解析flv视频列表,可供分段下载 ffmpeg合成</p>",
+    "url": "/playVideo.api",
+    "title": "视频真实地址",
+    "description": "<p>传入URL,返回m3u8列表可直接播放</p>",
     "group": "Video",
     "permission": [
       {
@@ -1420,7 +1669,7 @@
             "type": "String",
             "optional": false,
             "field": "url",
-            "description": "<p>视频地址</p>"
+            "description": "<p>视频地址 http://v.youku.com/v_show/id_XOTA5NjIyMTIw.html</p>"
           }
         ]
       }
@@ -1430,8 +1679,8 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n}",
-          "type": "json"
+          "content": "#EXTM3U\n#EXT-X-TARGETDURATION:12\n#EXT-X-VERSION:3\n#EXTINF:6.0,\n......\n#EXT-X-ENDLIST",
+          "type": "m3u8"
         }
       ]
     },
@@ -1446,6 +1695,6 @@
     },
     "filename": "app/Http/Controllers/Api/VideoController.php",
     "groupTitle": "Video",
-    "name": "GetParseyouku1Api"
+    "name": "GetPlayvideoApi"
   }
 ]
