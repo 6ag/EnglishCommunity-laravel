@@ -22,7 +22,7 @@ class FriendController extends BaseController
      * @api {get} /getFriendList.api 朋友关系列表
      * @apiDescription 获取朋友关系列表(关注、粉丝)
      * @apiGroup Friend
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {
@@ -92,7 +92,7 @@ class FriendController extends BaseController
      * @api {get} /addOrCancelFriend.api 添加或删除关注
      * @apiDescription 添加或删除关注
      * @apiGroup Friend
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {

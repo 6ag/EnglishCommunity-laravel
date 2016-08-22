@@ -316,7 +316,7 @@ class TweetsController extends BaseController
      * @api {post} /postTweets.api 发布动弹
      * @apiDescription 发布一条新的动弹
      * @apiGroup Tweet
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {

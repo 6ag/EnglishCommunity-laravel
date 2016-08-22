@@ -8,9 +8,9 @@
 
 class JPush
 {
-    private $app_key = 'e34dfxxxxxxxxxxxxxxaeb61';          // 极光后台申请的应用appKey
-    private $master_secret = '622ba4xxxxxxxxxxxx200f70';    // 主密码
-    private $url = "https://api.jpush.cn/v3/push";          // 推送的接口
+    private $app_key = '1d918a27ec1db14f243a79cf';
+    private $master_secret = '6be3a5f8d0ea165ab2a69632';
+    private $url = "https://api.jpush.cn/v3/push";
 
     /**
      * 发送远程通知

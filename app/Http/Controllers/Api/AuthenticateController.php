@@ -351,7 +351,7 @@ class AuthenticateController extends BaseController
     /**
      * @api {post} /auth/modifyUserPassword.api 修改用户密码
      * @apiGroup Auth
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {

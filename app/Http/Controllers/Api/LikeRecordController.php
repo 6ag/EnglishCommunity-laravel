@@ -20,7 +20,7 @@ class LikeRecordController extends BaseController
      * @api {post} /addOrCancelLikeRecord.api 添加删除赞
      * @apiDescription 添加或删除赞
      * @apiGroup LikeRecord
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {

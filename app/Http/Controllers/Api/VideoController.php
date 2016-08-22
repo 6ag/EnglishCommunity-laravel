@@ -18,7 +18,7 @@ class VideoController extends BaseController
         $this->middleware('jwt.api.auth', [
             'except' => [
                 'getVideoList',
-                'parseYouku1'
+                'playVideo'
             ]
         ]);
     }
@@ -88,10 +88,15 @@ class VideoController extends BaseController
     }
     
     /**
-     * @api {get} /parseYouku1.api 解析优酷视频1
+     * @api {get} /getVideoDownloadList.api 视频下载地址
      * @apiDescription 根据url/id解析flv视频列表,可供分段下载 ffmpeg合成
      * @apiGroup Video
-     * @apiPermission none
+     * @apiPermission Token
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
      * @apiParam {String} url 视频地址
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
@@ -104,14 +109,56 @@ class VideoController extends BaseController
      *           "message": "解析视频地址失败"
      *      }
      */
-    public function parseYouku1(Request $request)
+    public function getVideoDownloadList(Request $request)
     {
-        $data = ParseVideo::parseYouku1($request->url);
+        $validator = Validator::make($request->all(), [
+            'url' => ['required']
+        ], [
+            'url.required' => 'url不能为空'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        $data = ParseVideo::getVideoDownloadList($request->url);
         if (count($data)) {
             return $this->respondWithSuccess($data, '解析视频地址成功');
         } else {
             return $this->respondWithErrors('解析视频地址失败,已经放弃治疗', 500);
         }
+    }
+
+    /**
+     * @api {get} /playVideo.api 播放视频
+     * @apiDescription 传入URL,返回m3u8可直接播放
+     * @apiGroup Video
+     * @apiPermission none
+     * @apiParam {String} url 视频地址 http://v.youku.com/v_show/id_XOTA5NjIyMTIw.html
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "解析视频地址失败"
+     *      }
+     */
+    public function playVideo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'url' => ['required']
+        ], [
+            'url.required' => 'url不能为空'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        $parseVideo = new ParseVideo();
+        $m3u8 = $parseVideo->getYoukuM3u8($request->url);
+        Header("Location:$m3u8");
     }
 
 }

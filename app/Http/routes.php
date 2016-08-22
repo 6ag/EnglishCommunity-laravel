@@ -69,8 +69,11 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 根据视频信息id 获取视频信息
     Route::get('getVideoList.api', 'VideoController@getVideoList');
     
-    // 解析视频 - flv视频片段,可缓存
-    Route::get('parseYouku1.api', 'VideoController@parseYouku1');
+    // 获取视频下载 - flv视频片段,可缓存
+    Route::get('getVideoDownloadList.api', 'VideoController@getVideoDownloadList');
+
+    // 视频播放
+    Route::get('playVideo.api', 'VideoController@playVideo');
 
     // 动弹列表
     Route::get('getTweetsList.api', 'TweetsController@getTweetsList');
@@ -116,5 +119,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
 
     // 添加或删除关注
     Route::post('addOrCancelFriend.api', 'FriendController@addOrCancelFriend');
+
+    // 提交反馈信息
+    Route::post('postFeedback.api', 'FeedbackController@postFeedback');
 
 });

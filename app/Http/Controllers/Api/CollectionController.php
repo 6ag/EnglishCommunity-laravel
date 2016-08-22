@@ -22,7 +22,7 @@ class CollectionController extends BaseController
      * @api {post} /addOrCancelCollectVideoInfo.api 收藏视频
      * @apiDescription 收藏视频信息
      * @apiGroup Collection
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {
@@ -79,7 +79,7 @@ class CollectionController extends BaseController
      * @api {get} /getCollectionList.api 获取收藏列表
      * @apiDescription 获取指定用户的收藏列表
      * @apiGroup Collection
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {

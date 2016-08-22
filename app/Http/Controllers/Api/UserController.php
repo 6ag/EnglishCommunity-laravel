@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends BaseController
 {
@@ -28,7 +27,7 @@ class UserController extends BaseController
      * @api {post} /uploadUserAvatar.api 上传用户头像
      * @apiDescription 上传用户头像
      * @apiGroup User
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {
@@ -99,7 +98,7 @@ class UserController extends BaseController
      * @api {get} /getUserInfomation.api 自己用户信息
      * @apiDescription 获取自己的用户信息
      * @apiGroup User
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {
@@ -253,7 +252,7 @@ class UserController extends BaseController
      * @api {post} /updateUserInfomation.api 更新用户信息
      * @apiDescription 更新用户信息
      * @apiGroup User
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {

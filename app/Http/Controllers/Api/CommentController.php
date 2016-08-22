@@ -26,7 +26,7 @@ class CommentController extends BaseController
      * @api {get} /postComment.api 发布评论
      * @apiDescription 发布或者回复一条评论
      * @apiGroup Comment
-     * @apiPermission none
+     * @apiPermission Token
      * @apiHeader {String} token 登录成功返回的token
      * @apiHeaderExample {json} Header-Example:
      *      {
