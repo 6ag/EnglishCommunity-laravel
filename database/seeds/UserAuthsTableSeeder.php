@@ -21,7 +21,7 @@ class UserAuthsTableSeeder extends Seeder
                 'updated_at' => \Carbon\Carbon::now(),
             ], [
                 'user_id' => 10000,
-                'identity_type' => 'phone',
+                'identity_type' => 'mobile',
                 'identifier' => '15626427299',
                 'credential' => bcrypt('123456'),
                 'created_at' => \Carbon\Carbon::now(),

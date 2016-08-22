@@ -245,13 +245,23 @@ class CategoryController extends BaseController
      */
     public function getCategoryies(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+           'have_data' => ['required', 'in:0,1']
+        ], [
+            'have_data.required' => 'have_data不能为空',
+            'have_data.in' => 'have_data只能为0或1'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
         $categories = Category::orderBy('order', 'asc')->get(['id', 'name', 'alias', 'view']);
         if (count($categories) == 0) {
             return $this->respondWithErrors('没有查到任何分类');
         }
 
         // 如果不带数据,则直接返回分类信息
-        if (! isset($request->have_data)) {
+        if ($request->have_data == 0) {
             return $this->respondWithSuccess($categories, '查询分类列表成功');
         }
 
@@ -281,8 +291,8 @@ class CategoryController extends BaseController
                 $result[$k]['recommended'] = $videoInfo->recommend;
                 $result[$k]['collected'] = isset($collection) ? 1 : 0;
                 $result[$k]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
-                $result[$key]['commentCount'] = $comments->where('source_id', $videoInfo->id)->count();
-                $result[$key]['collectionCount'] = $collections->where('source_id', $videoInfo->id)->count();
+                $result[$k]['commentCount'] = $comments->where('source_id', $videoInfo->id)->count();
+                $result[$k]['collectionCount'] = $collections->where('source_id', $videoInfo->id)->count();
             }
             
             $categories[$key]['videoInfoList'] = $result;

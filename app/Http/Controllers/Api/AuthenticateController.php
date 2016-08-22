@@ -311,6 +311,21 @@ class AuthenticateController extends BaseController
             $userAuth = UserAuth::where('identifier', $request->identifier)->whereIn('identity_type', ['qq', 'weibo', 'weixin'])->first();
             if (isset($userAuth)) {
                 $user_id = $userAuth->user_id;
+            } else {
+                // 新建用户和第三方授权记录
+                $newUser = User::create([
+                    'nickname' => $request->nickname,
+                    'avatar' => $request->avatar,
+                    'sex' => $request->sex,
+                ]);
+                UserAuth::create([
+                    'user_id' => $newUser->id,
+                    'identity_type' => $request->identity_type,
+                    'identifier' => $request->identifier,
+                    'credential' => $request->token,
+                    'verified' => 1
+                ]);
+                $user_id = $newUser->id;
             }
         }
 
@@ -318,7 +333,7 @@ class AuthenticateController extends BaseController
             // 查询用户表
             $user = User::find($userAuth->user_id);
             if ($user->status == 0) {
-                return $this->respondWithErrors('登录失败,用户已被禁用', 403);
+                return $this->respondWithErrors('登录失败, 用户已被禁用', 403);
             }
 
             // 修改登录时间
@@ -330,7 +345,7 @@ class AuthenticateController extends BaseController
                 'id' => $user->id,
                 'nickname' => $user->nickname,
                 'say' => $user->say,
-                'avatar' => url($user->avatar),
+                'avatar' => substr($user->avatar, 0, 4) == 'http' ? $user->avatar : url($user->avatar),
                 'mobile' => $user->mobile,
                 'email' => $user->email,
                 'sex' => $user->sex,
@@ -345,7 +360,7 @@ class AuthenticateController extends BaseController
                 'lastLoginTime' => (string)$user->last_login_time->timestamp,
             ], '登录成功');
         } else {
-            return $this->respondWithErrors('登录失败,密码错误', 403);
+            return $this->respondWithErrors('登录失败, 密码错误', 403);
         }
 
     }
@@ -405,6 +420,24 @@ class AuthenticateController extends BaseController
                 ->whereIn('identity_type', ['username', 'email', 'mobile'])
                 ->update(['credential' => bcrypt($request->credential_new)]);
 
+            // 查询是否已经绑定了邮箱
+            $emailAuth = UserAuth::where('user_id', $request->user_id)->where('identity_type', 'email')->first();
+            if (isset($emailAuth)) {
+
+                // 获取邮箱
+                $email = $emailAuth->identifier;
+
+                // 查询邮箱是否已经验证
+                $emailUser = User::find($emailAuth->user_id);
+                if (isset($emailUser) && $emailUser->email_binding == 1) {
+
+                    // 发送邮件通知
+                    Mail::raw('您的密码已经修改成功, 新密码为【 ' . $request->credential_new . ' 】。', function ($message) use ($email) {
+                        $message ->to($email)->subject('密码修改成功');
+                    });
+                }
+            }
+
             return $this->respondWithSuccess(null, '修改密码成功');
         }
 
@@ -436,32 +469,46 @@ class AuthenticateController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'identifier' => ['required', 'exists:user_auths'],
-            'email' => ['required', 'exists:user_auths']
+            'email' => ['required', 'exists:user_auths,identifier']
         ], [
-            'identifier.required' => 'identifier不能为空',
-            'identifier.exists' => 'identifier不存在',
-            'email.required' => 'email不能为空',
-            'email.exists' => 'email不存在'
+            'identifier.required' => '用户名不能为空',
+            'identifier.exists' => '用户不存在',
+            'email.required' => '邮箱不能为空',
+            'email.exists' => '邮箱不存在'
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
         }
 
-        $userAuth1 = UserAuth::where('identifier', $request->identifier)->where('identity_type', 'username')->first();
-        $userAuth2 = UserAuth::where('email', $request->email)->where('identity_type', 'email')->first();
+        $userAuth = UserAuth::where('identifier', $request->identifier)->where('identity_type', 'username')->first();
+        $emailAuth = UserAuth::where('identifier', $request->email)->where('identity_type', 'email')->first();
 
         // 验证用户名和邮箱是否属于同一个用户的授权
-        if ($userAuth1->user_id != $userAuth2->user_id) {
-            return $this->respondWithErrors('用户名或邮箱错误');
+        if ($userAuth->user_id != $emailAuth->user_id) {
+            return $this->respondWithErrors('用户名和邮箱不匹配');
         }
 
         // 随机生成新密码
         $newPassword = $this->makeRandString(6);
         $email = $request->email;
 
-        Mail::raw('您的密码已重置成功, 新密码为' . $newPassword . ', 请尽快修改密码。', function ($message) use ($email) {
-            $message ->to($email)->subject('找回密码 - 来自自学英语社区');
-        });
+        $user = User::find($emailAuth->user_id);
+        // 查询邮箱是否已经验证
+        if (isset($user) && $user->email_binding == 1) {
+            // 发送邮件通知
+            Mail::raw('您的密码已经重置成功, 新密码为【 ' . $newPassword . ' 】, 请尽快修改密码(中括号内6位字符为新的密码)。', function ($message) use ($email) {
+                $message ->to($email)->subject('找回密码');
+            });
+
+            // 需要修改的用户
+            UserAuth::where('user_id', $userAuth->user_id)
+                ->whereIn('identity_type', ['username', 'email', 'mobile'])
+                ->update(['credential' => bcrypt($newPassword)]);
+
+            return $this->respondWithSuccess(null, '发送成功,请查看邮箱');
+        } else {
+            return $this->respondWithErrors('您的邮箱未通过验证,请联系管理员');
+        }
 
     }
 
