@@ -50,14 +50,21 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']], function () {
 
     Route::group(['prefix' => 'auth'], function () {
+
         // 发送验证码
         Route::post('seedCode.api', 'AuthenticateController@sendCkeckCode');
+
         // 注册
         Route::post('register.api', 'AuthenticateController@register');
+
         // 登录
         Route::post('login.api', 'AuthenticateController@login');
+
         // 修改密码
         Route::post('modifyUserPassword.api', 'AuthenticateController@modifyUserPassword');
+
+        // 发送重置密码邮件
+        Route::post('retrievePasswordWithSendEmail.api', 'AuthenticateController@retrievePasswordWithSendEmail');
     });
 
     // 查询所有分类列表

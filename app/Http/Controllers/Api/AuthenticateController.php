@@ -10,6 +10,7 @@ use App\Http\Model\UserAuth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 use App\Http\Requests;
@@ -26,6 +27,7 @@ class AuthenticateController extends BaseController
                 'sendCkeckCode',
                 'register',
                 'login',
+                'retrievePasswordWithSendEmail'
             ]
         ]);
     }
@@ -407,6 +409,60 @@ class AuthenticateController extends BaseController
         }
 
         return $this->respondWithErrors('旧密码错误', 403);
+    }
+
+    /**
+     * @api {post} /auth/retrievePasswordWithSendEmail.api 重置密码邮件
+     * @apiGroup Auth
+     * @apiPermission none
+     * @apiParam {String} identifier username账号
+     * @apiParam {String} email 绑定的邮箱
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *     {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "邮件发送成功",
+     *           "data": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "邮件发送失败"
+     *      }
+     */
+    public function retrievePasswordWithSendEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'identifier' => ['required', 'exists:user_auths'],
+            'email' => ['required', 'exists:user_auths']
+        ], [
+            'identifier.required' => 'identifier不能为空',
+            'identifier.exists' => 'identifier不存在',
+            'email.required' => 'email不能为空',
+            'email.exists' => 'email不存在'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        $userAuth1 = UserAuth::where('identifier', $request->identifier)->where('identity_type', 'username')->first();
+        $userAuth2 = UserAuth::where('email', $request->email)->where('identity_type', 'email')->first();
+
+        // 验证用户名和邮箱是否属于同一个用户的授权
+        if ($userAuth1->user_id != $userAuth2->user_id) {
+            return $this->respondWithErrors('用户名或邮箱错误');
+        }
+
+        // 随机生成新密码
+        $newPassword = $this->makeRandString(6);
+        $email = $request->email;
+
+        Mail::raw('您的密码已重置成功, 新密码为' . $newPassword . ', 请尽快修改密码。', function ($message) use ($email) {
+            $message ->to($email)->subject('找回密码 - 来自自学英语社区');
+        });
+
     }
 
 }
