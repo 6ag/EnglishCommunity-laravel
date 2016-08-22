@@ -181,7 +181,8 @@ class CommentController extends BaseController
             $result[$key]['author'] = [
                 'id' => $author->id,
                 'nickname' => $author->nickname,
-                'avatar' => url($author->avatar)
+                'avatar' => substr($author->avatar, 0, 4) == 'http' ? $author->avatar : url($author->avatar),
+                'sex' => $author->sex
             ];
 
             // 如果是回复评论,则带上被回复用户的信息
@@ -190,7 +191,8 @@ class CommentController extends BaseController
                 $result[$key]['extendsAuthor'] = [
                     'id' => $puser->id,
                     'nickname' => $puser->nickname,
-                    'avatar' => url($puser->avatar)
+                    'avatar' => substr($puser->avatar, 0, 4) == 'http' ? $puser->avatar : url($puser->avatar),
+                    'sex' => $puser->sex
                 ];
             }
         }

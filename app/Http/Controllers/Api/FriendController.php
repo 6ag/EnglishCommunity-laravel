@@ -81,7 +81,9 @@ class FriendController extends BaseController
             $user = User::find($value->relation_user_id);
             $result[$key]['relationUserId'] = $user->id;
             $result[$key]['relationNickname'] = $user->nickname;
-            $result[$key]['relationAvatar'] = url($user->avatar);
+            $result[$key]['relationAvatar'] = substr($user->avatar, 0, 4) == 'http' ? $user->avatar : url($user->avatar);
+            $result[$key]['relationSex'] = $user->sex;
+            $result[$key]['relationSay'] = $user->say;
         }
 
         return $this->respondWithSuccess($result, '查询朋友关系列表成功');

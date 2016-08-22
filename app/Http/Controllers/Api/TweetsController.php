@@ -161,7 +161,8 @@ class TweetsController extends BaseController
             $result[$key]['author'] = [
                 'id' => $user->id,
                 'nickname' => $user->nickname,
-                'avatar' => url($user->avatar),
+                'avatar' => substr($user->avatar, 0, 4) == 'http' ? $user->avatar : url($user->avatar),
+                'sex' => $user->sex
             ];
 
             // 有图片才拆分
@@ -280,7 +281,8 @@ class TweetsController extends BaseController
         $result['author'] = [
             'id' => $user->id,
             'nickname' => $user->nickname,
-            'avatar' => url($user->avatar),
+            'avatar' => substr($user->avatar, 0, 4) == 'http' ? $user->avatar : url($user->avatar),
+            'sex' => $user->sex
         ];
 
         // 有配图拆分

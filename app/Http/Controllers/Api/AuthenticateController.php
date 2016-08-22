@@ -157,7 +157,7 @@ class AuthenticateController extends BaseController
      * @api {post} /auth/register.api app注册
      * @apiGroup Auth
      * @apiPermission none
-     * @apiParam {String} type 注册类型(username email mobile qq weixin weibo)
+     * @apiParam {String} type 注册类型(username)
      * @apiParam {String} identifier 唯一标识
      * @apiParam {String} credential 凭证
      * @apiVersion 0.0.1
@@ -209,7 +209,7 @@ class AuthenticateController extends BaseController
 //            return $this->respondWithErrors('验证码错误');
 //        }
 
-        $collectionAll = collect(['username', 'email', 'mobile', 'qq', 'weixin', 'weibo']);
+        $collectionAll = collect(['username']);
         if (! $collectionAll->contains($request->type)) {
             return $this->respondWithErrors('不支持的注册方式', 400);
         }
@@ -273,15 +273,10 @@ class AuthenticateController extends BaseController
     {
         // 验证输入
         $validator = Validator::make($request->all(), [
-            'identifier' => ['required', 'exists:user_auths'],
-            'credential' => ['required'],
             'type' => ['required', 'in:username,email,mobile,qq,weixin,weibo'],
         ], [
-            'identifier.exists' => '用户不存在',
-            'identifier.required' => '用户名、手机号码或邮箱为必填项',
-            'credential.required' => '密码为必填项',
-            'type.required' => '注册类型不能为空',
-            'type.in' => '类型必须为username,email,mobile,qq,weixin,weibo其中一种'
+            'type.required' => '登录类型不能为空',
+            'type.in' => '登录类型必须为username,email,mobile,qq,weixin,weibo其中一种'
         ]);
         if ($validator->fails()) {
             return $this->respondWithFailedValidation($validator);
@@ -291,6 +286,8 @@ class AuthenticateController extends BaseController
         $collectionAll = collect(['username', 'email', 'mobile', 'qq', 'weixin', 'weibo']);
         $collectionWeb = collect(['username', 'email', 'mobile']);
         $collectionVendor = collect(['qq', 'weixin', 'weibo']);
+
+        // 不支持的登录方式
         if (! $collectionAll->contains($request->type)) {
             return $this->respondWithErrors('不支持的登录方式', 400);
         }
@@ -298,16 +295,44 @@ class AuthenticateController extends BaseController
         // 查询到的用户id
         $user_id = 0;
 
-        // 站内
-        if ($collectionWeb->contains($request->type)) {
+        if ($collectionWeb->contains($request->type)) { // 站内
+            // 验证输入
+            $validator = Validator::make($request->all(), [
+                'identifier' => ['required', 'exists:user_auths'],
+                'credential' => ['required'],
+            ], [
+                'identifier.exists' => '用户不存在',
+                'identifier.required' => '用户名、手机号码或邮箱为必填项',
+                'credential.required' => '密码为必填项',
+            ]);
+            if ($validator->fails()) {
+                return $this->respondWithFailedValidation($validator);
+            }
             $userAuth = UserAuth::where('identifier', $request->identifier)->whereIn('identity_type', ['username', 'mobile', 'email'])->first();
             if (isset($userAuth) && Hash::check($request->credential, $userAuth->credential)) {
                 $user_id = $userAuth->user_id;
             }
-        }
 
-        // 第三方
-        if ($collectionVendor->contains($request->type)) {
+        } elseif ($collectionVendor->contains($request->type)) { // 第三方
+
+            // 验证输入
+            $validator = Validator::make($request->all(), [
+                'identifier' => ['required'],
+                'token' => ['required'],
+                'nickname' => ['required'],
+                'avatar' => ['required'],
+                'sex' => ['required'],
+            ], [
+                'identifier.required' => 'identifier为必填项',
+                'token.required' => 'token为必填项',
+                'nickname.required' => 'nickname为必填项',
+                'avatar.required' => '密码为必填项',
+                'sex.required' => '密码为必填项',
+            ]);
+            if ($validator->fails()) {
+                return $this->respondWithFailedValidation($validator);
+            }
+
             $userAuth = UserAuth::where('identifier', $request->identifier)->whereIn('identity_type', ['qq', 'weibo', 'weixin'])->first();
             if (isset($userAuth)) {
                 $user_id = $userAuth->user_id;
@@ -318,9 +343,18 @@ class AuthenticateController extends BaseController
                     'avatar' => $request->avatar,
                     'sex' => $request->sex,
                 ]);
+                // 修改用户绑定记录
+                if ($request->type == 'qq') {
+                    $newUser->update(['qq_binding' => 1]);
+                } elseif ($request->type == 'weibo') {
+                    $newUser->update(['weibo_binding' => 1]);
+                } elseif ($request->type == 'weixin') {
+                    $newUser->update(['weixin_binding' => 1]);
+                }
+                // 创建第三方授权信息
                 UserAuth::create([
                     'user_id' => $newUser->id,
-                    'identity_type' => $request->identity_type,
+                    'identity_type' => $request->type,
                     'identifier' => $request->identifier,
                     'credential' => $request->token,
                     'verified' => 1
@@ -331,7 +365,7 @@ class AuthenticateController extends BaseController
 
         if ($user_id != 0) {
             // 查询用户表
-            $user = User::find($userAuth->user_id);
+            $user = User::find($user_id);
             if ($user->status == 0) {
                 return $this->respondWithErrors('登录失败, 用户已被禁用', 403);
             }
