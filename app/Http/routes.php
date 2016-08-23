@@ -130,4 +130,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 提交反馈信息
     Route::post('postFeedback.api', 'FeedbackController@postFeedback');
 
+    // 获取消息列表
+    Route::get('getMessageList.api', 'MessageRecordController@getMessageList');
+
 });

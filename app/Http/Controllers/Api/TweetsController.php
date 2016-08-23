@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Comment;
 use App\Http\Model\LikeRecord;
+use App\Http\Model\MessageRecord;
 use App\Http\Model\Tweets;
 use App\Http\Model\User;
 use Carbon\Carbon;
@@ -417,7 +418,6 @@ class TweetsController extends BaseController
             foreach ($atUsers as $key => $atUser) {
                 $at_user_ids[$key] = $atUser['id'];
                 $at_nicknames[$key] = $atUser['nickname'];
-                // 在这里通知指定用户收到了信息
             }
 
             $at_user_ids = implode(',', $at_user_ids);
@@ -427,7 +427,7 @@ class TweetsController extends BaseController
         $tweet = new Tweets();
         $tweet->user_id = $request->user_id;
         $tweet->app_client = $app_client;
-        $tweet->content = $request->get('content');
+        $tweet->content = $request->input('content');
 
         // 发布参数中带配图
         if (isset($originalPaths) && isset($thumbPaths)) {
@@ -440,8 +440,22 @@ class TweetsController extends BaseController
             $tweet->at_nicknames = $at_nicknames;
             $tweet->at_user_ids = $at_user_ids;
         }
-
         $tweet->save();
+
+        // 给被at的用户发送信息
+        if (isset($request->atUsers)) {
+            $atUsers = json_decode($request->atUsers, true);
+            foreach ($atUsers as $key => $atUser) {
+                MessageRecord::create([
+                    'by_user_id' => $request->user_id,
+                    'to_user_id' => $atUser['id'],
+                    'message_type' => 'at',
+                    'type' => 'tweet',
+                    'source_id' => $tweet->id,
+                    'content' => $request->input('content'),
+                ]);
+            }
+        }
 
         return $this->respondWithSuccess(null, '发布动弹成功');
 

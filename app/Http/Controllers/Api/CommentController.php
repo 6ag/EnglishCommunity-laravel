@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Model\Comment;
+use App\Http\Model\MessageRecord;
+use App\Http\Model\Tweets;
 use App\Http\Model\User;
+use App\Http\Model\VideoInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -23,7 +26,7 @@ class CommentController extends BaseController
     }
     
     /**
-     * @api {get} /postComment.api 发布评论
+     * @api {post} /postComment.api 发布评论
      * @apiDescription 发布或者回复一条评论
      * @apiGroup Comment
      * @apiPermission Token
@@ -36,7 +39,7 @@ class CommentController extends BaseController
      * @apiParam {String} type 类型:tweet/video_info
      * @apiParam {Number} source_id 动弹或视频信息的id
      * @apiParam {String} content 评论内容
-     * @apiParam {Number} [pid] 默认0,评论当前主题.为其他评论id则是回复评论
+     * @apiParam {Number} pid 为0则评论当前主题.为其他评论id则是回复评论
      * @apiVersion 0.0.1
      * @apiSuccessExample {json} Success-Response:
      *       {
@@ -71,20 +74,44 @@ class CommentController extends BaseController
             return $this->respondWithFailedValidation($validator);
         }
 
-        // 验证回复的评论是否存在
-        $pid = isset($request->pid) ? $request->pid : 0;
-        if ($pid != 0) {
-            $pComment = Comment::where('source_id', $request->source_id)->where('type', $request->type)->where('id', $pid)->first();
-            if (! isset($pComment)) {
+        if ($request->pid != 0) {
+            // 验证回复的评论是否存在
+            $toComment = Comment::where('source_id', $request->source_id)->where('type', $request->type)->where('id', $request->pid)->first();
+            if (isset($toComment)) {
+                // 通知被回复的用户 - 回复评论
+                MessageRecord::create([
+                    'by_user_id' => $request->user_id,
+                    'to_user_id' => $toComment->user_id,
+                    'message_type' => 'comment',
+                    'type' => $request->type,
+                    'source_id' => $request->source_id,
+                    'content' => $request->input('content'),
+                ]);
+            } else {
                 return $this->respondWithErrors('没有找到当前source_id下pid对应的评论信息');
             }
         } else {
-            // 通知被回复的用户
-            
+            // 通知被回复的用户 - 回复主题
+            if ($request->type == 'tweet') {
+                // 动态
+                $tweet = Tweets::find($request->source_id);
+                $to_user_id = $tweet->user_id;
+
+                // 只有回复动态主题才通知,回复视频则不通知
+                MessageRecord::create([
+                    'by_user_id' => $request->user_id,
+                    'to_user_id' => $to_user_id,
+                    'message_type' => 'comment',
+                    'type' => $request->type,
+                    'source_id' => $request->source_id,
+                    'content' => $request->input('content'),
+                ]);
+            }
+
         }
 
         // 添加评论信息
-        Comment::create($request->all());
+        Comment::create($request->all($request->only(['user_id', 'type', 'source_id', 'content', 'pid'])));
         return $this->respondWithSuccess(null, '添加评论成功');
 
     }
