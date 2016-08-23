@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\JPush;
 use App\Http\Model\Category;
 use App\Http\Model\Video;
 use App\Http\Model\VideoInfo;
@@ -218,5 +219,39 @@ class VideoController extends BaseController
             $tempPath = 'temp/'.$file->getClientOriginalName();
             return $tempPath;
         }
+    }
+
+    /**
+     * 发送远程推送 如果参数id不等于 -1 则表示需要跳转
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function push($id)
+    {
+        $videoInfo = VideoInfo::find($id);
+        return view('admin.video.push', compact('videoInfo'));
+    }
+
+    public function send(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'push_content' => ['required'],
+            'id' => ['exists:video_infos'],
+        ], [
+            'push_content.required' => '推送内容不能为空',
+            'id.exists' => '视频信息不存在'
+        ]);
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        // 发送推送
+        $push = new JPush();
+        $result = $push->sendRemoteNotification('all', $request->push_content, [
+            'id' => isset($request->info) ? $request->id : -1
+        ]);
+
+        return redirect()->route('admin.video.index')->with(['errors' => $result]);
+
     }
 }

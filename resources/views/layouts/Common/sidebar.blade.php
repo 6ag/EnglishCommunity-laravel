@@ -42,7 +42,7 @@
                     <li class="{{ Request::is('admin/category/create') ? 'active' : '' }}"><a href="{{ url('admin/category/create') }}"><i class="fa fa-edit"></i> 添加分类</a></li>
                     <li class="{{ Request::is('admin/category') ? 'active' : '' }}"><a href="{{ url('admin/category') }}"><i class="fa fa-folder"></i> 管理分类</a></li>
                     <li class="{{ Request::is('admin/video/create') ? 'active' : '' }}"><a href="{{ url('admin/video/create') }}"><i class="fa fa-cloud-upload"></i> 添加视频</a></li>
-                    <li class="{{ (Request::is('admin/video') || Request::is('admin/video/*/edit')) ? 'active' : '' }}"><a href="{{ url('admin/video') }}"><i class="fa fa-list-alt"></i> 管理视频</a></li>
+                    <li class="{{ (Request::is('admin/video') || Request::is('admin/video/*/edit') || Request::is('admin/video/*/push')) ? 'active' : '' }}"><a href="{{ url('admin/video') }}"><i class="fa fa-list-alt"></i> 管理视频</a></li>
                 </ul>
             </li>
 
@@ -54,7 +54,7 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                 </a>
-                <ul class="treeview-menu" style="display: {{ Request::is('admin/option') || Request::is('admin/feedback') ? 'block' : 'none' }};">
+                <ul class="treeview-menu" style="display: {{ (Request::is('admin/option') || Request::is('admin/feedback')) ? 'block' : 'none' }};">
                     <li class="{{ Request::is('admin/feedback') ? 'active' : '' }}"><a href="{{ url('admin/feedback') }}"><i class="fa fa-reply-all"></i> 意见反馈</a></li>
                     <li class="{{ Request::is('admin/option') ? 'active' : '' }}"><a href="{{ url('admin/option') }}"><i class="fa fa-cog"></i> 系统设置</a></li>
                 </ul>

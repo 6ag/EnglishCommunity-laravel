@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Model\Collection;
+use App\Http\Model\Comment;
 use App\Http\Model\Video;
 use App\Http\Model\VideoInfo;
 use App\Http\ParseVideo;
@@ -18,9 +20,81 @@ class VideoController extends BaseController
         $this->middleware('jwt.api.auth', [
             'except' => [
                 'getVideoList',
-                'playVideo'
+                'playVideo',
+                'getVideoInfoDetail'
             ]
         ]);
+    }
+
+    /**
+     * @api {get} /getVideoInfoDetail.api 视频信息详情
+     * @apiDescription 根据分类id查询视频信息列表
+     * @apiGroup Video
+     * @apiPermission none
+     * @apiParam {Number} video_info_id  视频信息id
+     * @apiParam {Number} [user_id] 当前用户id 未登录不传或者传0
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "查询视频信息详情成功",
+     *           "result": {
+     *                  "id": 13,
+     *                   "title": "零基础学习英语音标视频教程",
+     *                   "cover": "http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg",
+     *                   "view": 39,
+     *                   "teacherName": "Nickcen",
+     *                   "videoType": "youku",
+     *                   "recommended": 0,
+     *                   "collected": 0,
+     *                   "videoCount": 21,
+     *                   "commentCount": 0,
+     *                   "collectionCount": 0
+     *            }
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "查询视频信息详情失败"
+     *      }
+     */
+    public function getVideoInfoDetail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'video_info_id' => ['required', 'exists:video_infos,id'],
+        ], [
+            'video_info_id.required' => 'video_info_id不能为空',
+            'video_info_id.exists' => '视频信息不存在'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        // user_id默认为0
+        $user_id = isset($request->user_id) ? $request->user_id : 0;
+
+        // 只读一次到内存,节省资源
+        $comments = Comment::where('type', 'video_info')->get();
+        $collections = Collection::all();
+
+        $videoInfo = VideoInfo::find($request->video_info_id);
+        $collection = Collection::where('user_id', $user_id)->where('video_info_id', $videoInfo->id)->first();
+        $result['id'] = $videoInfo->id;
+        $result['title'] = $videoInfo->title;
+        $result['cover'] = url($videoInfo->photo);
+        $result['view'] = $videoInfo->view;
+        $result['teacherName'] = $videoInfo->teacher;
+        $result['videoType'] = $videoInfo->type;
+        $result['recommended'] = $videoInfo->recommend;
+        $result['collected'] = isset($collection) ? 1 : 0;
+        $result['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
+        $result['commentCount'] = $comments->where('source_id', $videoInfo->id)->count();
+        $result['collectionCount'] = $collections->where('source_id', $videoInfo->id)->count();
+
+        return $this->respondWithSuccess($result, '查询指定分类视频列表成功');
+
     }
 
     /**
@@ -124,7 +198,7 @@ class VideoController extends BaseController
             'videoUrl' => $parseVideo->getYoukuM3u8($request->url)
         ], '解析播放地址成功');
     }
-    
+
     /**
      * @api {get} /getVideoDownloadList.api 视频下载地址
      * @apiDescription 根据url/id解析flv视频列表,可供分段下载 ffmpeg合成

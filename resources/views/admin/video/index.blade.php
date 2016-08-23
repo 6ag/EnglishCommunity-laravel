@@ -59,7 +59,7 @@
                                             <td>{{ $videoInfo->type }}</td>
                                             <td>{{ date('Y-m-d H:i:s', $videoInfo->updated_at->timestamp) }}</td>
                                             <td>
-                                                <a href="">推送</a> |
+                                                <a href="{{ route('admin.video.push', ['video' => $videoInfo->id]) }}">推送</a> |
                                                 <a href="{{ route('admin.video.edit', ['video' => $videoInfo->id]) }}">编辑</a> |
                                                 <a href="javascript:;" onclick="deleteVideoInfo({{ $videoInfo->id }})">删除</a>
                                             </td>

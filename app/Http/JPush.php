@@ -6,6 +6,8 @@
  * Time: 下午11:46
  */
 
+namespace App\Http;
+
 class JPush
 {
     private $app_key = '1d918a27ec1db14f243a79cf';
@@ -96,7 +98,7 @@ class JPush
             ],
             "ios" => [
                 "alert" => $content,
-                "badge" => "1",
+                "badge" => "+1",
                 "sound" => "default",
                 "extras" => $parameters
             ]
@@ -152,7 +154,3 @@ class JPush
         return $data;
     }
 }
-
-return (new JPush())->sendRemoteNotification('all', '发送内容', [
-    'key' => 'value'
-]);

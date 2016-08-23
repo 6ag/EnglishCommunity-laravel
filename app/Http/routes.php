@@ -35,8 +35,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::resource('category', 'CategoryController');
 
         // 视频
-        Route::resource('video', 'VideoController');
+        Route::post('video/send', 'VideoController@send')->name('admin.video.send');
+        Route::get('video/{video}/push', 'VideoController@push')->name('admin.video.push');
         Route::post('upload', 'VideoController@uploadImage')->name('admin.upload');
+        Route::resource('video', 'VideoController');
 
         // 配置
         Route::resource('option', 'OptionController');
@@ -72,6 +74,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
 
     // 根据分类id查询视频信息列表
     Route::get('getVideoInfosList.api', 'CategoryController@getVideoInfosList');
+
+    // 视频信息详情
+    Route::get('getVideoInfoDetail.api', 'VideoController@getVideoInfoDetail');
 
     // 根据视频信息id 获取视频信息
     Route::get('getVideoList.api', 'VideoController@getVideoList');
