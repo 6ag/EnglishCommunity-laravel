@@ -18,8 +18,7 @@ class VideoController extends BaseController
         $this->middleware('jwt.api.auth', [
             'except' => [
                 'getVideoList',
-                'playVideo',
-                'getVideoDownloadList'
+                'playVideo'
             ]
         ]);
     }
@@ -111,9 +110,19 @@ class VideoController extends BaseController
      */
     public function playVideo(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'url' => ['required']
+        ], [
+            'url.required' => 'urlbunweik'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithSuccess($validator);
+        }
+
         $parseVideo = new ParseVideo();
-        $m3u8 = $parseVideo->getYoukuM3u8($request->url);
-        Header("Location:$m3u8");
+        return $this->respondWithSuccess([
+            'videoUrl' => $parseVideo->getYoukuM3u8($request->url)
+        ], '解析播放地址成功');
     }
     
     /**

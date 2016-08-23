@@ -133,4 +133,10 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 获取消息列表
     Route::get('getMessageList.api', 'MessageRecordController@getMessageList');
 
+    // 获取未读消息数量
+    Route::get('getUnlookedMessageCount.api', 'MessageRecordController@getUnlookedMessageCount');
+
+    // 清空未读消息数量
+    Route::post('clearUnlookedMessage.api', 'MessageRecordController@clearUnlookedMessage');
+
 });
