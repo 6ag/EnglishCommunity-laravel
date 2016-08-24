@@ -21,7 +21,8 @@ class VideoController extends BaseController
             'except' => [
                 'getVideoList',
                 'playVideo',
-                'getVideoInfoDetail'
+                'getVideoInfoDetail',
+                'searchVideoInfoList'
             ]
         ]);
     }
@@ -268,6 +269,113 @@ class VideoController extends BaseController
         } else {
             return $this->respondWithErrors('解析视频地址失败,已经放弃治疗', 500);
         }
+    }
+
+    /**
+     * @api {get} /searchVideoInfoList.api 搜索视频信息列表
+     * @apiDescription 搜索视频信息列表
+     * @apiGroup Video
+     * @apiPermission none
+     * @apiParam {String} keyword 搜索关键词
+     * @apiParam {Number} [user_id] 当前用户id 未登录不传或者传0
+     * @apiParam {Number} [page] 页码
+     * @apiParam {Number} [count] 每页数量,默认10条
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "搜索视频信息列表成功",
+     *           "result": {
+     *               "pageInfo": {
+     *                   "total": 13,
+     *                   "currentPage": 1
+     *               },
+     *               "data": [
+     *                   {
+     *                       "id": 13,
+     *                       "title": "零基础学习英语音标视频教程",
+     *                       "cover": "http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg",
+     *                       "view": 39,
+     *                       "teacherName": "Nickcen",
+     *                       "videoType": "youku",
+     *                       "recommended": 0,
+     *                       "collected": 0,
+     *                       "videoCount": 21,
+     *                       "commentCount": 0,
+     *                       "collectionCount": 0
+     *                   },
+     *                   {
+     *                       "id": 12,
+     *                       "title": "48个国际音标发音视频教程全集",
+     *                       "cover": "http://www.english.com/uploads/video-info/f05d2843f5ecf9ec9448c98a9e6bbe80.jpg",
+     *                       "view": 17,
+     *                       "teacherName": "佚名",
+     *                       "videoType": "youku",
+     *                       "recommended": 0,
+     *                       "collected": 0,
+     *                       "videoCount": 21,
+     *                       "commentCount": 0,
+     *                       "collectionCount": 0
+     *                   }
+     *               ]
+     *           }
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 404,
+     *           "message": "搜索视频信息列表失败"
+     *      }
+     */
+    public function searchVideoInfoList(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'keyword' => ['required']
+        ], [
+            'keyword.required' => '搜索关键词不能为空'
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        // user_id默认为0
+        $user_id = isset($request->user_id) ? $request->user_id : 0;
+
+        $videoInfos = VideoInfo::where('title','like','%'.$request->keyword.'%')->orderBy('id', 'desc')->paginate(isset($request->count) ? $request->count : 10);
+        if (! count($videoInfos)) {
+            return $this->respondWithErrors('未搜索到任何数据');
+        }
+
+        // 只读一次到内存,节省资源
+        $comments = Comment::where('type', 'video_info')->get();
+        $collections = Collection::all();
+
+        $result = null;
+        $data = $videoInfos->all();
+        foreach ($data as $key => $videoInfo) {
+            $collection = Collection::where('user_id', $user_id)->where('video_info_id', $videoInfo->id)->first();
+            $result[$key]['id'] = $videoInfo->id;
+            $result[$key]['title'] = $videoInfo->title;
+            $result[$key]['cover'] = url($videoInfo->photo);
+            $result[$key]['view'] = $videoInfo->view;
+            $result[$key]['teacherName'] = $videoInfo->teacher;
+            $result[$key]['videoType'] = $videoInfo->type;
+            $result[$key]['recommended'] = $videoInfo->recommend;
+            $result[$key]['collected'] = isset($collection) ? 1 : 0;
+            $result[$key]['videoCount'] = Video::where('video_info_id', $videoInfo->id)->count();
+            $result[$key]['commentCount'] = $comments->where('source_id', $videoInfo->id)->count();
+            $result[$key]['collectionCount'] = $collections->where('source_id', $videoInfo->id)->count();
+        }
+
+        return $this->respondWithSuccess([
+            'pageInfo' => [
+                'total' => $videoInfos->total(),
+                'currentPage' => $videoInfos->currentPage(),
+            ],
+            'data' => $result
+        ], '搜索视频信息列表成功');
+
     }
 
 }

@@ -75,6 +75,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 根据分类id查询视频信息列表
     Route::get('getVideoInfosList.api', 'CategoryController@getVideoInfosList');
 
+    // 搜索
+    Route::get('searchVideoInfoList.api', 'VideoController@searchVideoInfoList');
+
     // 视频信息详情
     Route::get('getVideoInfoDetail.api', 'VideoController@getVideoInfoDetail');
 
