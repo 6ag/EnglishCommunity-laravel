@@ -62,7 +62,7 @@ php artisan migrate
 
 **6.Seed data**
 
-Add categories data and information administrators. normal administrator account is `admin` and password is `123456` 。
+Add categories data and information administrators. normal administrator account is `admin` and password is `123456` .
 
 ```shell
 php artisan db:seed
@@ -70,7 +70,7 @@ php artisan db:seed
 
 **7.Login to dashboard**
 
-Access `http://www.english.com/` ，Using an administrator account to log on。
+Access `http://www.english.com/` ，Using an administrator account to log on.
 
 ## License
 
