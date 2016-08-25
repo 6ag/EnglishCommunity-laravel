@@ -2,9 +2,9 @@
 
 Based laravel 5.3 framework, interfaces safe to use `jwt` (json web token), for video data management background, and provides an interface to the app api calls. Video tutorial module, grammar manual module, the user module, the community module.
 
-![image](https://github.com/6ag/EnglishCommunity-laravel/blob/master/githubimg/example1.jpg)
+![image](https://github.com/6ag/EnglishCommunity-laravel/blob/master/githubimg/example1.png)
 
-![image](https://github.com/6ag/EnglishCommunity-laravel/blob/master/githubimg/example2.jpg)
+![image](https://github.com/6ag/EnglishCommunity-laravel/blob/master/githubimg/example2.png)
 
 ## USEFUL LINK
 
