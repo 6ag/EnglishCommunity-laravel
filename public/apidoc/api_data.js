@@ -157,7 +157,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "type",
-            "description": "<p>注册类型(username email mobile qq weixin weibo)</p>"
+            "description": "<p>注册类型(username)</p>"
           },
           {
             "group": "Parameter",
@@ -198,6 +198,59 @@ define({ "api": [
     "filename": "app/Http/Controllers/Api/AuthenticateController.php",
     "groupTitle": "Auth",
     "name": "PostAuthRegisterApi"
+  },
+  {
+    "type": "post",
+    "url": "/auth/retrievePasswordWithSendEmail.api",
+    "title": "重置密码邮件",
+    "group": "Auth",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "identifier",
+            "description": "<p>username账号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>绑定的邮箱</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n      \"status\": \"success\",\n      \"code\": 200,\n      \"message\": \"邮件发送成功\",\n      \"data\": null\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"邮件发送失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/AuthenticateController.php",
+    "groupTitle": "Auth",
+    "name": "PostAuthRetrievepasswordwithsendemailApi"
   },
   {
     "type": "post",
@@ -605,7 +658,7 @@ define({ "api": [
     "name": "GetGetcommentlistApi"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/postComment.api",
     "title": "发布评论",
     "description": "<p>发布或者回复一条评论</p>",
@@ -669,9 +722,9 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "Number",
-            "optional": true,
+            "optional": false,
             "field": "pid",
-            "description": "<p>默认0,评论当前主题.为其他评论id则是回复评论</p>"
+            "description": "<p>为0则评论当前主题.为其他评论id则是回复评论</p>"
           }
         ]
       }
@@ -697,7 +750,7 @@ define({ "api": [
     },
     "filename": "app/Http/Controllers/Api/CommentController.php",
     "groupTitle": "Comment",
-    "name": "GetPostcommentApi"
+    "name": "PostPostcommentApi"
   },
   {
     "type": "get",
@@ -981,6 +1034,221 @@ define({ "api": [
     "filename": "app/Http/Controllers/Api/LikeRecordController.php",
     "groupTitle": "LikeRecord",
     "name": "PostAddorcancellikerecordApi"
+  },
+  {
+    "type": "get",
+    "url": "/getMessageList.api",
+    "title": "获取消息列表",
+    "description": "<p>获取个人消息列表,包括at和回复</p>",
+    "group": "Message",
+    "permission": [
+      {
+        "name": "Token"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页码,默认当然是第1页</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每页数量,默认10条</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取消息列表成功\",\n    \"result\": {\n        \"pageInfo\": {\n            \"total\": 2,\n            \"currentPage\": 1\n        },\n        \"data\": [\n            {\n            \"byUser\": {\n                \"id\": 10000,\n                \"nickname\": \"管理员\",\n                \"avatar\": \"http://www.english.com/uploads/user/avatar/db2b62230870b0d8506f4c106b80693b.jpg\",\n                \"sex\": 1\n            },\n            \"toUser\": {\n                \"id\": 10001,\n                \"nickname\": \"王麻子\",\n                \"avatar\": \"http://www.english.com/uploads/user/default/avatar.jpg\",\n                \"sex\": 0\n            },\n            \"id\": 5,\n            \"messageType\": \"at\",\n            \"type\": \"tweet\",\n            \"sourceId\": 11,\n            \"content\": \"@王麻子 @李二狗 测试结果[怒]\",\n            \"looked\": 0,\n            \"publishTime\": \"1471920464\",\n            \"sourceContent\": \"王麻子:@王麻子 @李二狗 测试结果[怒]\"\n            },\n            {\n            \"byUser\": {\n                \"id\": 10000,\n                \"nickname\": \"管理员\",\n                \"avatar\": \"http://www.english.com/uploads/user/avatar/db2b62230870b0d8506f4c106b80693b.jpg\",\n                \"sex\": 1\n            },\n            \"toUser\": {\n                \"id\": 10001,\n                \"nickname\": \"王麻子\",\n                \"avatar\": \"http://www.english.com/uploads/user/default/avatar.jpg\",\n                \"sex\": 0\n            },\n            \"id\": 2,\n            \"messageType\": \"comment\",\n            \"type\": \"tweet\",\n            \"sourceId\": 3,\n            \"content\": \"我们一起努力加油[怒][怒]\",\n            \"looked\": 0,\n            \"publishTime\": \"1471919753\",\n            \"sourceContent\": \"王麻子:我也来测试一发，这是管理员的照片！[偷笑][偷笑][偷笑]\"\n            }\n        ]\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取消息列表失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/MessageRecordController.php",
+    "groupTitle": "Message",
+    "name": "GetGetmessagelistApi"
+  },
+  {
+    "type": "get",
+    "url": "/getUnlookedMessageCount.api",
+    "title": "获取未读消息数量",
+    "description": "<p>获取未读消息数量</p>",
+    "group": "Message",
+    "permission": [
+      {
+        "name": "Token"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取消息数量成功\",\n    \"result\": {\n\n     }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取消息数量失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/MessageRecordController.php",
+    "groupTitle": "Message",
+    "name": "GetGetunlookedmessagecountApi"
+  },
+  {
+    "type": "post",
+    "url": "/clearUnlookedMessage.api",
+    "title": "清空未读消息",
+    "description": "<p>清空未读消息记录</p>",
+    "group": "Message",
+    "permission": [
+      {
+        "name": "Token"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>登录成功返回的token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "user_id",
+            "description": "<p>用户id</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"清空未读消息成功\",\n    \"result\": null\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"清空未读消息失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/MessageRecordController.php",
+    "groupTitle": "Message",
+    "name": "PostClearunlookedmessageApi"
   },
   {
     "type": "get",
@@ -1605,6 +1873,60 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/getVideoInfoDetail.api",
+    "title": "视频信息详情",
+    "description": "<p>根据分类id查询视频信息列表</p>",
+    "group": "Video",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "video_info_id",
+            "description": "<p>视频信息id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "user_id",
+            "description": "<p>当前用户id 未登录不传或者传0</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"查询视频信息详情成功\",\n    \"result\": {\n           \"id\": 13,\n            \"title\": \"零基础学习英语音标视频教程\",\n            \"cover\": \"http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg\",\n            \"view\": 39,\n            \"teacherName\": \"Nickcen\",\n            \"videoType\": \"youku\",\n            \"recommended\": 0,\n            \"collected\": 0,\n            \"videoCount\": 21,\n            \"commentCount\": 0,\n            \"collectionCount\": 0\n     }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"查询视频信息详情失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/VideoController.php",
+    "groupTitle": "Video",
+    "name": "GetGetvideoinfodetailApi"
+  },
+  {
+    "type": "get",
     "url": "/getVideoList.api",
     "title": "视频播放列表",
     "description": "<p>根据视频信息id查询视频播放列表</p>",
@@ -1696,5 +2018,73 @@ define({ "api": [
     "filename": "app/Http/Controllers/Api/VideoController.php",
     "groupTitle": "Video",
     "name": "GetPlayvideoApi"
+  },
+  {
+    "type": "get",
+    "url": "/searchVideoInfoList.api",
+    "title": "搜索视频信息列表",
+    "description": "<p>搜索视频信息列表</p>",
+    "group": "Video",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "keyword",
+            "description": "<p>搜索关键词</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "user_id",
+            "description": "<p>当前用户id 未登录不传或者传0</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "page",
+            "description": "<p>页码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "count",
+            "description": "<p>每页数量,默认10条</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.1",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"搜索视频信息列表成功\",\n    \"result\": {\n        \"pageInfo\": {\n            \"total\": 13,\n            \"currentPage\": 1\n        },\n        \"data\": [\n            {\n                \"id\": 13,\n                \"title\": \"零基础学习英语音标视频教程\",\n                \"cover\": \"http://www.english.com/uploads/video-info/74ceb292408d6718cb818293b039c5e2.jpg\",\n                \"view\": 39,\n                \"teacherName\": \"Nickcen\",\n                \"videoType\": \"youku\",\n                \"recommended\": 0,\n                \"collected\": 0,\n                \"videoCount\": 21,\n                \"commentCount\": 0,\n                \"collectionCount\": 0\n            },\n            {\n                \"id\": 12,\n                \"title\": \"48个国际音标发音视频教程全集\",\n                \"cover\": \"http://www.english.com/uploads/video-info/f05d2843f5ecf9ec9448c98a9e6bbe80.jpg\",\n                \"view\": 17,\n                \"teacherName\": \"佚名\",\n                \"videoType\": \"youku\",\n                \"recommended\": 0,\n                \"collected\": 0,\n                \"videoCount\": 21,\n                \"commentCount\": 0,\n                \"collectionCount\": 0\n            }\n        ]\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "{\n      \"status\": \"error\",\n      \"code\": 404,\n      \"message\": \"搜索视频信息列表失败\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/Http/Controllers/Api/VideoController.php",
+    "groupTitle": "Video",
+    "name": "GetSearchvideoinfolistApi"
   }
 ] });

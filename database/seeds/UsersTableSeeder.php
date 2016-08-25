@@ -25,32 +25,6 @@ class UsersTableSeeder extends Seeder
                 'is_admin' => 1,
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
-            ], [
-                'id' => 10001,
-                'nickname' => '王麻子',
-                'say' => '好好学习天天向上',
-                'avatar' => 'uploads/user/default/avatar.jpg',
-                'mobile' => null,
-                'email' => null,
-                'mobile_binding' => 0,
-                'email_binding' => 0,
-                'sex' => 1,
-                'is_admin' => 0,
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
-            ], [
-                'id' => 10002,
-                'nickname' => '李二狗',
-                'say' => '好好学习天天向上',
-                'avatar' => 'uploads/user/default/avatar.jpg',
-                'mobile' => null,
-                'email' => null,
-                'mobile_binding' => 0,
-                'email_binding' => 0,
-                'sex' => 1,
-                'is_admin' => 0,
-                'created_at' => \Carbon\Carbon::now(),
-                'updated_at' => \Carbon\Carbon::now(),
             ]
         ]);
     }

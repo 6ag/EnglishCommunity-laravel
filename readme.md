@@ -1,27 +1,78 @@
-# Laravel PHP Framework
+# English Community Self Background Management System
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Based laravel 5.3 framework, interfaces safe to use `jwt` (json web token), for video data management background, and provides an interface to the app api calls. Video tutorial module, grammar manual module, the user module, the community module.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+![image](https://github.com/6ag/EnglishCommunity-laravel/blob/master/githubimg/example1.jpg)
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+![image](https://github.com/6ag/EnglishCommunity-laravel/blob/master/githubimg/example2.jpg)
 
-## Official Documentation
+## USEFUL LINK
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+- swift-app https://github.com/6ag/EnglishCommunity-swift
+- json-web-token(jwt) https://github.com/tymondesigns/jwt-auth
+- 	apidoc http://apidocjs.com
+- online api documentation http://english.6ag.cn/apidoc
 
-## Contributing
+## Requirements
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+- Nginx 1.8+ / Apache 2.2+
+- PHP 5.6+
+- Mysql 5.7+
+- fileinfo Extension
 
-## Security Vulnerabilities
+## Installation & Homestead
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+**1.Cloning into the local project**
+
+```shell
+git clone https://github.com/6ag/jiansan-laravel.git
+```
+
+**2.Build homestead website**
+
+Use homestead New Site, and parse `public` domain name to the project directory. First, enter the virtual machine environment, the new site:
+
+* Note: * This is the path to the directory to write their own installation, and ultimately resolve to `public` directory can be, do not forget to modify the local` hosts` file and restart `nginx`.
+
+```shell
+serve www.jiansan.com /home/vagrant/Code/jiansan-laralve-master/public
+```
+
+**3.Setup project dependencies**
+
+```shell
+composer install
+```
+
+**4.Copy Environment Profile**
+
+Copy `.env` environment configuration file, and modify database configuration information.
+
+```shell
+cp .env.example .env
+```
+
+**5.Create table**
+
+Before creating the data table, make sure `.env` file database is configured correctly and the database already exists.
+
+```shell
+php artisan migrate
+```
+
+**6.Seed data**
+
+Add categories data and information administrators. normal administrator account is `admin` and password is `123456` 。
+
+```shell
+php artisan db:seed
+```
+
+**7.Login to dashboard**
+
+Access `http://www.jiansan.com/` ，Using an administrator account to log on。
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+[MIT license](http://opensource.org/licenses/MIT) © [六阿哥](https://github.com/6ag)
+
