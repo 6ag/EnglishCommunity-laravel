@@ -35,7 +35,7 @@ Use homestead New Site, and parse `public` domain name to the project directory.
 * Note: * This is the path to the directory to write their own installation, and ultimately resolve to `public` directory can be, do not forget to modify the local` hosts` file and restart `nginx`.
 
 ```shell
-serve www.jiansan.com /home/vagrant/Code/EnglishCommunity-laravel/public
+serve www.english.com /home/vagrant/Code/EnglishCommunity-laravel/public
 ```
 
 **3.Setup project dependencies**
