@@ -25,7 +25,7 @@ Based laravel 5.3 framework, interfaces safe to use `jwt` (json web token), for 
 **1.Cloning into the local project**
 
 ```shell
-git clone https://github.com/6ag/jiansan-laravel.git
+git clone https://github.com/6ag/EnglishCommunity-laravel.git
 ```
 
 **2.Build homestead website**
@@ -35,7 +35,7 @@ Use homestead New Site, and parse `public` domain name to the project directory.
 * Note: * This is the path to the directory to write their own installation, and ultimately resolve to `public` directory can be, do not forget to modify the local` hosts` file and restart `nginx`.
 
 ```shell
-serve www.jiansan.com /home/vagrant/Code/jiansan-laralve-master/public
+serve www.jiansan.com /home/vagrant/Code/EnglishCommunity-laravel/public
 ```
 
 **3.Setup project dependencies**
@@ -70,7 +70,7 @@ php artisan db:seed
 
 **7.Login to dashboard**
 
-Access `http://www.jiansan.com/` ，Using an administrator account to log on。
+Access `http://www.english.com/` ，Using an administrator account to log on。
 
 ## License
 
