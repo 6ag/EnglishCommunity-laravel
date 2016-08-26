@@ -71,14 +71,27 @@ class FriendController extends BaseController
             return $this->respondWithFailedValidation($validator);
         }
 
-        $friends = Friend::where('user_id', $request->user_id)->where('relation', $request->relation)->get();
+        if ($request->relation == 0) {
+            // 查询粉丝
+            $friends = Friend::where('relation_user_id', $request->user_id)->get();
+        } else {
+            // 查询关注
+            $friends = Friend::where('user_id', $request->user_id)->get();
+        }
+
         if (count($friends) == 0) {
             return $this->respondWithErrors('没有查询到朋友关系数据');
         }
 
         $result = null;
         foreach ($friends as $key => $value) {
-            $user = User::find($value->relation_user_id);
+
+            if ($request->relation == 0) {
+                $user = User::find($value->user_id);
+            } else {
+                $user = User::find($value->relation_user_id);
+            }
+
             $result[$key]['relationUserId'] = $user->id;
             $result[$key]['relationNickname'] = $user->nickname;
             $result[$key]['relationAvatar'] = substr($user->avatar, 0, 4) == 'http' ? $user->avatar : url($user->avatar);
