@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 50)->nullable()->comment('邮箱');
             $table->tinyInteger('sex')->default(0)->comment('性别 0女 1男');
             $table->tinyInteger('status')->default(1)->comment('状态 1可用 0 不可用');
+            $table->tinyInteger('ad_disabled')->default(0)->comment('0没有禁用 1禁用');
             $table->tinyInteger('is_admin')->default(0)->comment('是否是管理员');
             $table->tinyInteger('qq_binding')->default(0)->comment('QQ登录是否绑定');
             $table->tinyInteger('weixin_binding')->default(0)->comment('微信登录是否绑定');
