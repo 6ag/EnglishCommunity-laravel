@@ -383,6 +383,7 @@ class AuthenticateController extends BaseController
                 'mobile' => $user->mobile,
                 'email' => $user->email,
                 'sex' => $user->sex,
+                'adDsabled' => $user->ad_disabled,
                 'qqBinding' => $user->qq_binding,
                 'weixinBinding' => $user->weixin_binding,
                 'weiboBinding' => $user->weibo_binding,

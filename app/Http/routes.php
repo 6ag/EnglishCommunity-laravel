@@ -132,6 +132,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 更新用户信息
     Route::post('updateUserInfomation.api', 'UserController@updateUserInfomation');
 
+    // 购买去除广告服务
+    Route::post('buyDislodgeDdvertisement.api', 'UserController@buyDislodgeDdvertisement');
+
     // 添加或删除关注
     Route::post('addOrCancelFriend.api', 'FriendController@addOrCancelFriend');
 

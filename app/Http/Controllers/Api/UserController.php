@@ -163,6 +163,7 @@ class UserController extends BaseController
             'mobile' => $user->mobile,
             'email' => $user->email,
             'sex' => $user->sex,
+            'adDsabled' => $user->ad_disabled,
             'qqBinding' => $user->qq_binding,
             'weixinBinding' => $user->weixin_binding,
             'weiboBinding' => $user->weibo_binding,
@@ -294,5 +295,53 @@ class UserController extends BaseController
         User::where('id', $request->user_id)->update($request->only(['nickname', 'sex', 'say']));
         return $this->respondWithSuccess(null, '更新用户信息成功');
 
+    }
+
+    /**
+     * @api {post} /buyDislodgeDdvertisement.api 购买去除广告
+     * @apiDescription  购买去除广告
+     * @apiGroup User
+     * @apiPermission Token
+     * @apiHeader {String} token 登录成功返回的token
+     * @apiHeaderExample {json} Header-Example:
+     *      {
+     *          "Authorization" : "Bearer {token}"
+     *      }
+     * @apiParam {Number} user_id 用户id
+     * @apiVersion 0.0.1
+     * @apiSuccessExample {json} Success-Response:
+     *       {
+     *           "status": "success",
+     *           "code": 200,
+     *           "message": "购买去除广告成功",
+     *           "data": null
+     *       }
+     * @apiErrorExample {json} Error-Response:
+     *     {
+     *           "status": "error",
+     *           "code": 400,
+     *           "message": "购买去除广告失败"
+     *      }
+     */
+    public function buyDislodgeDdvertisement(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => ['required', 'exists:users,id'],
+        ], [
+            'user_id.required' => 'user_id不能为空',
+        ]);
+        if ($validator->fails()) {
+            return $this->respondWithFailedValidation($validator);
+        }
+
+        $user = User::find($request->user_id);
+
+        if (isset($user)) {
+            $user->ad_disabled = 1;
+            $user->save();
+            return $this->respondWithSuccess(null, '禁用广告成功');
+        } else {
+            return $this->respondWithErrors('购买失败');
+        }
     }
 }
