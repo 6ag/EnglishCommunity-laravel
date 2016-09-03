@@ -10,8 +10,10 @@ Based laravel 5.2 framework, interfaces safe to use `jwt` (json web token), for 
 
 - swift-app https://github.com/6ag/EnglishCommunity-swift
 - json-web-token(jwt) https://github.com/tymondesigns/jwt-auth
+- intervention-image https://github.com/Intervention/image
 - 	apidoc http://apidocjs.com
 - online api documentation http://english.6ag.cn/apidoc
+
 
 ## Requirements
 
