@@ -247,7 +247,7 @@ class MessageRecordController extends BaseController
             return $this->respondWithFailedValidation($validator);
         }
 
-        MessageRecord::where('to_user_id', $request->user_id)->where('looked', 0)->update(['looked', 1]);
+        MessageRecord::where('to_user_id', $request->user_id)->where('looked', 0)->update(['looked' => 1]);
 
         return $this->respondWithSuccess(null, '清空未读消息成功');
     }

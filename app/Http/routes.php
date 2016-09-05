@@ -150,4 +150,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 清空未读消息数量
     Route::post('clearUnlookedMessage.api', 'MessageRecordController@clearUnlookedMessage');
 
+    // 获取播放节点
+    Route::get('getPlayNode.api', 'OptionController@getPlayNode');
+
 });
