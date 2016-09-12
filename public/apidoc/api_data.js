@@ -1252,40 +1252,6 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/getPlayNode.api",
-    "title": "获取播放节点",
-    "description": "<p>获取播放节点</p>",
-    "group": "Option",
-    "permission": [
-      {
-        "name": "none"
-      }
-    ],
-    "version": "0.0.1",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"获取播放节点成功\",\n    \"result\": {\n        \"node\": \"app\"\n    }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"获取播放节点失败\"\n }",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/Http/Controllers/Api/OptionController.php",
-    "groupTitle": "Option",
-    "name": "GetGetplaynodeApi"
-  },
-  {
-    "type": "get",
     "url": "/getTweetsDetail.api",
     "title": "动弹详情",
     "description": "<p>获取动弹详情,获取动弹赞列表、评论列表是其他接口</p>",
@@ -1621,73 +1587,6 @@ define({ "api": [
     "filename": "app/Http/Controllers/Api/UserController.php",
     "groupTitle": "User",
     "name": "GetGetuserinfomationApi"
-  },
-  {
-    "type": "post",
-    "url": "/buyDislodgeDdvertisement.api",
-    "title": "购买去除广告",
-    "description": "<p>购买去除广告</p>",
-    "group": "User",
-    "permission": [
-      {
-        "name": "Token"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>登录成功返回的token</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n    \"Authorization\" : \"Bearer {token}\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "user_id",
-            "description": "<p>用户id</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.1",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n    \"status\": \"success\",\n    \"code\": 200,\n    \"message\": \"购买去除广告成功\",\n    \"data\": null\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "{\n      \"status\": \"error\",\n      \"code\": 400,\n      \"message\": \"购买去除广告失败\"\n }",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "app/Http/Controllers/Api/UserController.php",
-    "groupTitle": "User",
-    "name": "PostBuydislodgeddvertisementApi"
   },
   {
     "type": "post",
