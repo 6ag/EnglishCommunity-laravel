@@ -105,8 +105,11 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api', 'middleware' => ['api']],
     // 评论列表
     Route::get('getCommentList.api', 'CommentController@getCommentList');
 
-    // 获取语法手册
+    // 获取语法手册 - 废弃
     Route::get('getGramarManual.api', 'GrammarController@getGramarManual');
+
+    // 获取语法手册
+    Route::get('getManual.api', 'ManualController@getManual');
 
     // 收藏视频
     Route::post('addOrCancelCollectVideoInfo.api', 'CollectionController@addOrCancelCollectVideoInfo');

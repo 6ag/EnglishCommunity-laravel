@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Model\Grammar;
+use App\Http\Model\Manual;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
-class GrammarController extends BaseController
+class ManualController extends BaseController
 {
     public function __construct()
     {
         // 执行 jwt.auth 认证
         $this->middleware('jwt.api.auth', [
             'except' => [
-                'getGramarManual',
+                'getManual',
             ]
         ]);
     }
 
     /**
-     * @api {get} /getGramarManual.api 获取语法手册-废弃
+     * @api {get} /getManual.api 获取语法手册
      * @apiDescription 获取所有语法数据,并存储到客户端
      * @apiGroup Grammar
      * @apiPermission none
@@ -62,10 +62,10 @@ class GrammarController extends BaseController
      *           "message": "失败"
      *      }
      */
-    public function getGramarManual(Request $request)
+    public function getManual(Request $request)
     {
         $count = isset($request->count) ? (int)$request->count : 10;      // 单页数量
-        $grammars = Grammar::paginate($count);
+        $grammars = Manual::paginate($count);
 
         if (! count($grammars)) {
             return $this->respondWithErrors('没有获取到任何数据');
