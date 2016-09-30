@@ -188,7 +188,7 @@ class VideoController extends BaseController
         $validator = Validator::make($request->all(), [
             'url' => ['required']
         ], [
-            'url.required' => 'urlbunweik'
+            'url.required' => 'url不能为空'
         ]);
         if ($validator->fails()) {
             return $this->respondWithSuccess($validator);
